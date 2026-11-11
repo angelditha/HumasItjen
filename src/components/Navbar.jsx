@@ -1,0 +1,420 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  ChevronDown, 
+  ChevronRight,
+  Search, 
+  Menu, 
+  X, 
+  Shield, 
+  Lock, 
+  Calendar, 
+  Clock, 
+  ExternalLink,
+  Sliders,
+  UserCheck
+} from 'lucide-react';
+
+export default function Navbar({ 
+  activePage, 
+  setActivePage, 
+  activeSubPage, 
+  setActiveSubPage, 
+  adminUser, 
+  onOpenLogin, 
+  onOpenDashboard, 
+  onSearchOpen 
+}) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [currentTime, setCurrentTime] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
+
+  // Update clock
+  useEffect(() => {
+    const updateDateTime = () => {
+      const now = new Date();
+      // Date in Indonesian
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const months = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      ];
+      const dayName = days[now.getDay()];
+      const day = now.getDate();
+      const monthName = months[now.getMonth()];
+      const year = now.getFullYear();
+      setCurrentDate(`${dayName}, ${day} ${monthName} ${year}`);
+
+      // Time HH:mm:ss WIB
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      setCurrentTime(`${hours}:${minutes}:${seconds} WIB`);
+    };
+
+    updateDateTime();
+    const interval = setInterval(updateDateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleNavClick = (pageId, subPageId = null) => {
+    setActivePage(pageId);
+    if (subPageId) {
+      setActiveSubPage(subPageId);
+    } else {
+      setActiveSubPage(null);
+    }
+    setActiveDropdown(null);
+    setMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navItems = [
+    { id: 'beranda', label: 'Beranda' },
+    {
+      id: 'profil',
+      label: 'Profil',
+      children: [
+        { id: 'visi-misi', label: 'Visi & Misi' },
+        { id: 'logo-lambang', label: 'Logo & Lambang' },
+        { id: 'core-values', label: 'Core Value BerAKHLAK & Berdampak' },
+        { id: 'struktur-organisasi', label: 'Struktur Organisasi' },
+        { id: 'tugas-fungsi', label: 'Tugas & Fungsi' },
+        { id: 'profil-pejabat', label: 'Profil Pejabat' },
+      ]
+    },
+    {
+      id: 'berita',
+      label: 'Berita',
+      children: [
+        { id: 'berita-nasional', label: 'Berita Nasional' },
+        { id: 'berita-kemendagri', label: 'Berita Kemendagri' },
+        { id: 'berita-pengawasan', label: 'Berita Pengawasan' },
+      ]
+    },
+    {
+      id: 'media',
+      label: 'Media',
+      children: [
+        { id: 'media-foto', label: 'Foto' },
+        { id: 'media-video', label: 'Video' },
+        { id: 'media-infografis', label: 'Infografis' },
+      ]
+    },
+    { id: 'inspektorat-daerah', label: 'Inspektorat Daerah' },
+    {
+      id: 'regulasi',
+      label: 'Regulasi',
+      children: [
+        { id: 'reg-permendagri', label: 'Permendagri' },
+        { id: 'reg-kepmendagri', label: 'Kepmendagri' },
+        { id: 'reg-se', label: 'Surat Edaran (SE)' },
+      ]
+    },
+    {
+      id: 'layanan',
+      label: 'Layanan',
+      children: [
+        { id: 'layanan-informasi-publik', label: 'Informasi Publik' },
+        { id: 'layanan-publik', label: 'Layanan Publik' },
+        { id: 'layanan-skm', label: 'Survei Kepuasan Masyarakat' },
+        { id: 'layanan-wbs', label: 'WBS - Whistleblowing System' },
+      ]
+    }
+  ];
+
+  return (
+    <header className="w-full bg-white shadow-sm sticky top-0 z-40">
+      {/* 1. TOP BAR */}
+      <div className="bg-[#042646] text-white text-xs py-1.5 px-4 sm:px-8 border-b border-[#063a69]">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+          {/* Tanggal & Waktu */}
+          <div className="flex items-center space-x-4 text-slate-300">
+            <div className="flex items-center space-x-1.5">
+              <Calendar className="w-3.5 h-3.5 text-[#fbae17]" />
+              <span className="font-medium">{currentDate}</span>
+            </div>
+            <div className="hidden sm:flex items-center space-x-1.5">
+              <Clock className="w-3.5 h-3.5 text-[#fbae17]" />
+              <span className="font-mono">{currentTime}</span>
+            </div>
+          </div>
+
+          {/* Quick Links & Admin Portal */}
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            <a 
+              href="https://otda.kemendagri.go.id/layananwbs" 
+              target="_blank" 
+              rel="noreferrer"
+              className="hover:text-[#fbae17] transition-colors flex items-center space-x-1"
+            >
+              <Shield className="w-3 h-3 text-[#fbae17]" />
+              <span>Portal WBS</span>
+            </a>
+            <span className="text-slate-600">|</span>
+            <a 
+              href="https://ppid.kemendagri.go.id" 
+              target="_blank" 
+              rel="noreferrer"
+              className="hover:text-[#fbae17] transition-colors hidden md:inline-flex items-center space-x-1"
+            >
+              <span>PPID</span>
+            </a>
+            <span className="text-slate-600 hidden md:inline">|</span>
+            <a 
+              href="https://kemendagri.go.id" 
+              target="_blank" 
+              rel="noreferrer"
+              className="hover:text-[#fbae17] transition-colors hidden lg:inline-flex items-center space-x-1"
+            >
+              <span>Kemendagri RI</span>
+              <ExternalLink className="w-2.5 h-2.5" />
+            </a>
+
+            {/* Tombol Akses Portal Admin */}
+            <span className="text-slate-600">|</span>
+            {adminUser ? (
+              <button
+                onClick={onOpenDashboard}
+                className="inline-flex items-center space-x-1.5 bg-[#fbae17] text-[#063a69] hover:bg-[#fec34d] font-bold px-2.5 py-0.5 rounded text-[11px] shadow-sm transition-all"
+                title="Buka Dashboard Administrasi"
+              >
+                <UserCheck className="w-3.5 h-3.5" />
+                <span>Dashboard Humas</span>
+              </button>
+            ) : (
+              <button
+                onClick={onOpenLogin}
+                className="inline-flex items-center space-x-1 text-slate-300 hover:text-white hover:underline text-[11px] transition-colors"
+                title="Akses Terbatas Pengelola"
+              >
+                <Lock className="w-3 h-3 text-slate-400" />
+                <span>Portal Humas</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 2. BRAND HEADER WITH TWO LOGOS */}
+      <div className="bg-[#f4f2ee] border-b border-slate-200 py-3 sm:py-4 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div 
+            onClick={() => handleNavClick('beranda')}
+            className="flex items-center space-x-3 sm:space-x-5 cursor-pointer group select-none"
+          >
+            {/* Logo Kemendagri & Logo Inspektorat */}
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <img 
+                src="/assets/logo-kemendagri.png" 
+                alt="Lambang Kementerian Dalam Negeri RI" 
+                className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm transition-transform group-hover:scale-105"
+              />
+              <div className="h-10 sm:h-12 w-px bg-slate-300"></div>
+              <img 
+                src="/assets/logo-anggaraksa.png" 
+                alt="Lambang Inspektorat Jenderal Kemendagri - Anggaraksa Dharma" 
+                className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm transition-transform group-hover:scale-105"
+              />
+            </div>
+
+            {/* Typography Identitas Kementerian */}
+            <div>
+              <div className="text-[11px] sm:text-xs font-semibold tracking-wider text-slate-600 uppercase">
+                Kementerian Dalam Negeri Republik Indonesia
+              </div>
+              <h1 className="font-heading font-extrabold text-lg sm:text-2xl text-[#063a69] tracking-tight leading-tight group-hover:text-[#042646] transition-colors">
+                INSPEKTORAT JENDERAL
+              </h1>
+            </div>
+          </div>
+
+          {/* Slogan Banner di Layar Lebar */}
+          <div className="hidden xl:flex flex-col items-end text-right">
+            <div className="inline-flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+              <span className="text-xs font-semibold text-[#063a69]">
+                APIP Profesional & Berdampak
+              </span>
+            </div>
+            <span className="text-[11px] text-slate-500 mt-1">
+              Pelayanan Pengawasan 38 Provinsi
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. MAIN NAVIGATION BAR */}
+      <nav className="bg-[#063a69] text-white shadow-md relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between">
+          {/* Desktop Navigation Links */}
+          <div className="hidden lg:flex items-center space-x-1">
+            {navItems.map((item) => {
+              const isCurrent = activePage === item.id;
+              const hasChildren = item.children && item.children.length > 0;
+
+              return (
+                <div 
+                  key={item.id} 
+                  className="relative group"
+                  onMouseEnter={() => hasChildren && setActiveDropdown(item.id)}
+                  onMouseLeave={() => hasChildren && setActiveDropdown(null)}
+                >
+                  <button
+                    onClick={() => {
+                      if (!hasChildren) {
+                        handleNavClick(item.id);
+                      } else {
+                        handleNavClick(item.id, item.children[0].id);
+                      }
+                    }}
+                    className={`px-3.5 py-3.5 text-xs font-heading font-semibold uppercase tracking-wider flex items-center space-x-1 transition-colors border-b-2 ${
+                      isCurrent 
+                        ? 'border-[#fbae17] text-[#fbae17] bg-white/5' 
+                        : 'border-transparent text-slate-100 hover:text-[#fbae17] hover:bg-white/5'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {hasChildren && (
+                      <ChevronDown className="w-3.5 h-3.5 opacity-80 group-hover:rotate-180 transition-transform duration-200" />
+                    )}
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {hasChildren && activeDropdown === item.id && (
+                    <div className="absolute left-0 top-full w-64 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#fbae17] py-2 z-50 animate-fadeIn">
+                      {item.children.map((child) => (
+                        <button
+                          key={child.id}
+                          onClick={() => handleNavClick(item.id, child.id)}
+                          className={`w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-[#f4f2ee] hover:text-[#063a69] flex items-center justify-between transition-colors group/subitem ${
+                            activePage === item.id && activeSubPage === child.id 
+                              ? 'text-[#063a69] font-bold bg-[#f4f2ee]' 
+                              : 'text-slate-700'
+                          }`}
+                        >
+                          <span>{child.label}</span>
+                          <ChevronRight className={`w-3.5 h-3.5 transition-all flex-shrink-0 ${
+                            activePage === item.id && activeSubPage === child.id 
+                              ? 'text-[#063a69] translate-x-0.5' 
+                              : 'text-[#d48f05] group-hover/subitem:text-[#063a69] group-hover/subitem:translate-x-0.5'
+                          }`} />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Quick Search Button & Mobile Toggle */}
+          <div className="flex items-center space-x-2 py-2">
+            <button
+              onClick={onSearchOpen}
+              className="p-2 text-slate-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-2 text-xs"
+              title="Pencarian Cepat"
+            >
+              <Search className="w-4 h-4 text-[#fbae17]" />
+              <span className="hidden sm:inline font-medium">Cari...</span>
+            </button>
+
+            {/* Mobile Hamburger Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 text-slate-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+              title="Menu Navigasi"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* 4. MOBILE MENU ACCORDION */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-[#042646] border-t border-white/10 px-4 py-3 space-y-1 max-h-[80vh] overflow-y-auto">
+            {navItems.map((item) => {
+              const hasChildren = item.children && item.children.length > 0;
+              const isCurrent = activePage === item.id;
+
+              return (
+                <div key={item.id} className="border-b border-white/5 py-1">
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => {
+                        if (!hasChildren) {
+                          handleNavClick(item.id);
+                        } else {
+                          setActiveDropdown(activeDropdown === item.id ? null : item.id);
+                        }
+                      }}
+                      className={`text-left py-2 text-sm font-heading font-semibold uppercase tracking-wider flex-1 ${
+                        isCurrent ? 'text-[#fbae17]' : 'text-slate-200'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                    {hasChildren && (
+                      <button
+                        onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
+                        className="p-2 text-slate-400 hover:text-white"
+                      >
+                        <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
+                      </button>
+                    )}
+                  </div>
+
+                  {hasChildren && activeDropdown === item.id && (
+                    <div className="pl-4 pb-2 space-y-1">
+                      {item.children.map((child) => (
+                        <button
+                          key={child.id}
+                          onClick={() => handleNavClick(item.id, child.id)}
+                          className={`w-full text-left py-2 text-xs flex items-center justify-between transition-colors ${
+                            activePage === item.id && activeSubPage === child.id 
+                              ? 'text-[#fbae17] font-bold' 
+                              : 'text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          <span>{child.label}</span>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            <div className="pt-3 border-t border-white/10 flex flex-col space-y-2">
+              <a 
+                href="https://otda.kemendagri.go.id/layananwbs" 
+                target="_blank" 
+                rel="noreferrer"
+                className="text-xs text-[#fbae17] font-semibold py-1 flex items-center space-x-1"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                <span>Portal Whistleblowing System (WBS)</span>
+              </a>
+              {adminUser ? (
+                <button
+                  onClick={() => { setMobileMenuOpen(false); onOpenDashboard(); }}
+                  className="w-full text-center py-2 bg-[#fbae17] text-[#063a69] font-bold rounded text-xs"
+                >
+                  Buka Dashboard Humas
+                </button>
+              ) : (
+                <button
+                  onClick={() => { setMobileMenuOpen(false); onOpenLogin(); }}
+                  className="w-full text-center py-2 bg-white/10 text-slate-200 hover:bg-white/20 rounded text-xs"
+                >
+                  Portal Pengelola Humas
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
+    </header>
+  );
+}

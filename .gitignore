@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build output & caches
+dist/
+.vite/
+.vercel/
+
+# Local tools & logs
+cloudflared.exe
+*.log
+
+# Large local scratch uploads (active uploads are synced in public/uploads/)
+server/uploads/
+
+# Unused nested scratch folder
+humas itjen/
+
+# OS files
+.DS_Store
+Thumbs.db

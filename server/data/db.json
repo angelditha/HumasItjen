@@ -1,0 +1,891 @@
+{
+  "profile": {
+    "visi": "Menjadi Aparat Pengawasan Intern Pemerintah (APIP) yang Profesional, Berintegritas, dan Berdaya Saing dalam Mengawal Penyelenggaraan Pemerintahan Dalam Negeri yang Bersih, Efektif, dan Akuntabel.",
+    "misi": [
+      "Mewujudkan pengawasan intern yang independen, objektif, dan bernilai tambah bagi peningkatan tata kelola pemerintahan daerah.",
+      "Mendorong pencegahan dan pemberantasan tindak pidana korupsi serta penguatan integritas aparatur sipil negara di lingkungan Kementerian Dalam Negeri dan Pemerintah Daerah.",
+      "Meningkatkan kualitas akuntabilitas keuangan dan kinerja seluruh satuan kerja Kementerian Dalam Negeri dan Pemerintah Daerah.",
+      "Mengembangkan kapasitas, kapabilitas, dan profesionalisme auditor serta Pengawas Penyelenggaraan Urusan Pemerintahan Daerah (PPUPD) berbasis teknologi informasi.",
+      "Membangun kolaborasi pengawasan yang harmonis dengan seluruh pemangku kepentingan pusat dan daerah demi percepatan pelayanan publik."
+    ],
+    "lambangMakna": {
+      "kemendagri": {
+        "judul": "Lambang Kementerian Dalam Negeri Republik Indonesia",
+        "deskripsi": "Lambang Kementerian Dalam Negeri berbentuk perisai bersudut lima berlatar biru tua, memuat Burung Garuda Pancasila di dalam lingkaran rantai emas, diapit tangkai padi dan kapas, serta bintang emas bersudut lima di bagian atas. Di bagian bawah bertuliskan pita 'KEMENTERIAN DALAM NEGERI'.",
+        "filosofi": [
+          "Bintang Emas: Ketuhanan Yang Maha Esa sebagai landasan moral dan spiritual segenap aparatur negara.",
+          "Garuda Pancasila: Falsafah dan dasar negara Republik Indonesia dalam wadah persatuan Bhinneka Tunggal Ika.",
+          "Padi dan Kapas: Kemakmuran, kecukupan sandang pangan, dan keadilan sosial bagi seluruh rakyat Indonesia.",
+          "Rantai Emas: Solidaritas, keterikatan yang kokoh antarwilayah dan seluruh jajaran pemerintahan dari pusat hingga daerah.",
+          "Perisai Segi Lima: Kesiapsiagaan mengawal kedaulatan, ketertiban, dan keutuhan Negara Kesatuan Republik Indonesia."
+        ]
+      },
+      "anggaraksaDharma": {
+        "judul": "Lambang Inspektorat 'Angga Raksa Dharma'",
+        "deskripsi": "Semboyan dan lambang kebanggaan Inspektorat Jenderal Kementerian Dalam Negeri adalah 'Angga Raksa Dharma'. Memiliki makna luhur sebagai Pengawal dan Penjaga yang Menegakkan Ketertiban, Aturan, dan Kebajikan.",
+        "filosofi": [
+          "Angga: Berarti raga atau segenap elemen organisasi yang bersatu dalam dedikasi pengawasan.",
+          "Raksa: Menjaga, melindungi, dan membentengi institusi dari penyimpangan serta potensi korupsi.",
+          "Dharma: Kewajiban mulia, kebenaran hukum, aturan, serta integritas tertinggi sebagai abdi negara.",
+          "Kemudi Kapal & Kompas Emas: Simbol arah pemandu jalannya organisasi agar senantiasa berada pada jalur kepatuhan, kehati-hatian, dan efisiensi.",
+          "Burung Garuda Emas: Ketajaman penglihatan pengawasan, wibawa, dan keberanian menegakkan kebenaran tanpa kompromi.",
+          "Tali Tambang Emas Melingkar: Ikatan disiplin, keteguhan profesionalisme, dan persaudaraan sesama jajaran APIP."
+        ]
+      }
+    },
+    "coreValues": {
+      "berakhlak": [
+        {
+          "kode": "Ber",
+          "nama": "Berorientasi Pelayanan",
+          "desc": "Kami berkomitmen memberikan pelayanan\nprima demi kepuasan masyarakat. "
+        },
+        {
+          "kode": "A",
+          "nama": "Akuntabel",
+          "desc": "Kami mampu mengemban amanat dan\nkepercayaan yang diberikan dengan penuh\ntanggung jawab."
+        },
+        {
+          "kode": "K",
+          "nama": "Kompeten",
+          "desc": "Kami meningkatkan kompetensi diri dengan\nterus belajar."
+        },
+        {
+          "kode": "H",
+          "nama": "Harmonis",
+          "desc": "Kami saling peduli, menghargai dan\nbertoleransi dengan perbedaan."
+        },
+        {
+          "kode": "L",
+          "nama": "Loyal",
+          "desc": "Kami berdedikasi tinggi terhadap kepentingan\nbangsa dan negara."
+        },
+        {
+          "kode": "A",
+          "nama": "Adaptif",
+          "desc": "Kami siap menghadapi ataupun menjadi\nmotor perubahan dengan terus mengasah\nkreativitas dan berinovasi."
+        },
+        {
+          "kode": "K",
+          "nama": "Kolaboratif",
+          "desc": "Kami saling bersinergi dalam bekerja sama."
+        }
+      ],
+      "berdampak": {
+        "judul": "Pengawasan Berdampak (Impactful Auditing)",
+        "deskripsi": "Pengawasan Itjen Kemendagri tidak hanya sekadar mencari kesalahan administrasi (watchdog), melainkan bertransformasi menjadi mitra strategis (trusted advisor) dan katalisator perubahan (catalyst) yang memberikan rekomendasi nyata, terukur, dan berdampak langsung pada kesejahteraan rakyat di daerah."
+      }
+    },
+    "tugasFungsi": {
+      "tugas": "Inspektorat Jenderal mempunyai tugas menyelenggarakan pengawasan intern di lingkungan Kementerian Dalam Negeri dan pengawasan terhadap penyelenggaraan urusan pemerintahan daerah sesuai dengan ketentuan peraturan perundang-undangan.",
+      "fungsi": [
+        "Penyusunan kebijakan teknis pengawasan intern di lingkungan Kementerian Dalam Negeri dan pengawasan penyelenggaraan urusan pemerintahan daerah;",
+        "Pelaksanaan pengawasan intern di lingkungan Kementerian Dalam Negeri terhadap kinerja dan keuangan melalui audit, reviu, evaluasi, pemantauan, dan kegiatan pengawasan lainnya;",
+        "Pelaksanaan pengawasan terhadap penyelenggaraan urusan pemerintahan daerah meliputi pengawasan umum dan pengawasan teknis;",
+        "Pelaksanaan pengawasan untuk tujuan tertentu atas penugasan Menteri Dalam Negeri;",
+        "Penyusunan laporan hasil pengawasan di lingkungan Kementerian Dalam Negeri dan penyelenggaraan urusan pemerintahan daerah;",
+        "Pelaksanaan administrasi Inspektorat Jenderal; dan",
+        "Pelaksanaan fungsi lain yang diberikan oleh Menteri Dalam Negeri."
+      ]
+    },
+    "strukturOrganisasi": {
+      "foto": "/uploads/file-1791792834437-273428217.jpeg",
+      "deskripsi": "Bagan Struktur Organisasi Inspektorat Jenderal Kementerian Dalam Negeri berdasarkan Peraturan Menteri Dalam Negeri tentang Organisasi dan Tata Kerja Kemendagri."
+    }
+  },
+  "officers": [
+    {
+      "id": "pejabat-1",
+      "nama": "Drs. ANDI BATARALIFU, M.Si, CFrA, CACP",
+      "jabatan": "PLT. INSPEKTUR JENDERAL",
+      "foto": "/uploads/file-1791788943981-131980012.png",
+      "urutan": 1
+    },
+    {
+      "id": "pejabat-2",
+      "nama": "Drs. ANDI BATARALIFU, M.Si, CFrA, CACP",
+      "jabatan": "SEKRETARIS INSPEKTORAT",
+      "foto": "/uploads/file-1791788325167-594946958.png",
+      "urutan": 2
+    },
+    {
+      "id": "pejabat-3",
+      "nama": "Brigjen Pol. Harun Yuni Aprin, SH., S.IK., M.Si, CFrA,CACP",
+      "jabatan": "INSPEKTUR I",
+      "foto": "/uploads/file-1791789011173-316290368.png",
+      "urutan": 3
+    },
+    {
+      "id": "pejabat-4",
+      "nama": "Drs. ANDI BATARALIFU, M.Si, CFrA, CACP",
+      "jabatan": "INSPEKTUR II",
+      "foto": "/uploads/file-1791789247082-577976129.png",
+      "urutan": 4
+    },
+    {
+      "id": "pejabat-5",
+      "nama": "Dr. Drs. ANDI MUHAMMAD YUSUF, M.Si,CFrA,CACP",
+      "jabatan": "INSPEKTUR III",
+      "foto": "/uploads/file-1791789121864-468510089.png",
+      "urutan": 5
+    },
+    {
+      "id": "pejabat-6",
+      "nama": "Drs. H. YUDIA RAMLI, M.Si, CACP",
+      "jabatan": "INSPEKTUR IV",
+      "foto": "/uploads/file-1791789232457-588359687.png",
+      "urutan": 6
+    },
+    {
+      "id": "pejabat-7",
+      "nama": "Dra. DWI BUDI WAHYUNINGSIH, MT, CRGP, CFrA",
+      "jabatan": "INSPEKTUR KHUSUS",
+      "foto": "/uploads/file-1791789305484-399398135.png",
+      "urutan": 7
+    }
+  ],
+  "news": [
+    {
+      "id": "berita-1791777107233",
+      "views": 0,
+      "tanggal": "2026-09-18",
+      "judul": "RAPAT KOORDINASI PERECEPATAN PERTUMBUHAN EKONOMI SE-SULAWESI",
+      "kategori": "nasional",
+      "penulis": "Tim Humas Itjen Kemendagri",
+      "gambar": "/uploads/file-1791777132195-766237330-fast.jpg",
+      "konten": "Jakarta - Target 8% pertumbuhan ekonomi adalah target nasional. Pertumbuhannya dibangun dari daerah.\nSulawesi Selatan menunjukkan bagaimana potensi daerah dapat menjadi penggerak pertumbuhan ketika diolah menjadi nilai tambah.\nDari komoditas unggulan seperti beras porang, kita melihat bahwa pertumbuhan bukan sekadar meningkatkan produksi, tetapi bagaimana potensi lokal diolah, dihilirisasi, masuk ke pasar, dan menciptakan nilai ekonomi yang lebih besar.\n\nHal ini dibahas dalam Rapat Koordinasi Percepatan Pertumbuhan Ekonomi se-Sulawesi bersama Wakil Menteri Dalam Negeri Bima Arya, Wakil Kepala BPS RI Sonny Harry Budiutomo Harmadi, serta Deputi Bidang Kewilayahan Kementerian PPN/Bappenas Bapak Medrilzam.\n\nDari potensi → produksi → nilai tambah → pasar → investasi, pemerintah daerah didorong untuk membangun strategi ekonomi yang sesuai dengan karakter dan potensi wilayahnya.\n\nMenjadi bagian dari rangkaian Apresiasi Pemerintah Daerah Berprestasi Tahun 2026 Batch II Regional Sulawesi, forum ini menjadi ruang untuk menyatukan data, potensi, dan strategi menuju pertumbuhan ekonomi daerah yang lebih kuat dan berdampak.\n\n",
+      "isBanner": false,
+      "ringkasan": "Jakarta - Target 8% pertumbuhan ekonomi adalah target nasional. Pertumbuhannya dibangun dari daerah.\nSulawesi Selatan menunjukkan bagaimana potensi da..."
+    },
+    {
+      "id": "berita-1",
+      "judul": "RAPAT PERSIAPAN DAN KONSOLIDASI PANITIA RAKORNAS INDONESIA ASRI",
+      "slug": "rakor-pengawasan-daerah-tahun-2026-perkuat-sinergi-apbd",
+      "kategori": "nasional",
+      "tanggal": "2026-09-09",
+      "penulis": "Tim Humas Itjen Kemendagri",
+      "gambar": "/assets/photo-rakornas.jpg",
+      "ringkasan": "Jakarta - Percepatan implementasi Gerakan Indonesia ASRI (Aman, Sehat, Resik, dan Indah) membutuhkan koordinasi dan kesiapan yang kuat.\n\nRapat persiap...",
+      "konten": "Jakarta - Percepatan implementasi Gerakan Indonesia ASRI (Aman, Sehat, Resik, dan Indah) membutuhkan koordinasi dan kesiapan yang kuat.\n\nRapat persiapan dan konsolidasi panitia Rakornas Indonesia ASRI menjadi momentum untuk menyatukan persepsi, mengevaluasi pelaksanaan sebelumnya, serta mematangkan kepanitiaan dan teknis pelaksanaan.\n\nMelalui sinergi dan kolaborasi, Rakornas diharapkan dapat terlaksana secara efektif dan memberikan kontribusi nyata dalam memperkuat implementasi Gerakan Indonesia ASRI.",
+      "isBanner": true,
+      "views": 1240
+    },
+    {
+      "id": "berita-2",
+      "judul": "APRESIASI SATUAN KERJA TERBAIK l NILAI IKPA SEMESTER l TAHUN 2026",
+      "slug": "evaluasi-kinerja-penjabat-kepala-daerah-triwulan-iii",
+      "kategori": "nasional",
+      "tanggal": "2026-09-24",
+      "penulis": "Subbag Tata Usaha & Humas",
+      "gambar": "/assets/photo-hall.jpg",
+      "ringkasan": "Jakarta -  Itjen Kemendagri kembali meraih apresiasi sebagai Satuan Kerja Terbaik I Nilai IKPA kategori pagu Rp50–150 miliar pada Semester I Tahun 202...",
+      "konten": "Jakarta -  Itjen Kemendagri kembali meraih apresiasi sebagai Satuan Kerja Terbaik I Nilai IKPA kategori pagu Rp50–150 miliar pada Semester I Tahun 2026.\n\nApresiasi ini menjadi pengingat bahwa setiap rupiah yang dikelola harus semakin tepat, akuntabel, dan menghasilkan kinerja yang berdampak.\n\n",
+      "isBanner": true,
+      "views": 980
+    },
+    {
+      "id": "berita-3",
+      "judul": "Pendampingan Biro Ortala & Pusat Penerangan Setjen Kemendagri dalam Penilaian Ombudsman RI di Sekretariat Itjen & Pusat Pengembangan Kompetensi Pemerintahan Dalam Negeri (BPSDM) terkait penilaian maladministrasi",
+      "slug": "sinergi-itjen-kemendagri-dan-ombudsman-ri-perkuat-pelayanan",
+      "kategori": "pengawasan",
+      "tanggal": "2026-09-02",
+      "penulis": "Biro Hukum & Humas Itjen",
+      "gambar": "/assets/photo-ombudsman.jpg",
+      "ringkasan": "Jakarta - Inspektorat Jenderal Kementerian Dalam Negeri menerima kunjungan Ombudsman Republik Indonesia dalam rangka Penilaian Maladministrasi Penyele...",
+      "konten": "Jakarta - Inspektorat Jenderal Kementerian Dalam Negeri menerima kunjungan Ombudsman Republik Indonesia dalam rangka Penilaian Maladministrasi Penyelenggaraan Pelayanan Publik. Penilaian dilakukan melalui wawancara, analisis dokumen, dan observasi standar pelayanan.\n\nLangkah ini menjadi wujud komitmen Inspektorat Jenderal Kemendagri untuk terus menghadirkan pelayanan publik yang transparan dan akuntabel, karena kepercayaan masyarakat berawal dari kualitas pelayanan yang diberikan.",
+      "isBanner": false,
+      "views": 745
+    },
+    {
+      "id": "berita-5",
+      "judul": "PERINGATAN MAULID NABI MUHAMMAD SAW DI LINGKUNGAN KEMENTERIAN DALAM NEGERI TAHUN 1448 H/2026",
+      "slug": "kemendagri-gelar-bimtek-penguatan-peran-ppupd",
+      "kategori": "nasional",
+      "tanggal": "2026-09-08",
+      "penulis": "Humas Itjen",
+      "gambar": "/uploads/file-1791776844814-607819909-fast.jpg",
+      "ringkasan": "Jakarta - Kementerian Dalam Negeri memperingati Maulid Nabi Muhammad SAW sebagai momentum memperkuat nilai keimanan, keteladanan, dan integritas bagi ...",
+      "konten": "Jakarta - Kementerian Dalam Negeri memperingati Maulid Nabi Muhammad SAW sebagai momentum memperkuat nilai keimanan, keteladanan, dan integritas bagi seluruh aparatur negara. Dalam sambutannya, Wakil Menteri Dalam Negeri mengajak jajaran Kemendagri menjadikan akhlak Rasulullah SAW sebagai landasan dalam menjalankan tugas dan pengabdian, sebagaimana disampaikan juga dalam tausiah bersama Ustaz Kasif Heer yang menekankan nilai kejujuran, amanah, tanggung jawab, dan kepedulian terhadap sesama.\n\nPeringatan ini menjadi pengingat bahwa keteladanan bukan sekadar seremonial, melainkan wujud nyata dalam membangun pribadi berintegritas dan menghadirkan pelayanan publik yang lebih baik bagi masyarakat, bangsa, dan negara.\n",
+      "isBanner": false,
+      "views": 630
+    },
+    {
+      "id": "berita-6",
+      "judul": "PERJANJIAN KERJASAMA INSPEKTORAT JENDERAL KEMENDAGRI BERSAMA POLISI REPUBLIK INDONESIA DALAM PENANGANAN LAPORAN ATAU PENGADUAN TERKAIT PENYELENGGARAAN PEMERINTAHAN DAERAH",
+      "slug": "pemerintah-pusat-tegaskan-transformasi-digital-pengawasan",
+      "kategori": "nasional",
+      "tanggal": "2026-08-31",
+      "penulis": "Rilis Berita Nasional (Re-upload)",
+      "gambar": "/uploads/file-1791777036819-779041292-fast.jpg",
+      "ringkasan": "Jakarta - Pembahasan mencakup ruang lingkup kerja sama, mekanisme koordinasi dan pertukaran informasi, serta pembagian peran dan kewenangan para pihak...",
+      "konten": "Jakarta - Pembahasan mencakup ruang lingkup kerja sama, mekanisme koordinasi dan pertukaran informasi, serta pembagian peran dan kewenangan para pihak, guna mendukung proses penanganan laporan atau pengaduan yang lebih terkoordinasi, efektif, transparan, dan akuntabel sesuai dengan tugas dan kewenangan masing-masing pihak.\n\nSelanjutnya, kerja sama ini akan ditindaklanjuti melalui penyusunan petunjuk teknis (juknis), sosialisasi, serta monitoring dan evaluasi guna memastikan implementasinya berjalan optimal dan memberikan kepastian dalam pelaksanaan koordinasi APIP dan APH.\n\nSinergi APIP dan APH menjadi langkah penting dalam memperkuat pengawasan, mendorong kepastian penanganan pengaduan, serta mewujudkan tata kelola pemerintahan daerah yang lebih baik dan berdampak.\n\n",
+      "isBanner": false,
+      "views": 890
+    }
+  ],
+  "media": {
+    "photos": [
+      {
+        "id": "foto-1",
+        "judul": "RAPAT PERSIAPAN DAN KONSOLIDASI PANITIA RAKORNAS INDONESIA ASRI",
+        "tanggal": "2026-09-09",
+        "url": "/assets/photo-rakornas.jpg",
+        "kategori": "Kegiatan Resmi",
+        "deskripsi": "Suasana rapat pleno koordinasi di Aula Utama Kemendagri bersama para pimpinan Inspektorat Wilayah dan jajaran eselon.",
+        "mediaType": "photos"
+      },
+      {
+        "id": "foto-2",
+        "judul": "APRESIASI SATUAN KERJA TERBAIK l NILAI IKPA SEMESTER l TAHUN 2026",
+        "tanggal": "2026-09-24",
+        "url": "/assets/photo-hall.jpg",
+        "kategori": "Konsolidasi Internal",
+        "deskripsi": "Pengarahan pimpinan kepada seluruh auditor madya, muda, dan pertama mengenai target Program Kerja Pengawasan Tahunan (PKPT).",
+        "mediaType": "photos"
+      },
+      {
+        "id": "foto-3",
+        "judul": "Pendampingan Biro Ortala & Pusat Penerangan Setjen Kemendagri dalam Penilaian Ombudsman RI di Sekretariat Itjen",
+        "tanggal": "2026-09-02",
+        "url": "/assets/photo-ombudsman.jpg",
+        "kategori": "Kemitraan Lembaga",
+        "deskripsi": "Diskusi mendalam mengenai mekanisme tindak lanjut pengaduan masyarakat di pemerintah daerah.",
+        "mediaType": "photos"
+      }
+    ],
+    "videos": [],
+    "infographics": [
+      {
+        "id": "info-1",
+        "judul": "Produk UMKM ASN ",
+        "tanggal": "2026-09-30",
+        "url": "/assets/poster-umkm.jpg",
+        "deskripsi": "Diagram skema perlindungan identitas pelapor dan tahapan verifikasi bukti pengaduan.",
+        "mediaType": "infographics"
+      }
+    ]
+  },
+  "inspectorates": [
+    {
+      "id": "prov-1",
+      "nama": "Aceh",
+      "ibukota": "Banda Aceh",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.acehprov.go.id",
+      "inspektur": "Jamaluddin, S.E., M.Si. Ak.",
+      "telp": "(0651) 22123"
+    },
+    {
+      "id": "prov-2",
+      "nama": "Sumatera Utara",
+      "ibukota": "Medan",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.sumutprov.go.id",
+      "inspektur": "Lasro Marbun, S.H., M.Hum.",
+      "telp": "(061) 4536789"
+    },
+    {
+      "id": "prov-3",
+      "nama": "Sumatera Barat",
+      "ibukota": "Padang",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.sumbarprov.go.id",
+      "inspektur": "Supriyanto, S.Sos., M.E.",
+      "telp": "(0751) 7051234"
+    },
+    {
+      "id": "prov-4",
+      "nama": "Riau",
+      "ibukota": "Pekanbaru",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.riau.go.id",
+      "inspektur": "Sigit Juli Hendriawan, S.E.",
+      "telp": "(0761) 31456"
+    },
+    {
+      "id": "prov-5",
+      "nama": "Kepulauan Riau",
+      "ibukota": "Tanjungpinang",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.kepriprov.go.id",
+      "inspektur": "Irmandas, S.Sos., M.M.",
+      "telp": "(0771) 457890"
+    },
+    {
+      "id": "prov-6",
+      "nama": "Jambi",
+      "ibukota": "Jambi",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.jambiprov.go.id",
+      "inspektur": "Agus Herianto, S.H.",
+      "telp": "(0741) 62456"
+    },
+    {
+      "id": "prov-7",
+      "nama": "Sumatera Selatan",
+      "ibukota": "Palembang",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.sumselprov.go.id",
+      "inspektur": "Kurniawan, AP., M.Si.",
+      "telp": "(0711) 351234"
+    },
+    {
+      "id": "prov-8",
+      "nama": "Bangka Belitung",
+      "ibukota": "Pangkalpinang",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.babelprov.go.id",
+      "inspektur": "Susanto, S.E., M.M.",
+      "telp": "(0717) 438765"
+    },
+    {
+      "id": "prov-9",
+      "nama": "Bengkulu",
+      "ibukota": "Bengkulu",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.bengkuluprov.go.id",
+      "inspektur": "Heru Susanto, S.T., M.Si.",
+      "telp": "(0736) 21987"
+    },
+    {
+      "id": "prov-10",
+      "nama": "Lampung",
+      "ibukota": "Bandar Lampung",
+      "wilayah": "Sumatera",
+      "website": "https://inspektorat.lampungprov.go.id",
+      "inspektur": "Ir. Fredy, S.M., M.M.",
+      "telp": "(0721) 486754"
+    },
+    {
+      "id": "prov-11",
+      "nama": "DKI Jakarta",
+      "ibukota": "Jakarta",
+      "wilayah": "Jawa",
+      "website": "https://inspektorat.jakarta.go.id",
+      "inspektur": "Syaefuloh Hidayat, S.Pt., M.Si.",
+      "telp": "(021) 3822234"
+    },
+    {
+      "id": "prov-12",
+      "nama": "Jawa Barat",
+      "ibukota": "Bandung",
+      "wilayah": "Jawa",
+      "website": "https://inspektorat.jabarprov.go.id",
+      "inspektur": "Dr. Eni Rohyani, S.H., M.Hum.",
+      "telp": "(022) 7208123"
+    },
+    {
+      "id": "prov-13",
+      "nama": "Banten",
+      "ibukota": "Serang",
+      "wilayah": "Jawa",
+      "website": "https://inspektorat.bantenprov.go.id",
+      "inspektur": "M. Tranggono, S.T., M.Sc.",
+      "telp": "(0254) 848900"
+    },
+    {
+      "id": "prov-14",
+      "nama": "Jawa Tengah",
+      "ibukota": "Semarang",
+      "wilayah": "Jawa",
+      "website": "https://inspektorat.jatengprov.go.id",
+      "inspektur": "Drs. Dhoni Widianto, M.Si.",
+      "telp": "(024) 8417890"
+    },
+    {
+      "id": "prov-15",
+      "nama": "DI Yogyakarta",
+      "ibukota": "Yogyakarta",
+      "wilayah": "Jawa",
+      "website": "https://inspektorat.jogjaprov.go.id",
+      "inspektur": "Muhammad Setiadi, S.Pt., M.Acc.",
+      "telp": "(0274) 562145"
+    },
+    {
+      "id": "prov-16",
+      "nama": "Jawa Timur",
+      "ibukota": "Surabaya",
+      "wilayah": "Jawa",
+      "website": "https://inspektorat.jatimprov.go.id",
+      "inspektur": "Helmy Perdana Putra, S.Sos., M.Si.",
+      "telp": "(031) 8291234"
+    },
+    {
+      "id": "prov-17",
+      "nama": "Bali",
+      "ibukota": "Denpasar",
+      "wilayah": "Bali & Nusa Tenggara",
+      "website": "https://inspektorat.baliprov.go.id",
+      "inspektur": "I Wayan Sugiada, S.H., M.H.",
+      "telp": "(0361) 224567"
+    },
+    {
+      "id": "prov-18",
+      "nama": "Nusa Tenggara Barat",
+      "ibukota": "Mataram",
+      "wilayah": "Bali & Nusa Tenggara",
+      "website": "https://inspektorat.ntbprov.go.id",
+      "inspektur": "Ibnu Salim, S.H., M.Si.",
+      "telp": "(0370) 623456"
+    },
+    {
+      "id": "prov-19",
+      "nama": "Nusa Tenggara Timur",
+      "ibukota": "Kupang",
+      "wilayah": "Bali & Nusa Tenggara",
+      "website": "https://inspektorat.nttprov.go.id",
+      "inspektur": "Ruth Diana Laiskodat, S.Si., Apt.",
+      "telp": "(0380) 833123"
+    },
+    {
+      "id": "prov-20",
+      "nama": "Kalimantan Barat",
+      "ibukota": "Pontianak",
+      "wilayah": "Kalimantan",
+      "website": "https://inspektorat.kalbarprov.go.id",
+      "inspektur": "Marly Brida, S.E., M.Si.",
+      "telp": "(0561) 734567"
+    },
+    {
+      "id": "prov-21",
+      "nama": "Kalimantan Tengah",
+      "ibukota": "Palangka Raya",
+      "wilayah": "Kalimantan",
+      "website": "https://inspektorat.kalteng.go.id",
+      "inspektur": "Saring, S.E., M.Si.",
+      "telp": "(0536) 3221234"
+    },
+    {
+      "id": "prov-22",
+      "nama": "Kalimantan Selatan",
+      "ibukota": "Banjarbaru",
+      "wilayah": "Kalimantan",
+      "website": "https://inspektorat.kalselprov.go.id",
+      "inspektur": "Akhmad Fydayeen, S.H., M.Si.",
+      "telp": "(0511) 4782345"
+    },
+    {
+      "id": "prov-23",
+      "nama": "Kalimantan Timur",
+      "ibukota": "Samarinda",
+      "wilayah": "Kalimantan",
+      "website": "https://inspektorat.kaltimprov.go.id",
+      "inspektur": "H. Irfan Prananta, S.STP., M.Si.",
+      "telp": "(0541) 743210"
+    },
+    {
+      "id": "prov-24",
+      "nama": "Kalimantan Utara",
+      "ibukota": "Tanjung Selor",
+      "wilayah": "Kalimantan",
+      "website": "https://inspektorat.kaltaraprov.go.id",
+      "inspektur": "Yosua Batara Payangan, S.E.",
+      "telp": "(0552) 21345"
+    },
+    {
+      "id": "prov-25",
+      "nama": "Sulawesi Utara",
+      "ibukota": "Manado",
+      "wilayah": "Sulawesi",
+      "website": "https://inspektorat.sulutprov.go.id",
+      "inspektur": "Drs. Meiki M. Onibala, M.Si.",
+      "telp": "(0431) 862345"
+    },
+    {
+      "id": "prov-26",
+      "nama": "Gorontalo",
+      "ibukota": "Gorontalo",
+      "wilayah": "Sulawesi",
+      "website": "https://inspektorat.gorontaloprov.go.id",
+      "inspektur": "Misranda Nalole, S.E., M.Si.",
+      "telp": "(0435) 824567"
+    },
+    {
+      "id": "prov-27",
+      "nama": "Sulawesi Tengah",
+      "ibukota": "Palu",
+      "wilayah": "Sulawesi",
+      "website": "https://inspektorat.sultengprov.go.id",
+      "inspektur": "Drs. M. Muchlis, M.M.",
+      "telp": "(0451) 421234"
+    },
+    {
+      "id": "prov-28",
+      "nama": "Sulawesi Barat",
+      "ibukota": "Mamuju",
+      "wilayah": "Sulawesi",
+      "website": "https://inspektorat.sulbarprov.go.id",
+      "inspektur": "M. Natsir, S.Sos., M.Si.",
+      "telp": "(0426) 232145"
+    },
+    {
+      "id": "prov-29",
+      "nama": "Sulawesi Selatan",
+      "ibukota": "Makassar",
+      "wilayah": "Sulawesi",
+      "website": "https://inspektorat.sulselprov.go.id",
+      "inspektur": "Drs. Marwan Mansyur, M.Si.",
+      "telp": "(0411) 453210"
+    },
+    {
+      "id": "prov-30",
+      "nama": "Sulawesi Tenggara",
+      "ibukota": "Kendari",
+      "wilayah": "Sulawesi",
+      "website": "https://inspektorat.sultraprov.go.id",
+      "inspektur": "Gusti Pasaru, S.H., M.H.",
+      "telp": "(0401) 3123456"
+    },
+    {
+      "id": "prov-31",
+      "nama": "Maluku",
+      "ibukota": "Ambon",
+      "wilayah": "Maluku & Papua",
+      "website": "https://inspektorat.malukuprov.go.id",
+      "inspektur": "Jasmono, S.Sos., M.Si.",
+      "telp": "(0911) 352123"
+    },
+    {
+      "id": "prov-32",
+      "nama": "Maluku Utara",
+      "ibukota": "Sofifi",
+      "wilayah": "Maluku & Papua",
+      "website": "https://inspektorat.malutprov.go.id",
+      "inspektur": "Nirwan M.T. Ali, S.P., M.Si.",
+      "telp": "(0921) 312345"
+    },
+    {
+      "id": "prov-33",
+      "nama": "Papua",
+      "ibukota": "Jayapura",
+      "wilayah": "Maluku & Papua",
+      "website": "https://inspektorat.papua.go.id",
+      "inspektur": "Anggiat Situmorang, S.E., M.Si.",
+      "telp": "(0967) 532145"
+    },
+    {
+      "id": "prov-34",
+      "nama": "Papua Barat",
+      "ibukota": "Manokwari",
+      "wilayah": "Maluku & Papua",
+      "website": "https://inspektorat.papuabaratprov.go.id",
+      "inspektur": "Sugiyono, S.Sos., M.M.",
+      "telp": "(0986) 213456"
+    },
+    {
+      "id": "prov-35",
+      "nama": "Papua Selatan",
+      "ibukota": "Merauke",
+      "wilayah": "Maluku & Papua",
+      "website": "https://inspektorat.papuaselatan.go.id",
+      "inspektur": "Drs. Aloysius Jopeng",
+      "telp": "(0971) 321234"
+    },
+    {
+      "id": "prov-36",
+      "nama": "Papua Tengah",
+      "ibukota": "Nabire",
+      "wilayah": "Maluku & Papua",
+      "website": "https://inspektorat.papuatengah.go.id",
+      "inspektur": "Semuel R. Kegou, S.E.",
+      "telp": "(0984) 21543"
+    },
+    {
+      "id": "prov-37",
+      "nama": "Papua Pegunungan",
+      "ibukota": "Wamena",
+      "wilayah": "Maluku & Papua",
+      "website": "https://inspektorat.papuapegunungan.go.id",
+      "inspektur": "Korneles Yobee, S.STP.",
+      "telp": "(0969) 31234"
+    },
+    {
+      "id": "prov-38",
+      "nama": "Papua Barat Daya",
+      "ibukota": "Sorong",
+      "wilayah": "Maluku & Papua",
+      "website": "https://inspektorat.papuabaratdaya.go.id",
+      "inspektur": "Karel G. Krey, S.Sos.",
+      "telp": "(0951) 324567"
+    }
+  ],
+  "regulations": [
+    {
+      "id": "reg-1",
+      "jenis": "Permendagri",
+      "nomor": "Nomor 137 Tahun 2022",
+      "tahun": "2022",
+      "tentang": "Tata Kelola Pengawasan Penyelenggaraan Pemerintahan Daerah di Lingkungan Kementerian Dalam Negeri",
+      "tanggalDitetapkan": "2022-12-28",
+      "status": "Berlaku",
+      "fileUrl": "#",
+      "ukuranFile": "2.8 MB"
+    },
+    {
+      "id": "reg-2",
+      "jenis": "Permendagri",
+      "nomor": "Nomor 73 Tahun 2020",
+      "tahun": "2020",
+      "tentang": "Pengawasan Pengelolaan Keuangan Desa oleh Aparat Pengawasan Intern Pemerintah (APIP)",
+      "tanggalDitetapkan": "2020-11-15",
+      "status": "Berlaku",
+      "fileUrl": "#",
+      "ukuranFile": "1.9 MB"
+    },
+    {
+      "id": "reg-3",
+      "jenis": "Permendagri",
+      "nomor": "Nomor 88 Tahun 2022",
+      "tahun": "2022",
+      "tentang": "Pedoman Penyusunan Program Kerja Pengawasan Tahunan (PKPT) Kementerian Dalam Negeri",
+      "tanggalDitetapkan": "2022-10-18",
+      "status": "Berlaku",
+      "fileUrl": "#",
+      "ukuranFile": "3.4 MB"
+    },
+    {
+      "id": "reg-4",
+      "jenis": "Kepmendagri",
+      "nomor": "Nomor 700.1.2-125 Tahun 2026",
+      "tahun": "2026",
+      "tentang": "Program Kerja Pengawasan Tahunan (PKPT) Inspektorat Jenderal Kementerian Dalam Negeri Tahun Anggaran 2026",
+      "tanggalDitetapkan": "2026-01-05",
+      "status": "Berlaku",
+      "fileUrl": "#",
+      "ukuranFile": "4.1 MB"
+    },
+    {
+      "id": "reg-5",
+      "jenis": "Kepmendagri",
+      "nomor": "Nomor 700-452 Tahun 2025",
+      "tahun": "2025",
+      "tentang": "Petunjuk Teknis Evaluasi Kinerja Penjabat Kepala Daerah di Seluruh Wilayah Indonesia",
+      "tanggalDitetapkan": "2025-06-12",
+      "status": "Berlaku",
+      "fileUrl": "#",
+      "ukuranFile": "2.1 MB"
+    },
+    {
+      "id": "reg-6",
+      "jenis": "SE",
+      "nomor": "Nomor 700/1234/SJ",
+      "tahun": "2026",
+      "tentang": "Surat Edaran Pencegahan Tindak Pidana Korupsi dan Pengendalian Gratifikasi pada Hari Raya Keagamaan",
+      "tanggalDitetapkan": "2026-03-10",
+      "status": "Berlaku",
+      "fileUrl": "#",
+      "ukuranFile": "850 KB"
+    },
+    {
+      "id": "reg-7",
+      "jenis": "SE",
+      "nomor": "Nomor 800.1.6/2045/SJ",
+      "tahun": "2026",
+      "tentang": "Surat Edaran Netralitas Aparatur Sipil Negara (ASN) dalam Penyelenggaraan Pemerintahan dan Pelayanan Publik",
+      "tanggalDitetapkan": "2026-05-18",
+      "status": "Berlaku",
+      "fileUrl": "#",
+      "ukuranFile": "1.2 MB"
+    },
+    {
+      "id": "reg-8",
+      "jenis": "SE",
+      "nomor": "Nomor 700/3102/IJ",
+      "tahun": "2026",
+      "tentang": "Penguatan Pengawasan Intern Berbasis Risiko (Risk-Based Internal Auditing) di Lingkungan Pemerintah Daerah",
+      "tanggalDitetapkan": "2026-07-22",
+      "status": "Berlaku",
+      "fileUrl": "#",
+      "ukuranFile": "950 KB"
+    }
+  ],
+  "services": {
+    "informasiPublik": [
+      {
+        "id": "infopub-1",
+        "kode": "IHP",
+        "judul": "Ikhtisar Hasil Pengawasan (IHP) Semesteran",
+        "periode": "Tahun 2026",
+        "deskripsi": "Ringkasan eksekutif hasil audit, reviu, dan pemantauan tindak lanjut pengawasan atas kepatuhan serta kinerja entitas di lingkungan Kemendagri dan pemda.",
+        "fileUrl": "#",
+        "fileSize": "5.2 MB"
+      },
+      {
+        "id": "infopub-2",
+        "kode": "Renstra",
+        "judul": "Rencana Strategis (Renstra) Itjen Kemendagri 2025 - 2029",
+        "periode": "2025 - 2029",
+        "deskripsi": "Dokumen panduan arah kebijakan, sasaran strategis, dan indikator kinerja utama pengawasan lima tahunan.",
+        "fileUrl": "#",
+        "fileSize": "8.4 MB"
+      },
+      {
+        "id": "infopub-3",
+        "kode": "Renja",
+        "judul": "Rencana Kerja (Renja) Itjen Kemendagri Tahun 2026",
+        "periode": "Tahun 2026",
+        "deskripsi": "Rencana operasional program, kegiatan, dan alokasi anggaran pengawasan tahun berjalan.",
+        "fileUrl": "#",
+        "fileSize": "4.7 MB"
+      },
+      {
+        "id": "infopub-4",
+        "kode": "RKP",
+        "judul": "Rencana Kerja Pengawasan (RKP) Nasional",
+        "periode": "Tahun 2026",
+        "deskripsi": "Rencana terintegrasi pelaksanaan pengawasan umum dan teknis urusan pemerintahan daerah.",
+        "fileUrl": "#",
+        "fileSize": "3.9 MB"
+      }
+    ],
+    "layananPublik": [
+      {
+        "id": "lay-1",
+        "kode": "SIOLA",
+        "nama": "Siola",
+        "deskripsi": "Sistem Informasi Online Layanan Administrasi Kementerian Dalam Negeri.",
+        "url": "https://siola.kemendagri.go.id",
+        "kategori": "Administrasi",
+        "badge": "Resmi Kemendagri"
+      },
+      {
+        "id": "lay-2",
+        "kode": "SP4N",
+        "nama": "SP4N LAPOR!",
+        "deskripsi": "Sistem Pengelolaan Pengaduan Pelayanan Publik Nasional terintegrasi.",
+        "url": "https://www.lapor.go.id",
+        "kategori": "Pengaduan",
+        "badge": "Nasional"
+      },
+      {
+        "id": "lay-3",
+        "kode": "PPID",
+        "nama": "PPID Kemendagri",
+        "deskripsi": "Pejabat Pengelola Informasi dan Dokumentasi untuk permohonan informasi publik.",
+        "url": "https://ppid.kemendagri.go.id",
+        "kategori": "Transparansi",
+        "badge": "Keterbukaan Informasi"
+      },
+      {
+        "id": "lay-4",
+        "kode": "SIPD",
+        "nama": "SIPD RI",
+        "deskripsi": "Sistem Informasi Pemerintahan Daerah menyatukan perencanaan dan penganggaran daerah.",
+        "url": "https://sipd.kemendagri.go.id",
+        "kategori": "Keuangan & Perencanaan",
+        "badge": "Platform Inti"
+      },
+      {
+        "id": "lay-5",
+        "kode": "SIWASIAT",
+        "nama": "Siwasiat",
+        "deskripsi": "Sistem Informasi Pengawasan Inspektorat untuk pemantauan tindak lanjut LHP.",
+        "url": "https://siwasiat.kemendagri.go.id",
+        "kategori": "Pengawasan Intern",
+        "badge": "Internal APIP"
+      },
+      {
+        "id": "lay-6",
+        "kode": "PPUPD",
+        "nama": "Aplikasi PPUPD",
+        "deskripsi": "Sistem Manajemen Kinerja Pengawas Penyelenggaraan Urusan Pemerintahan Daerah.",
+        "url": "https://ppupd.kemendagri.go.id",
+        "kategori": "Jabatan Fungsional",
+        "badge": "Pembinaan APIP"
+      },
+      {
+        "id": "lay-7",
+        "kode": "EREVIU",
+        "nama": "E-Reviu",
+        "deskripsi": "Sistem digital pendampingan reviu RKPD dan KUA-PPAS APBD Pemerintah Daerah.",
+        "url": "https://ereviu.kemendagri.go.id",
+        "kategori": "Reviu Dokumen",
+        "badge": "Asistensi Pemda"
+      },
+      {
+        "id": "lay-8",
+        "kode": "SICUKUP",
+        "nama": "Si Cukup",
+        "deskripsi": "Sistem Informasi Cek Uji Kepatuhan & Mitigasi Risiko Pengendalian Intern.",
+        "url": "https://sicukup.kemendagri.go.id",
+        "kategori": "Kepatuhan",
+        "badge": "Manajemen Risiko"
+      }
+    ],
+    "wbs": {
+      "url": "https://otda.kemendagri.go.id/layananwbs",
+      "deskripsi": "Whistleblowing System (WBS) adalah sarana pelaporan bagi pegawai maupun masyarakat yang mengetahui adanya dugaan tindak pidana korupsi, penyalahgunaan wewenang, gratifikasi, atau pelanggaran disiplin di lingkungan Kementerian Dalam Negeri dan Pemerintah Daerah.",
+      "prinsip": [
+        "Kerahasiaan Identitas: Nama dan data pelapor dijamin aman serta dirahasiakan sepenuhnya.",
+        "Perlindungan Hukum: Pelapor mendapatkan jaminan perlindungan dari ancaman dan diskriminasi kedinasan.",
+        "Objektivitas & Profesional: Setiap aduan ditelaah oleh Tim Inspektorat Khusus berdasarkan kecukupan bukti permulaan (4W + 1H)."
+      ]
+    }
+  },
+  "ratings": [
+    {
+      "id": "rate-1791789908876",
+      "tanggal": "2026-10-12",
+      "rating": 5,
+      "nama": "Flau",
+      "instansi": "anonim",
+      "ulasan": "sangat membantu"
+    },
+    {
+      "id": "rate-1791727454664",
+      "nama": "Uji Coba Otomatis",
+      "instansi": "Auditor Itjen Kemendagri",
+      "rating": 5,
+      "ulasan": "Sistem pengujian otomatis berjalan lancar dan responsif.",
+      "tanggal": "2026-10-11"
+    },
+    {
+      "id": "rate-1",
+      "nama": "Ahmad Faisal, S.IP.",
+      "instansi": "Inspektorat Daerah Provinsi Jawa Barat",
+      "rating": 5,
+      "ulasan": "Portal resmi Itjen Kemendagri sangat informatif, memudahkan pencarian Permendagri pengawasan terbaru serta pemantauan tindak lanjut LHP.",
+      "tanggal": "2026-10-09"
+    },
+    {
+      "id": "rate-2",
+      "nama": "Dewi Lestari",
+      "instansi": "Masyarakat Umum (Pemerhati Kebijakan)",
+      "rating": 5,
+      "ulasan": "Tampilan website modern, bersih, dan navigasi layanan pengaduan WBS sangat jelas dan transparan. Sukses selalu Humas Itjen Kemendagri!",
+      "tanggal": "2026-10-08"
+    },
+    {
+      "id": "rate-3",
+      "nama": "Bambang Sudiro, M.M.",
+      "instansi": "Bappeda Kabupaten Klaten",
+      "rating": 4,
+      "ulasan": "Sangat membantu dalam mengunduh regulasi pedoman reviu RKA dan pengawasan APBD. Aksesnya cepat dan responsif.",
+      "tanggal": "2026-10-05"
+    }
+  ],
+  "skmResponses": [
+    {
+      "id": "skm-1",
+      "nama": "Rian Hidayat",
+      "instansi": "Inspektorat Kabupaten Bogor",
+      "kemudahanAkses": 5,
+      "kejelasanInformasi": 5,
+      "kecepatanLayanan": 4,
+      "kualitasLayanan": 5,
+      "saran": "Tingkatkan integrasi notifikasi whatsapp untuk tindak lanjut konsultasi APIP.",
+      "tanggal": "2026-10-09"
+    },
+    {
+      "id": "skm-2",
+      "nama": "Siti Rahmawati",
+      "instansi": "Pemerintah Kota Surabaya",
+      "kemudahanAkses": 5,
+      "kejelasanInformasi": 5,
+      "kecepatanLayanan": 5,
+      "kualitasLayanan": 5,
+      "saran": "Sangat memuaskan, tampilan visualnya elegan dan informatif.",
+      "tanggal": "2026-10-07"
+    }
+  ]
+}
