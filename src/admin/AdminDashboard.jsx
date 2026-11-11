@@ -35,7 +35,8 @@ import {
   Target,
   Award,
   FileCheck,
-  Landmark
+  Landmark,
+  Download
 } from 'lucide-react';
 import { 
   createNews, updateNews, deleteNews,
@@ -48,6 +49,8 @@ import {
   uploadFile,
   updateProfile
 } from '../api';
+import DocumentPreviewModal from '../components/DocumentPreviewModal';
+import { downloadDocument, formatFileSize, isDocumentAvailable } from '../utils/documentHelper';
 
 export default function AdminDashboard({ 
   dbData, 
@@ -69,6 +72,7 @@ export default function AdminDashboard({
   const [currentEntity, setCurrentEntity] = useState(null);
   const [formData, setFormData] = useState({});
   const [uploading, setUploading] = useState(false);
+  const [previewDoc, setPreviewDoc] = useState(null);
 
   // Profile management states
   const [profileSubTab, setProfileSubTab] = useState('visi-misi');
@@ -129,19 +133,29 @@ export default function AdminDashboard({
     setTimeout(() => setNotification(''), 4000);
   };
 
-  const handleFileUpload = async (e, fieldName) => {
-    const file = e.target.files[0];
+  const handleFileUpload = async (e, fieldName, options = {}) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
     try {
       const res = await uploadFile(file);
       if (res.success) {
-        setFormData(prev => ({ ...prev, [fieldName]: res.url }));
-        showToast('File berhasil diunggah: ' + res.filename);
+        const readableSize = formatFileSize(res.size || file.size);
+        setFormData(prev => {
+          const next = { ...prev, [fieldName]: res.url };
+          if (options.sizeField && readableSize) {
+            next[options.sizeField] = readableSize;
+          }
+          if (options.nameField && (res.originalName || res.filename || file.name)) {
+            next[options.nameField] = res.originalName || res.filename || file.name;
+          }
+          return next;
+        });
+        showToast('File berhasil diunggah: ' + (res.originalName || res.filename || file.name));
       }
     } catch (err) {
-      alert('Gagal mengunggah file. Pastikan server aktif.');
+      alert(err?.message || 'Gagal mengunggah file. Pastikan server aktif dan ukuran file sesuai.');
     } finally {
       setUploading(false);
     }
@@ -199,17 +213,32 @@ export default function AdminDashboard({
           tentang: '',
           tanggalDitetapkan: new Date().toISOString().split('T')[0],
           status: 'Berlaku',
-          ukuranFile: '2.5 MB'
+          fileUrl: '',
+          ukuranFile: ''
         });
       } else if (activeTab === 'layanan') {
-        setFormData({
-          section: 'layananPublik',
-          kode: '',
-          nama: '',
-          deskripsi: '',
-          url: 'https://',
-          kategori: 'Pengawasan'
-        });
+        const targetSection = entity?.section || 'layananPublik';
+        if (targetSection === 'informasiPublik') {
+          setFormData({
+            section: 'informasiPublik',
+            kode: '',
+            judul: '',
+            periode: 'Tahun 2026',
+            deskripsi: '',
+            fileUrl: '',
+            fileSize: ''
+          });
+        } else {
+          setFormData({
+            section: 'layananPublik',
+            kode: '',
+            nama: '',
+            deskripsi: '',
+            url: 'https://',
+            kategori: 'Pengawasan',
+            badge: 'Resmi Itjen'
+          });
+        }
       }
     }
     setIsModalOpen(true);
@@ -272,12 +301,32 @@ export default function AdminDashboard({
         }
       } else if (activeTab === 'layanan') {
         const section = formData.section || 'layananPublik';
-        if (modalMode === 'create') {
-          await createService(section, formData);
-          showToast('Layanan baru berhasil ditambahkan.');
+        let payload;
+        if (section === 'informasiPublik') {
+          payload = {
+            kode: formData.kode || '',
+            judul: formData.judul || formData.nama || '',
+            periode: formData.periode || 'Tahun 2026',
+            deskripsi: formData.deskripsi || '',
+            fileUrl: formData.fileUrl || formData.url || '',
+            fileSize: formData.fileSize || 'PDF'
+          };
         } else {
-          await updateService(section, currentEntity.id, formData);
-          showToast('Layanan berhasil diperbarui.');
+          payload = {
+            kode: formData.kode || '',
+            nama: formData.nama || formData.judul || '',
+            deskripsi: formData.deskripsi || '',
+            url: formData.url || formData.fileUrl || '',
+            kategori: formData.kategori || 'Pengawasan',
+            badge: formData.badge || formData.kategori || 'Resmi Kemendagri'
+          };
+        }
+        if (modalMode === 'create') {
+          await createService(section, payload);
+          showToast(section === 'informasiPublik' ? 'Dokumen Informasi Publik berhasil ditambahkan.' : 'Layanan baru berhasil ditambahkan.');
+        } else {
+          await updateService(section, currentEntity.id, payload);
+          showToast(section === 'informasiPublik' ? 'Dokumen Informasi Publik berhasil diperbarui.' : 'Layanan berhasil diperbarui.');
         }
       }
 
@@ -1696,7 +1745,7 @@ export default function AdminDashboard({
                   <h2 className="font-heading font-extrabold text-2xl text-[#063a69]">
                     Manajemen Regulasi & Produk Hukum
                   </h2>
-                  <p className="text-xs text-slate-500">Kelola Permendagri, Kepmendagri, dan Surat Edaran (SE).</p>
+                  <p className="text-xs text-slate-500">Kelola Permendagri, Kepmendagri, Surat Edaran (SE), dan unggah dokumen salinan resmi.</p>
                 </div>
 
                 <button
@@ -1708,6 +1757,18 @@ export default function AdminDashboard({
                 </button>
               </div>
 
+              {/* Search Bar Regulasi */}
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Cari nomor peraturan, jenis, tahun, atau tentang..."
+                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063a69]"
+                />
+              </div>
+
               <div className="overflow-x-auto border border-slate-200 rounded-2xl shadow-xs">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-50 text-slate-700 font-heading font-bold border-b border-slate-200">
@@ -1716,40 +1777,82 @@ export default function AdminDashboard({
                       <th className="p-3.5">Nomor Peraturan</th>
                       <th className="p-3.5">Tahun</th>
                       <th className="p-3.5">Tentang / Perihal</th>
+                      <th className="p-3.5">Dokumen Resmi</th>
                       <th className="p-3.5">Status</th>
                       <th className="p-3.5 text-right">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {(dbData?.regulations || []).map((r) => (
-                      <tr key={r.id} className="hover:bg-slate-50/80">
-                        <td className="p-3.5 font-bold text-[#063a69]">{r.jenis}</td>
-                        <td className="p-3.5 font-bold text-slate-800">{r.nomor}</td>
-                        <td className="p-3.5 text-slate-500">{r.tahun}</td>
-                        <td className="p-3.5 text-slate-700 max-w-xs truncate">{r.tentang}</td>
-                        <td className="p-3.5">
-                          <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-bold">
-                            {r.status || 'Berlaku'}
-                          </span>
-                        </td>
-                        <td className="p-3.5 text-right whitespace-nowrap space-x-2">
-                          <button
-                            onClick={() => openModal('edit', r)}
-                            className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
-                            title="Edit"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete('regulasi', r.id)}
-                            className="p-1.5 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg"
-                            title="Hapus"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {(dbData?.regulations || [])
+                      .filter(r => !searchTerm || r.nomor?.toLowerCase().includes(searchTerm.toLowerCase()) || r.tentang?.toLowerCase().includes(searchTerm.toLowerCase()) || r.jenis?.toLowerCase().includes(searchTerm.toLowerCase()) || String(r.tahun).includes(searchTerm))
+                      .map((r) => {
+                        const hasFile = isDocumentAvailable(r.fileUrl || r.url);
+                        return (
+                          <tr key={r.id} className="hover:bg-slate-50/80">
+                            <td className="p-3.5 font-bold text-[#063a69] whitespace-nowrap">{r.jenis}</td>
+                            <td className="p-3.5 font-bold text-slate-800 whitespace-nowrap">{r.nomor}</td>
+                            <td className="p-3.5 text-slate-500">{r.tahun}</td>
+                            <td className="p-3.5 text-slate-700 max-w-xs truncate" title={r.tentang}>{r.tentang}</td>
+                            <td className="p-3.5 whitespace-nowrap">
+                              {hasFile ? (
+                                <div className="flex items-center space-x-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => setPreviewDoc({
+                                      ...r,
+                                      title: r.tentang || r.nomor,
+                                      subtitle: `${r.jenis} ${r.nomor}`.trim(),
+                                      fileUrl: r.fileUrl || r.url,
+                                      ukuranFile: r.ukuranFile,
+                                      tanggalDitetapkan: r.tanggalDitetapkan,
+                                      downloadName: `${r.jenis}-${r.nomor}`
+                                    })}
+                                    className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-[#063a69] rounded text-[11px] font-semibold inline-flex items-center space-x-1"
+                                    title="Buka dokumen tanpa mengunduh"
+                                  >
+                                    <Eye className="w-3 h-3 text-[#d48f05]" />
+                                    <span>Buka</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => downloadDocument(r.fileUrl || r.url, `${r.jenis}-${r.nomor}`)}
+                                    className="px-2 py-1 bg-[#063a69]/10 hover:bg-[#063a69]/20 text-[#063a69] rounded text-[11px] font-semibold inline-flex items-center space-x-1"
+                                    title="Unduh file dokumen"
+                                  >
+                                    <Download className="w-3 h-3" />
+                                    <span>{r.ukuranFile || 'Unduh'}</span>
+                                  </button>
+                                </div>
+                              ) : (
+                                <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded font-semibold">
+                                  Belum ada file
+                                </span>
+                              )}
+                            </td>
+                            <td className="p-3.5">
+                              <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-bold">
+                                {r.status || 'Berlaku'}
+                              </span>
+                            </td>
+                            <td className="p-3.5 text-right whitespace-nowrap space-x-1.5">
+                              <button
+                                onClick={() => openModal('edit', r)}
+                                className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
+                                title="Edit Regulasi & Dokumen"
+                              >
+                                <Edit3 className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete('regulasi', r.id)}
+                                className="p-1.5 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                                title="Hapus"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </table>
               </div>
@@ -1764,20 +1867,121 @@ export default function AdminDashboard({
                   <h2 className="font-heading font-extrabold text-2xl text-[#063a69]">
                     Manajemen Layanan & Informasi Publik
                   </h2>
-                  <p className="text-xs text-slate-500">Kelola IHP, Renstra, Renja, RKP, Aplikasi Publik Siola/SP4N/SIPD, dan Konfigurasi WBS.</p>
+                  <p className="text-xs text-slate-500">Kelola dokumen resmi Informasi Publik (IHP, Renstra, Renja, RKP) serta portal Aplikasi Layanan Publik.</p>
                 </div>
 
-                <button
-                  onClick={() => openModal('create')}
-                  className="px-4 py-2.5 bg-[#063a69] hover:bg-[#042646] text-white text-xs font-heading font-bold uppercase rounded-xl flex items-center space-x-2 shadow-sm"
-                >
-                  <Plus className="w-4 h-4 text-[#fbae17]" />
-                  <span>Tambah Item Layanan</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => openModal('create', { section: 'informasiPublik' })}
+                    className="px-4 py-2.5 bg-[#fbae17] hover:bg-[#fec34d] text-[#063a69] text-xs font-heading font-bold uppercase rounded-xl flex items-center space-x-2 shadow-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Tambah Dokumen Info Publik</span>
+                  </button>
+
+                  <button
+                    onClick={() => openModal('create', { section: 'layananPublik' })}
+                    className="px-4 py-2.5 bg-[#063a69] hover:bg-[#042646] text-white text-xs font-heading font-bold uppercase rounded-xl flex items-center space-x-2 shadow-sm"
+                  >
+                    <Plus className="w-4 h-4 text-[#fbae17]" />
+                    <span>Tambah Aplikasi Layanan</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Dokumen Info Publik */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="font-heading font-bold text-xs uppercase text-slate-500">
+                    Dokumen Informasi Publik (Dapat Dibuka & Diunduh Publik):
+                  </div>
+                  <span className="text-[11px] font-semibold text-slate-500">
+                    Total: {(dbData?.services?.informasiPublik || []).length} dokumen
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  {(dbData?.services?.informasiPublik || []).map((inf) => {
+                    const hasFile = isDocumentAvailable(inf.fileUrl || inf.url);
+                    return (
+                      <div key={inf.id} className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start justify-between gap-3 shadow-2xs hover:border-[#fbae17] transition-colors">
+                        <div className="space-y-1.5 min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="px-2 py-0.5 rounded bg-[#063a69] text-[#fbae17] text-[10px] font-bold uppercase">
+                              {inf.kode || 'DOK'}
+                            </span>
+                            <span className="text-[11px] text-slate-500 font-medium">
+                              {inf.periode} &bull; {inf.fileSize || 'PDF'}
+                            </span>
+                            {hasFile ? (
+                              <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-semibold">
+                                File Resmi Tersedia
+                              </span>
+                            ) : (
+                              <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded font-semibold">
+                                Belum ada file
+                              </span>
+                            )}
+                          </div>
+                          <div className="font-heading font-bold text-xs text-[#063a69]">{inf.judul || inf.nama}</div>
+                          {inf.deskripsi && (
+                            <p className="text-[11px] text-slate-500 line-clamp-2">{inf.deskripsi}</p>
+                          )}
+                        </div>
+
+                        <div className="flex items-center space-x-1 flex-shrink-0">
+                          {hasFile && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => setPreviewDoc({
+                                  ...inf,
+                                  title: inf.judul || inf.nama,
+                                  subtitle: inf.kode || 'Informasi Publik',
+                                  fileUrl: inf.fileUrl || inf.url,
+                                  fileSize: inf.fileSize,
+                                  periode: inf.periode,
+                                  downloadName: `${inf.kode || 'Dokumen'}-${inf.judul || inf.nama || inf.id}`
+                                })}
+                                className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
+                                title="Buka Dokumen"
+                              >
+                                <Eye className="w-4 h-4 text-[#d48f05]" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => downloadDocument(inf.fileUrl || inf.url, `${inf.kode || 'Dokumen'}-${inf.judul || inf.nama || inf.id}`)}
+                                className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
+                                title="Unduh Dokumen"
+                              >
+                                <Download className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => openModal('edit', { ...inf, section: 'informasiPublik' })}
+                            className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
+                            title="Edit Dokumen Informasi Publik"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete('layanan', inf.id, 'informasiPublik')}
+                            className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                            title="Hapus"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Layanan Publik List */}
-              <div className="space-y-3">
+              <div className="space-y-3 pt-4 border-t border-slate-100">
                 <div className="font-heading font-bold text-xs uppercase text-slate-400">Daftar Aplikasi & Layanan Publik:</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {(dbData?.services?.layananPublik || []).map((lay) => (
@@ -1802,28 +2006,6 @@ export default function AdminDashboard({
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Dokumen Info Publik */}
-              <div className="space-y-3 pt-4 border-t border-slate-100">
-                <div className="font-heading font-bold text-xs uppercase text-slate-400">Dokumen Informasi Publik:</div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(dbData?.services?.informasiPublik || []).map((inf) => (
-                    <div key={inf.id} className="p-4 bg-slate-50 border rounded-2xl flex items-center justify-between gap-3 shadow-2xs">
-                      <div>
-                        <div className="font-heading font-bold text-xs text-[#063a69]">{inf.kode} - {inf.judul}</div>
-                        <div className="text-[11px] text-slate-500">{inf.periode} &bull; {inf.fileSize}</div>
-                      </div>
-                      <button
-                        onClick={() => handleDelete('layanan', inf.id, 'informasiPublik')}
-                        className="p-1.5 text-slate-500 hover:text-red-600 rounded-lg"
-                        title="Hapus"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -2254,7 +2436,7 @@ export default function AdminDashboard({
               {/* FORM UNTUK REGULASI */}
               {activeTab === 'regulasi' && (
                 <>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                       <label className="block font-bold text-slate-700 uppercase mb-1">Jenis Peraturan *</label>
                       <select
@@ -2298,12 +2480,23 @@ export default function AdminDashboard({
                       rows={3}
                       value={formData.tentang || ''}
                       onChange={(e) => setFormData({ ...formData, tentang: e.target.value })}
+                      placeholder="Tuliskan perihal peraturan atau surat edaran..."
                       className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
                       required
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block font-bold text-slate-700 uppercase mb-1">Tanggal Ditetapkan</label>
+                      <input
+                        type="date"
+                        value={formData.tanggalDitetapkan || ''}
+                        onChange={(e) => setFormData({ ...formData, tanggalDitetapkan: e.target.value })}
+                        className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                      />
+                    </div>
+
                     <div>
                       <label className="block font-bold text-slate-700 uppercase mb-1">Status</label>
                       <input
@@ -2318,10 +2511,70 @@ export default function AdminDashboard({
                       <label className="block font-bold text-slate-700 uppercase mb-1">Ukuran File</label>
                       <input
                         type="text"
-                        value={formData.ukuranFile || '2.5 MB'}
+                        value={formData.ukuranFile || ''}
                         onChange={(e) => setFormData({ ...formData, ukuranFile: e.target.value })}
+                        placeholder="Contoh: 1.5 MB"
                         className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
                       />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 uppercase mb-1">
+                      Dokumen Resmi / Surat (Unggah PDF/Word/Scan atau URL)
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={(formData.fileUrl || '').startsWith('data:') ? `[File terunggah: ${formData.namaFile || 'Dokumen Resmi'}]` : (formData.fileUrl || '')}
+                        onChange={(e) => setFormData({ ...formData, fileUrl: e.target.value })}
+                        placeholder="/documents/... atau https://... atau klik Unggah File"
+                        readOnly={(formData.fileUrl || '').startsWith('data:')}
+                        className="flex-1 p-2.5 border rounded-xl bg-slate-50 text-xs"
+                      />
+                      <label className="px-3.5 py-2 bg-[#fbae17] hover:bg-[#fec34d] text-[#063a69] font-bold rounded-xl cursor-pointer flex items-center space-x-1.5 whitespace-nowrap">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>{uploading ? 'Mengunggah...' : 'Unggah File'}</span>
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*"
+                          className="hidden"
+                          onChange={(e) => handleFileUpload(e, 'fileUrl', { sizeField: 'ukuranFile', nameField: 'namaFile' })}
+                        />
+                      </label>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
+                      <span className="text-[11px] text-slate-500">
+                        Mendukung PDF, DOC/DOCX, XLS/XLSX, atau scan surat (JPG/PNG).
+                      </span>
+                      {isDocumentAvailable(formData.fileUrl) && (
+                        <div className="flex items-center space-x-2">
+                          <button
+                            type="button"
+                            onClick={() => setPreviewDoc({
+                              title: formData.tentang || formData.nomor || 'Pratinjau Regulasi',
+                              subtitle: `${formData.jenis || ''} ${formData.nomor || ''}`.trim(),
+                              fileUrl: formData.fileUrl,
+                              ukuranFile: formData.ukuranFile,
+                              tanggalDitetapkan: formData.tanggalDitetapkan,
+                              downloadName: `${formData.jenis || 'Regulasi'}-${formData.nomor || 'Dokumen'}`
+                            })}
+                            className="text-[11px] font-bold text-[#063a69] hover:underline flex items-center space-x-1"
+                          >
+                            <Eye className="w-3.5 h-3.5 text-[#d48f05]" />
+                            <span>Pratinjau Dokumen</span>
+                          </button>
+                          {(formData.fileUrl || '').startsWith('data:') && (
+                            <button
+                              type="button"
+                              onClick={() => setFormData({ ...formData, fileUrl: '', namaFile: '' })}
+                              className="text-[11px] font-semibold text-red-600 hover:underline"
+                            >
+                              Hapus Lampiran
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </>
@@ -2330,61 +2583,205 @@ export default function AdminDashboard({
               {/* FORM UNTUK LAYANAN */}
               {activeTab === 'layanan' && (
                 <>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block font-bold text-slate-700 uppercase mb-1">Bagian Layanan *</label>
                       <select
                         value={formData.section || 'layananPublik'}
                         onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                        className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                        disabled={modalMode === 'edit'}
+                        className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs font-semibold disabled:opacity-75"
                       >
-                        <option value="layananPublik">Layanan Publik (Aplikasi)</option>
-                        <option value="informasiPublik">Informasi Publik (Dokumen)</option>
+                        <option value="informasiPublik">Informasi Publik (Dokumen Resmi)</option>
+                        <option value="layananPublik">Layanan Publik (Aplikasi Digital)</option>
                       </select>
                     </div>
 
                     <div>
-                      <label className="block font-bold text-slate-700 uppercase mb-1">Kode Singkat</label>
+                      <label className="block font-bold text-slate-700 uppercase mb-1">Kode Singkat *</label>
                       <input
                         type="text"
                         value={formData.kode || ''}
                         onChange={(e) => setFormData({ ...formData, kode: e.target.value })}
-                        placeholder="Contoh: SIOLA / IHP"
+                        placeholder={formData.section === 'informasiPublik' ? 'Contoh: IHP / Renstra / LKjIP' : 'Contoh: SIOLA / SP4N'}
                         className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                        required
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block font-bold text-slate-700 uppercase mb-1">Nama Layanan / Dokumen *</label>
-                    <input
-                      type="text"
-                      value={formData.nama || formData.judul || ''}
-                      onChange={(e) => setFormData({ ...formData, nama: e.target.value, judul: e.target.value })}
-                      className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
-                      required
-                    />
-                  </div>
+                  {formData.section === 'informasiPublik' ? (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="sm:col-span-2">
+                          <label className="block font-bold text-slate-700 uppercase mb-1">Judul Dokumen Informasi Publik *</label>
+                          <input
+                            type="text"
+                            value={formData.judul || formData.nama || ''}
+                            onChange={(e) => setFormData({ ...formData, judul: e.target.value, nama: e.target.value })}
+                            placeholder="Contoh: Ikhtisar Hasil Pengawasan (IHP) Semesteran"
+                            className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs font-semibold"
+                            required
+                          />
+                        </div>
 
-                  <div>
-                    <label className="block font-bold text-slate-700 uppercase mb-1">URL Akses / Tautan</label>
-                    <input
-                      type="text"
-                      value={formData.url || formData.fileUrl || ''}
-                      onChange={(e) => setFormData({ ...formData, url: e.target.value, fileUrl: e.target.value })}
-                      className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
-                    />
-                  </div>
+                        <div>
+                          <label className="block font-bold text-slate-700 uppercase mb-1">Periode / Tahun *</label>
+                          <input
+                            type="text"
+                            value={formData.periode || ''}
+                            onChange={(e) => setFormData({ ...formData, periode: e.target.value })}
+                            placeholder="Tahun 2026"
+                            className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                            required
+                          />
+                        </div>
+                      </div>
 
-                  <div>
-                    <label className="block font-bold text-slate-700 uppercase mb-1">Deskripsi Singkat</label>
-                    <textarea
-                      rows={3}
-                      value={formData.deskripsi || ''}
-                      onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
-                      className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
-                    />
-                  </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="sm:col-span-2">
+                          <label className="block font-bold text-slate-700 uppercase mb-1">
+                            Dokumen Resmi / Surat (Unggah PDF/Word/Excel atau URL)
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={(formData.fileUrl || '').startsWith('data:') ? `[File terunggah: ${formData.fileName || 'Dokumen Informasi Publik'}]` : (formData.fileUrl || formData.url || '')}
+                              onChange={(e) => setFormData({ ...formData, fileUrl: e.target.value, url: e.target.value })}
+                              placeholder="/documents/... atau https://... atau klik Unggah File"
+                              readOnly={(formData.fileUrl || '').startsWith('data:')}
+                              className="flex-1 p-2.5 border rounded-xl bg-slate-50 text-xs"
+                            />
+                            <label className="px-3.5 py-2 bg-[#fbae17] hover:bg-[#fec34d] text-[#063a69] font-bold rounded-xl cursor-pointer flex items-center space-x-1.5 whitespace-nowrap">
+                              <Upload className="w-3.5 h-3.5" />
+                              <span>{uploading ? 'Mengunggah...' : 'Unggah File'}</span>
+                              <input
+                                type="file"
+                                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*"
+                                className="hidden"
+                                onChange={(e) => handleFileUpload(e, 'fileUrl', { sizeField: 'fileSize', nameField: 'fileName' })}
+                              />
+                            </label>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-slate-700 uppercase mb-1">Ukuran File</label>
+                          <input
+                            type="text"
+                            value={formData.fileSize || ''}
+                            onChange={(e) => setFormData({ ...formData, fileSize: e.target.value })}
+                            placeholder="Contoh: 2.4 MB"
+                            className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      {isDocumentAvailable(formData.fileUrl || formData.url) && (
+                        <div className="flex items-center justify-between bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl">
+                          <span className="text-[11px] font-semibold text-emerald-700 flex items-center space-x-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>Dokumen terlampir siap dibuka & diunduh publik.</span>
+                          </span>
+                          <div className="flex items-center space-x-3">
+                            <button
+                              type="button"
+                              onClick={() => setPreviewDoc({
+                                title: formData.judul || formData.nama || 'Pratinjau Dokumen',
+                                subtitle: formData.kode || 'Informasi Publik',
+                                fileUrl: formData.fileUrl || formData.url,
+                                fileSize: formData.fileSize,
+                                periode: formData.periode,
+                                downloadName: `${formData.kode || 'Dokumen'}-${formData.judul || 'InfoPublik'}`
+                              })}
+                              className="text-[11px] font-bold text-[#063a69] hover:underline flex items-center space-x-1"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-[#d48f05]" />
+                              <span>Pratinjau</span>
+                            </button>
+                            {(formData.fileUrl || '').startsWith('data:') && (
+                              <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, fileUrl: '', url: '', fileName: '' })}
+                                className="text-[11px] font-semibold text-red-600 hover:underline"
+                              >
+                                Hapus File
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="block font-bold text-slate-700 uppercase mb-1">Deskripsi Dokumen</label>
+                        <textarea
+                          rows={3}
+                          value={formData.deskripsi || ''}
+                          onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
+                          placeholder="Ringkasan isi atau fungsi dokumen informasi publik..."
+                          className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <label className="block font-bold text-slate-700 uppercase mb-1">Nama Aplikasi Layanan *</label>
+                        <input
+                          type="text"
+                          value={formData.nama || formData.judul || ''}
+                          onChange={(e) => setFormData({ ...formData, nama: e.target.value, judul: e.target.value })}
+                          className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                          required
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block font-bold text-slate-700 uppercase mb-1">Kategori</label>
+                          <input
+                            type="text"
+                            value={formData.kategori || ''}
+                            onChange={(e) => setFormData({ ...formData, kategori: e.target.value })}
+                            placeholder="Pengawasan Intern"
+                            className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-bold text-slate-700 uppercase mb-1">Label Badge</label>
+                          <input
+                            type="text"
+                            value={formData.badge || ''}
+                            onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                            placeholder="Resmi Kemendagri"
+                            className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-slate-700 uppercase mb-1">URL Portal / Tautan Aplikasi *</label>
+                        <input
+                          type="text"
+                          value={formData.url || formData.fileUrl || ''}
+                          onChange={(e) => setFormData({ ...formData, url: e.target.value, fileUrl: e.target.value })}
+                          placeholder="https://..."
+                          className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-slate-700 uppercase mb-1">Deskripsi Singkat</label>
+                        <textarea
+                          rows={3}
+                          value={formData.deskripsi || ''}
+                          onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
+                          className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                        />
+                      </div>
+                    </>
+                  )}
                 </>
               )}
 
@@ -2410,6 +2807,12 @@ export default function AdminDashboard({
           </div>
         </div>
       )}
+
+      {/* Modal Pratinjau Dokumen untuk Admin */}
+      <DocumentPreviewModal
+        docItem={previewDoc}
+        onClose={() => setPreviewDoc(null)}
+      />
     </div>
   );
 }

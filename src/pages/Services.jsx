@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FileText, 
   Globe2, 
   Shield, 
   ExternalLink, 
   Download, 
+  Eye,
   Star, 
   CheckCircle2, 
   Building2, 
@@ -16,6 +17,8 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { submitSkm } from '../api';
+import DocumentPreviewModal from '../components/DocumentPreviewModal';
+import { downloadDocument, isDocumentAvailable } from '../utils/documentHelper';
 
 export default function Services({ dbData, activeSubPage, setActiveSubPage, onRefreshData }) {
   const servicesData = dbData?.services || { informasiPublik: [], layananPublik: [], wbs: {} };
@@ -23,15 +26,22 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
   const layananPublik = servicesData.layananPublik || [];
   const wbsInfo = servicesData.wbs || {};
 
-  const initialTab = activeSubPage === 'layanan-publik'
-    ? 'layanan-publik'
-    : activeSubPage === 'layanan-skm'
-    ? 'layanan-skm'
-    : activeSubPage === 'layanan-wbs'
-    ? 'layanan-wbs'
-    : 'informasi-publik';
+  const getTabFromSubPage = (subPage) => (
+    subPage === 'layanan-publik'
+      ? 'layanan-publik'
+      : subPage === 'layanan-skm'
+      ? 'layanan-skm'
+      : subPage === 'layanan-wbs'
+      ? 'layanan-wbs'
+      : 'informasi-publik'
+  );
 
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState(getTabFromSubPage(activeSubPage));
+  const [previewDoc, setPreviewDoc] = useState(null);
+
+  useEffect(() => {
+    setActiveTab(getTabFromSubPage(activeSubPage));
+  }, [activeSubPage]);
 
   // SKM Form State
   const [skmNama, setSkmNama] = useState('');
@@ -172,7 +182,7 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
                   </div>
 
                   <h4 className="font-heading font-bold text-base text-[#063a69]">
-                    {item.judul}
+                    {item.judul || item.nama}
                   </h4>
 
                   <p className="text-xs text-slate-600 leading-relaxed text-justify">
@@ -180,17 +190,56 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
                   <span className="text-[11px] text-slate-400">
                     Ukuran: {item.fileSize || 'PDF'}
                   </span>
-                  <button
-                    onClick={() => alert(`Mengunduh salinan resmi: ${item.judul}`)}
-                    className="px-4 py-2 bg-[#063a69] hover:bg-[#042646] text-white rounded-lg text-xs font-bold uppercase tracking-wider flex items-center space-x-1.5 transition-colors"
-                  >
-                    <Download className="w-3.5 h-3.5 text-[#fbae17]" />
-                    <span>Unduh Dokumen</span>
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const url = item.fileUrl || item.url || '';
+                        setPreviewDoc({
+                          ...item,
+                          title: item.judul || item.nama,
+                          subtitle: item.kode || 'Informasi Publik',
+                          fileUrl: url,
+                          fileSize: item.fileSize,
+                          periode: item.periode,
+                          downloadName: `${item.kode || 'Dokumen'}-${item.judul || item.nama || item.id}`
+                        });
+                      }}
+                      className="px-3.5 py-2 bg-white hover:bg-[#f4f2ee] text-[#063a69] border border-[#063a69] rounded-lg text-xs font-bold uppercase tracking-wider flex items-center space-x-1.5 transition-colors"
+                      title="Buka dan baca dokumen langsung tanpa mengunduh"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-[#d48f05]" />
+                      <span>Buka Dokumen</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const url = item.fileUrl || item.url || '';
+                        if (!isDocumentAvailable(url)) {
+                          setPreviewDoc({
+                            ...item,
+                            title: item.judul || item.nama,
+                            subtitle: item.kode || 'Informasi Publik',
+                            fileUrl: url,
+                            fileSize: item.fileSize,
+                            periode: item.periode
+                          });
+                          return;
+                        }
+                        await downloadDocument(url, `${item.kode || 'Dokumen'}-${item.judul || item.nama || item.id}`);
+                      }}
+                      className="px-3.5 py-2 bg-[#063a69] hover:bg-[#042646] text-white rounded-lg text-xs font-bold uppercase tracking-wider flex items-center space-x-1.5 transition-colors"
+                      title="Unduh file dokumen ke perangkat"
+                    >
+                      <Download className="w-3.5 h-3.5 text-[#fbae17]" />
+                      <span>Unduh Dokumen</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -519,6 +568,12 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
           </div>
         </div>
       )}
+
+      {/* Modal Pratinjau Dokumen */}
+      <DocumentPreviewModal
+        docItem={previewDoc}
+        onClose={() => setPreviewDoc(null)}
+      />
     </div>
   );
 }

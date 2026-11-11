@@ -1,29 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FileText, 
   Search, 
   Download, 
   Calendar, 
   CheckCircle2, 
-  Filter, 
-  FileCheck2,
-  Share2
+  Eye
 } from 'lucide-react';
+import DocumentPreviewModal from '../components/DocumentPreviewModal';
+import { downloadDocument, isDocumentAvailable } from '../utils/documentHelper';
 
 export default function Regulations({ dbData, activeSubPage }) {
   const regulations = dbData?.regulations || [];
 
-  const initialJenis = activeSubPage === 'reg-permendagri'
-    ? 'Permendagri'
-    : activeSubPage === 'reg-kepmendagri'
-    ? 'Kepmendagri'
-    : activeSubPage === 'reg-se'
-    ? 'SE'
-    : 'Semua';
+  const getJenisFromSubPage = (subPage) => (
+    subPage === 'reg-permendagri'
+      ? 'Permendagri'
+      : subPage === 'reg-kepmendagri'
+      ? 'Kepmendagri'
+      : subPage === 'reg-se'
+      ? 'SE'
+      : 'Semua'
+  );
 
-  const [jenisFilter, setJenisFilter] = useState(initialJenis);
+  const [jenisFilter, setJenisFilter] = useState(getJenisFromSubPage(activeSubPage));
   const [tahunFilter, setTahunFilter] = useState('Semua');
   const [searchQuery, setSearchQuery] = useState('');
+  const [previewDoc, setPreviewDoc] = useState(null);
+
+  useEffect(() => {
+    setJenisFilter(getJenisFromSubPage(activeSubPage));
+  }, [activeSubPage]);
 
   // Get unique years
   const availableYears = ['Semua', ...Array.from(new Set(regulations.map(r => r.tahun))).sort().reverse()];
@@ -37,6 +44,27 @@ export default function Regulations({ dbData, activeSubPage }) {
       String(reg.tahun).includes(searchQuery);
     return matchesJenis && matchesTahun && matchesSearch;
   });
+
+  const handleOpenPreview = (reg) => {
+    setPreviewDoc({
+      ...reg,
+      title: reg.tentang || reg.nomor,
+      subtitle: `${reg.jenis || 'Regulasi'} ${reg.nomor || ''}`.trim(),
+      fileUrl: reg.fileUrl || reg.url || '',
+      ukuranFile: reg.ukuranFile,
+      tanggalDitetapkan: reg.tanggalDitetapkan,
+      downloadName: `${reg.jenis || 'Regulasi'}-${reg.nomor || reg.id}`
+    });
+  };
+
+  const handleDownloadReg = async (reg) => {
+    const url = reg.fileUrl || reg.url || '';
+    if (!isDocumentAvailable(url)) {
+      handleOpenPreview(reg);
+      return;
+    }
+    await downloadDocument(url, `${reg.jenis || 'Regulasi'}-${reg.nomor || reg.id}`);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8 animate-fadeIn">
@@ -148,7 +176,7 @@ export default function Regulations({ dbData, activeSubPage }) {
                 {reg.tentang}
               </h3>
 
-              <div className="flex items-center space-x-4 text-xs text-slate-500 pt-1">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 pt-1">
                 <div className="flex items-center space-x-1">
                   <Calendar className="w-3.5 h-3.5 text-slate-400" />
                   <span>Ditetapkan: {reg.tanggalDitetapkan || '-'}</span>
@@ -159,13 +187,23 @@ export default function Regulations({ dbData, activeSubPage }) {
               </div>
             </div>
 
-            {/* Tombol Aksi Unduh */}
-            <div className="flex items-center space-x-3 flex-shrink-0">
+            {/* Tombol Aksi Buka & Unduh */}
+            <div className="flex flex-wrap items-center gap-2.5 flex-shrink-0">
               <button
-                onClick={() => {
-                  alert(`Memulai unduhan dokumen salinan resmi: ${reg.nomor}`);
-                }}
+                type="button"
+                onClick={() => handleOpenPreview(reg)}
+                className="px-4 py-2.5 bg-white hover:bg-[#f4f2ee] text-[#063a69] border border-[#063a69] rounded-lg text-xs font-heading font-bold uppercase tracking-wider flex items-center space-x-2 shadow-xs transition-colors"
+                title="Buka dan baca dokumen langsung tanpa mengunduh"
+              >
+                <Eye className="w-4 h-4 text-[#d48f05]" />
+                <span>Buka Dokumen</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDownloadReg(reg)}
                 className="px-4 py-2.5 bg-[#063a69] hover:bg-[#042646] text-white rounded-lg text-xs font-heading font-bold uppercase tracking-wider flex items-center space-x-2 shadow-xs transition-colors"
+                title="Unduh file dokumen ke perangkat"
               >
                 <Download className="w-4 h-4 text-[#fbae17]" />
                 <span>Unduh Dokumen</span>
@@ -181,6 +219,12 @@ export default function Regulations({ dbData, activeSubPage }) {
           <p className="text-xs">Coba sesuaikan jenis dokumen, filter tahun, atau kata kunci pencarian Anda.</p>
         </div>
       )}
+
+      {/* Modal Pratinjau Dokumen */}
+      <DocumentPreviewModal
+        docItem={previewDoc}
+        onClose={() => setPreviewDoc(null)}
+      />
     </div>
   );
 }

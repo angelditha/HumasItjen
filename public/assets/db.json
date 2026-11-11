@@ -618,8 +618,8 @@
       "tentang": "Tata Kelola Pengawasan Penyelenggaraan Pemerintahan Daerah di Lingkungan Kementerian Dalam Negeri",
       "tanggalDitetapkan": "2022-12-28",
       "status": "Berlaku",
-      "fileUrl": "#",
-      "ukuranFile": "2.8 MB"
+      "fileUrl": "/documents/reg-1.pdf",
+      "ukuranFile": "4 KB"
     },
     {
       "id": "reg-2",
@@ -629,8 +629,8 @@
       "tentang": "Pengawasan Pengelolaan Keuangan Desa oleh Aparat Pengawasan Intern Pemerintah (APIP)",
       "tanggalDitetapkan": "2020-11-15",
       "status": "Berlaku",
-      "fileUrl": "#",
-      "ukuranFile": "1.9 MB"
+      "fileUrl": "/documents/reg-2.pdf",
+      "ukuranFile": "4 KB"
     },
     {
       "id": "reg-3",
@@ -640,8 +640,8 @@
       "tentang": "Pedoman Penyusunan Program Kerja Pengawasan Tahunan (PKPT) Kementerian Dalam Negeri",
       "tanggalDitetapkan": "2022-10-18",
       "status": "Berlaku",
-      "fileUrl": "#",
-      "ukuranFile": "3.4 MB"
+      "fileUrl": "/documents/reg-3.pdf",
+      "ukuranFile": "4 KB"
     },
     {
       "id": "reg-4",
@@ -651,8 +651,8 @@
       "tentang": "Program Kerja Pengawasan Tahunan (PKPT) Inspektorat Jenderal Kementerian Dalam Negeri Tahun Anggaran 2026",
       "tanggalDitetapkan": "2026-01-05",
       "status": "Berlaku",
-      "fileUrl": "#",
-      "ukuranFile": "4.1 MB"
+      "fileUrl": "/documents/reg-4.pdf",
+      "ukuranFile": "4 KB"
     },
     {
       "id": "reg-5",
@@ -662,8 +662,8 @@
       "tentang": "Petunjuk Teknis Evaluasi Kinerja Penjabat Kepala Daerah di Seluruh Wilayah Indonesia",
       "tanggalDitetapkan": "2025-06-12",
       "status": "Berlaku",
-      "fileUrl": "#",
-      "ukuranFile": "2.1 MB"
+      "fileUrl": "/documents/reg-5.pdf",
+      "ukuranFile": "4 KB"
     },
     {
       "id": "reg-6",
@@ -673,8 +673,8 @@
       "tentang": "Surat Edaran Pencegahan Tindak Pidana Korupsi dan Pengendalian Gratifikasi pada Hari Raya Keagamaan",
       "tanggalDitetapkan": "2026-03-10",
       "status": "Berlaku",
-      "fileUrl": "#",
-      "ukuranFile": "850 KB"
+      "fileUrl": "/documents/reg-6.pdf",
+      "ukuranFile": "4 KB"
     },
     {
       "id": "reg-7",
@@ -684,8 +684,8 @@
       "tentang": "Surat Edaran Netralitas Aparatur Sipil Negara (ASN) dalam Penyelenggaraan Pemerintahan dan Pelayanan Publik",
       "tanggalDitetapkan": "2026-05-18",
       "status": "Berlaku",
-      "fileUrl": "#",
-      "ukuranFile": "1.2 MB"
+      "fileUrl": "/documents/reg-7.pdf",
+      "ukuranFile": "4 KB"
     },
     {
       "id": "reg-8",
@@ -695,8 +695,8 @@
       "tentang": "Penguatan Pengawasan Intern Berbasis Risiko (Risk-Based Internal Auditing) di Lingkungan Pemerintah Daerah",
       "tanggalDitetapkan": "2026-07-22",
       "status": "Berlaku",
-      "fileUrl": "#",
-      "ukuranFile": "950 KB"
+      "fileUrl": "/documents/reg-8.pdf",
+      "ukuranFile": "4 KB"
     }
   ],
   "services": {
@@ -707,8 +707,8 @@
         "judul": "Ikhtisar Hasil Pengawasan (IHP) Semesteran",
         "periode": "Tahun 2026",
         "deskripsi": "Ringkasan eksekutif hasil audit, reviu, dan pemantauan tindak lanjut pengawasan atas kepatuhan serta kinerja entitas di lingkungan Kemendagri dan pemda.",
-        "fileUrl": "#",
-        "fileSize": "5.2 MB"
+        "fileUrl": "/documents/infopub-1.pdf",
+        "fileSize": "3 KB"
       },
       {
         "id": "infopub-2",
@@ -716,8 +716,8 @@
         "judul": "Rencana Strategis (Renstra) Itjen Kemendagri 2025 - 2029",
         "periode": "2025 - 2029",
         "deskripsi": "Dokumen panduan arah kebijakan, sasaran strategis, dan indikator kinerja utama pengawasan lima tahunan.",
-        "fileUrl": "#",
-        "fileSize": "8.4 MB"
+        "fileUrl": "/documents/infopub-2.pdf",
+        "fileSize": "3 KB"
       },
       {
         "id": "infopub-3",
@@ -725,8 +725,8 @@
         "judul": "Rencana Kerja (Renja) Itjen Kemendagri Tahun 2026",
         "periode": "Tahun 2026",
         "deskripsi": "Rencana operasional program, kegiatan, dan alokasi anggaran pengawasan tahun berjalan.",
-        "fileUrl": "#",
-        "fileSize": "4.7 MB"
+        "fileUrl": "/documents/infopub-3.pdf",
+        "fileSize": "3 KB"
       },
       {
         "id": "infopub-4",
@@ -734,8 +734,8 @@
         "judul": "Rencana Kerja Pengawasan (RKP) Nasional",
         "periode": "Tahun 2026",
         "deskripsi": "Rencana terintegrasi pelaksanaan pengawasan umum dan teknis urusan pemerintahan daerah.",
-        "fileUrl": "#",
-        "fileSize": "3.9 MB"
+        "fileUrl": "/documents/infopub-4.pdf",
+        "fileSize": "3 KB"
       }
     ],
     "layananPublik": [

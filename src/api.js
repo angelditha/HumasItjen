@@ -60,7 +60,19 @@ export async function uploadFile(file) {
     method: 'POST',
     body: formData
   });
-  if (!res.ok) throw new Error('Gagal mengunggah file');
+  if (!res.ok) {
+    if (res.status === 413) {
+      throw new Error('Ukuran file melebihi batas unggahan server (maksimal ~4 MB di cloud). Gunakan file lebih kecil atau tempel tautan URL dokumen.');
+    }
+    let msg = 'Gagal mengunggah file';
+    try {
+      const errBody = await res.json();
+      if (errBody?.message) msg = errBody.message;
+    } catch {
+      // ignore non-JSON body
+    }
+    throw new Error(msg);
+  }
   return await res.json();
 }
 

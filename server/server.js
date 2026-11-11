@@ -154,6 +154,7 @@ if (!isVercel) {
   if (fs.existsSync(publicUploadsDir)) {
     app.use('/uploads', express.static(publicUploadsDir, { maxAge: '7d' }));
   }
+  app.use('/documents', express.static(path.join(__dirname, '..', 'public', 'documents'), { maxAge: '7d' }));
   app.use('/assets', express.static(path.join(__dirname, '..', 'public', 'assets'), { maxAge: '7d' }));
 
   const distDir = path.join(__dirname, '..', 'dist');
@@ -197,12 +198,23 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 
   const ext = path.extname(req.file.originalname || req.file.filename || '').toLowerCase();
   const isImage = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext);
+  const docMimeByExt = {
+    '.pdf': 'application/pdf',
+    '.doc': 'application/msword',
+    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    '.xls': 'application/vnd.ms-excel',
+    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    '.ppt': 'application/vnd.ms-powerpoint',
+    '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    '.txt': 'text/plain;charset=utf-8'
+  };
 
   if (isVercel) {
+    let mime = docMimeByExt[ext] || req.file.mimetype || 'application/octet-stream';
     try {
       let buf = req.file.buffer;
-      let mime = req.file.mimetype || 'image/jpeg';
       if (isImage) {
+        mime = 'image/jpeg';
         const sharp = await getSharp();
         if (sharp) {
           const meta = await sharp(buf).metadata();
@@ -229,7 +241,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
       });
     } catch (err) {
       console.error('Vercel upload notice:', err.message);
-      const fallbackUrl = `data:${req.file.mimetype || 'application/octet-stream'};base64,${req.file.buffer.toString('base64')}`;
+      const fallbackUrl = `data:${mime};base64,${req.file.buffer.toString('base64')}`;
       return res.json({
         success: true,
         url: fallbackUrl,
@@ -597,6 +609,17 @@ app.delete('/api/skm/:id', async (req, res) => {
   db.skmResponses = (db.skmResponses || []).filter(s => s.id !== req.params.id);
   await writeDb(db);
   res.json({ success: true, message: 'Data SKM berhasil dihapus' });
+});
+
+// JSON error handler (handles multer limits cleanly)
+app.use((err, req, res, next) => {
+  if (!err) return next();
+  const status = err.status || (err.code === 'LIMIT_FILE_SIZE' ? 413 : 500);
+  const message =
+    err.code === 'LIMIT_FILE_SIZE'
+      ? 'Ukuran file melebihi batas maksimal unggahan (15 MB).'
+      : err.message || 'Terjadi kesalahan pada server.';
+  res.status(status).json({ success: false, message });
 });
 
 // Fallback for local production SPA
