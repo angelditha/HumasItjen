@@ -104,7 +104,7 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
         {/* Tab Navigasi Sub Menu */}
         <div className="flex flex-wrap items-center gap-2 mt-6">
           <button
-            onClick={() => setActiveTab('informasi-publik')}
+            onClick={() => setActiveSubPage ? setActiveSubPage('informasi-publik') : setActiveTab('informasi-publik')}
             className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all flex items-center space-x-2 ${
               activeTab === 'informasi-publik'
                 ? 'bg-[#063a69] text-white shadow-md'
@@ -116,7 +116,7 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
           </button>
 
           <button
-            onClick={() => setActiveTab('layanan-publik')}
+            onClick={() => setActiveSubPage ? setActiveSubPage('layanan-publik') : setActiveTab('layanan-publik')}
             className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all flex items-center space-x-2 ${
               activeTab === 'layanan-publik'
                 ? 'bg-[#063a69] text-white shadow-md'
@@ -128,7 +128,7 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
           </button>
 
           <button
-            onClick={() => setActiveTab('layanan-skm')}
+            onClick={() => setActiveSubPage ? setActiveSubPage('layanan-skm') : setActiveTab('layanan-skm')}
             className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all flex items-center space-x-2 ${
               activeTab === 'layanan-skm'
                 ? 'bg-[#063a69] text-white shadow-md'
@@ -140,7 +140,7 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
           </button>
 
           <button
-            onClick={() => setActiveTab('layanan-wbs')}
+            onClick={() => setActiveSubPage ? setActiveSubPage('layanan-wbs') : setActiveTab('layanan-wbs')}
             className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all flex items-center space-x-2 ${
               activeTab === 'layanan-wbs'
                 ? 'bg-red-800 text-white shadow-md'

@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ChevronDown, 
+import {
+  ChevronDown,
   ChevronRight,
-  Search, 
-  Menu, 
-  X, 
-  Shield, 
-  Lock, 
-  Calendar, 
-  Clock, 
+  Search,
+  Menu,
+  X,
+  Shield,
+  Lock,
+  Calendar,
+  Clock,
   ExternalLink,
   Sliders,
   UserCheck
 } from 'lucide-react';
+import { getPathForState } from '../utils/routes';
 
 export default function Navbar({ 
   activePage, 
   setActivePage, 
   activeSubPage, 
   setActiveSubPage, 
+  onNavigate,
   adminUser, 
   onOpenLogin, 
   onOpenDashboard, 
@@ -57,16 +59,22 @@ export default function Navbar({
     return () => clearInterval(interval);
   }, []);
 
-  const handleNavClick = (pageId, subPageId = null) => {
-    setActivePage(pageId);
-    if (subPageId) {
-      setActiveSubPage(subPageId);
+  const handleNavClick = (pageId, subPageId = null, event = null) => {
+    if (event) {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1) {
+        return;
+      }
+      event.preventDefault();
+    }
+    if (onNavigate) {
+      onNavigate(pageId, subPageId);
     } else {
-      setActiveSubPage(null);
+      setActivePage(pageId);
+      setActiveSubPage(subPageId || null);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     setActiveDropdown(null);
     setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navItems = [
@@ -115,7 +123,7 @@ export default function Navbar({
       id: 'layanan',
       label: 'Layanan',
       children: [
-        { id: 'layanan-informasi-publik', label: 'Informasi Publik' },
+        { id: 'informasi-publik', label: 'Informasi Publik' },
         { id: 'layanan-publik', label: 'Layanan Publik' },
         { id: 'layanan-skm', label: 'Survei Kepuasan Masyarakat' },
         { id: 'layanan-wbs', label: 'WBS - Whistleblowing System' },
@@ -199,8 +207,9 @@ export default function Navbar({
       {/* 2. BRAND HEADER WITH TWO LOGOS */}
       <div className="bg-[#f4f2ee] border-b border-slate-200 py-3 sm:py-4 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div 
-            onClick={() => handleNavClick('beranda')}
+          <a 
+            href="/"
+            onClick={(e) => handleNavClick('beranda', null, e)}
             className="flex items-center space-x-3 sm:space-x-5 cursor-pointer group select-none"
           >
             {/* Logo Kemendagri & Logo Inspektorat */}
@@ -227,7 +236,7 @@ export default function Navbar({
                 INSPEKTORAT JENDERAL
               </h1>
             </div>
-          </div>
+          </a>
 
           {/* Slogan Banner di Layar Lebar */}
           <div className="hidden xl:flex flex-col items-end text-right">
@@ -260,12 +269,13 @@ export default function Navbar({
                   onMouseEnter={() => hasChildren && setActiveDropdown(item.id)}
                   onMouseLeave={() => hasChildren && setActiveDropdown(null)}
                 >
-                  <button
-                    onClick={() => {
+                  <a
+                    href={getPathForState(item.id, hasChildren ? item.children[0].id : null)}
+                    onClick={(e) => {
                       if (!hasChildren) {
-                        handleNavClick(item.id);
+                        handleNavClick(item.id, null, e);
                       } else {
-                        handleNavClick(item.id, item.children[0].id);
+                        handleNavClick(item.id, item.children[0].id, e);
                       }
                     }}
                     className={`px-3.5 py-3.5 text-xs font-heading font-semibold uppercase tracking-wider flex items-center space-x-1 transition-colors border-b-2 ${
@@ -278,15 +288,16 @@ export default function Navbar({
                     {hasChildren && (
                       <ChevronDown className="w-3.5 h-3.5 opacity-80 group-hover:rotate-180 transition-transform duration-200" />
                     )}
-                  </button>
+                  </a>
 
                   {/* Dropdown Menu */}
                   {hasChildren && activeDropdown === item.id && (
                     <div className="absolute left-0 top-full w-64 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#fbae17] py-2 z-50 animate-fadeIn">
                       {item.children.map((child) => (
-                        <button
+                        <a
                           key={child.id}
-                          onClick={() => handleNavClick(item.id, child.id)}
+                          href={getPathForState(item.id, child.id)}
+                          onClick={(e) => handleNavClick(item.id, child.id, e)}
                           className={`w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-[#f4f2ee] hover:text-[#063a69] flex items-center justify-between transition-colors group/subitem ${
                             activePage === item.id && activeSubPage === child.id 
                               ? 'text-[#063a69] font-bold bg-[#f4f2ee]' 
@@ -299,7 +310,7 @@ export default function Navbar({
                               ? 'text-[#063a69] translate-x-0.5' 
                               : 'text-[#d48f05] group-hover/subitem:text-[#063a69] group-hover/subitem:translate-x-0.5'
                           }`} />
-                        </button>
+                        </a>
                       ))}
                     </div>
                   )}
@@ -340,20 +351,26 @@ export default function Navbar({
               return (
                 <div key={item.id} className="border-b border-white/5 py-1">
                   <div className="flex items-center justify-between">
-                    <button
-                      onClick={() => {
-                        if (!hasChildren) {
-                          handleNavClick(item.id);
-                        } else {
-                          setActiveDropdown(activeDropdown === item.id ? null : item.id);
-                        }
-                      }}
-                      className={`text-left py-2 text-sm font-heading font-semibold uppercase tracking-wider flex-1 ${
-                        isCurrent ? 'text-[#fbae17]' : 'text-slate-200'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
+                    {!hasChildren ? (
+                      <a
+                        href={getPathForState(item.id)}
+                        onClick={(e) => handleNavClick(item.id, null, e)}
+                        className={`text-left py-2 text-sm font-heading font-semibold uppercase tracking-wider flex-1 ${
+                          isCurrent ? 'text-[#fbae17]' : 'text-slate-200'
+                        }`}
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <button
+                        onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
+                        className={`text-left py-2 text-sm font-heading font-semibold uppercase tracking-wider flex-1 ${
+                          isCurrent ? 'text-[#fbae17]' : 'text-slate-200'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    )}
                     {hasChildren && (
                       <button
                         onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
@@ -367,9 +384,10 @@ export default function Navbar({
                   {hasChildren && activeDropdown === item.id && (
                     <div className="pl-4 pb-2 space-y-1">
                       {item.children.map((child) => (
-                        <button
+                        <a
                           key={child.id}
-                          onClick={() => handleNavClick(item.id, child.id)}
+                          href={getPathForState(item.id, child.id)}
+                          onClick={(e) => handleNavClick(item.id, child.id, e)}
                           className={`w-full text-left py-2 text-xs flex items-center justify-between transition-colors ${
                             activePage === item.id && activeSubPage === child.id 
                               ? 'text-[#fbae17] font-bold' 
@@ -378,7 +396,7 @@ export default function Navbar({
                         >
                           <span>{child.label}</span>
                           <ChevronRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                        </button>
+                        </a>
                       ))}
                     </div>
                   )}

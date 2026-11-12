@@ -11,15 +11,28 @@ import Regulations from './pages/Regulations';
 import Services from './pages/Services';
 import AdminDashboard from './admin/AdminDashboard';
 import { fetchAllData } from './api';
+import {
+  parsePathToState,
+  getPathForState,
+  findNewsBySlug,
+  applySeoMeta,
+  normalizeSubPage
+} from './utils/routes';
 import { Search, X, ArrowRight, ExternalLink, FileText, Newspaper, Building2 } from 'lucide-react';
 
 export default function App() {
   const [dbData, setDbData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Navigation states
-  const [activePage, setActivePage] = useState('beranda');
-  const [activeSubPage, setActiveSubPage] = useState(null);
+  const initialRoute =
+    typeof window !== 'undefined'
+      ? parsePathToState(window.location.pathname)
+      : { page: 'beranda', subPage: null, newsSlug: null };
+
+  // Navigation states synced with URL slug
+  const [activePage, setActivePage] = useState(initialRoute.page);
+  const [activeSubPage, setActiveSubPage] = useState(initialRoute.subPage);
+  const [pendingNewsSlug, setPendingNewsSlug] = useState(initialRoute.newsSlug);
   const [selectedNews, setSelectedNews] = useState(null);
 
   // Admin states
@@ -67,12 +80,59 @@ export default function App() {
     setIsAdminView(false);
   };
 
-  const handleNavigate = (page, subPage = null) => {
+  const handleNavigate = (page, subPage = null, newsItem = null, options = { pushHistory: true }) => {
+    const normalizedSub = normalizeSubPage(page, subPage);
     setActivePage(page);
-    setActiveSubPage(subPage);
-    setSelectedNews(null);
+    setActiveSubPage(normalizedSub);
+    setSelectedNews(newsItem || null);
+    setPendingNewsSlug(null);
+
+    if (typeof window !== 'undefined' && options?.pushHistory !== false) {
+      const targetPath = getPathForState(page, normalizedSub, newsItem);
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({ page, subPage: normalizedSub }, '', targetPath);
+      }
+    }
+
+    applySeoMeta(page, normalizedSub, newsItem);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Resolve news detail slug once data loads
+  useEffect(() => {
+    if (pendingNewsSlug && dbData?.news?.length) {
+      const matchedNews = findNewsBySlug(dbData.news, pendingNewsSlug);
+      if (matchedNews) {
+        setSelectedNews(matchedNews);
+      }
+      setPendingNewsSlug(null);
+    }
+  }, [pendingNewsSlug, dbData]);
+
+  // Sync browser back/forward navigation with state
+  useEffect(() => {
+    const onPopState = () => {
+      const route = parsePathToState(window.location.pathname);
+      setActivePage(route.page);
+      setActiveSubPage(route.subPage);
+      if (route.newsSlug && dbData?.news?.length) {
+        setSelectedNews(findNewsBySlug(dbData.news, route.newsSlug));
+        setPendingNewsSlug(null);
+      } else {
+        setSelectedNews(null);
+        setPendingNewsSlug(route.newsSlug || null);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [dbData]);
+
+  // Update dynamic SEO meta tags on state change
+  useEffect(() => {
+    applySeoMeta(activePage, activeSubPage, selectedNews);
+  }, [activePage, activeSubPage, selectedNews]);
 
   // Search results
   const searchResultsNews = (dbData?.news || []).filter(n =>
@@ -130,12 +190,10 @@ export default function App() {
       {/* NAVBAR RESMI */}
       <Navbar
         activePage={activePage}
-        setActivePage={(p) => {
-          setActivePage(p);
-          setSelectedNews(null);
-        }}
+        setActivePage={(p) => handleNavigate(p, null)}
         activeSubPage={activeSubPage}
-        setActiveSubPage={setActiveSubPage}
+        setActiveSubPage={(sub) => handleNavigate(activePage, sub)}
+        onNavigate={handleNavigate}
         adminUser={adminUser}
         onOpenLogin={() => setIsLoginModalOpen(true)}
         onOpenDashboard={() => setIsAdminView(true)}
@@ -148,11 +206,7 @@ export default function App() {
           <Home
             dbData={dbData}
             onNavigate={handleNavigate}
-            onSelectNews={(newsItem) => {
-              setSelectedNews(newsItem);
-              setActivePage('berita');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+            onSelectNews={(newsItem) => handleNavigate('berita', null, newsItem)}
             onOpenMediaModal={(type, item) => setMediaModalItem({ ...item, type })}
             onRefreshData={loadData}
           />
@@ -162,7 +216,7 @@ export default function App() {
           <Profile
             dbData={dbData}
             activeSubPage={activeSubPage}
-            setActiveSubPage={setActiveSubPage}
+            setActiveSubPage={(sub) => handleNavigate('profil', sub)}
           />
         )}
 
@@ -170,8 +224,13 @@ export default function App() {
           <News
             dbData={dbData}
             activeSubPage={activeSubPage}
+            setActiveSubPage={(sub) => handleNavigate('berita', sub)}
             selectedNews={selectedNews}
-            setSelectedNews={setSelectedNews}
+            setSelectedNews={(newsItem) =>
+              newsItem
+                ? handleNavigate('berita', null, newsItem)
+                : handleNavigate('berita', activeSubPage, null)
+            }
           />
         )}
 
@@ -179,7 +238,7 @@ export default function App() {
           <Media
             dbData={dbData}
             activeSubPage={activeSubPage}
-            setActiveSubPage={setActiveSubPage}
+            setActiveSubPage={(sub) => handleNavigate('media', sub)}
           />
         )}
 
@@ -193,6 +252,7 @@ export default function App() {
           <Regulations
             dbData={dbData}
             activeSubPage={activeSubPage}
+            setActiveSubPage={(sub) => handleNavigate('regulasi', sub)}
           />
         )}
 
@@ -200,7 +260,7 @@ export default function App() {
           <Services
             dbData={dbData}
             activeSubPage={activeSubPage}
-            setActiveSubPage={setActiveSubPage}
+            setActiveSubPage={(sub) => handleNavigate('layanan', sub)}
             onRefreshData={loadData}
           />
         )}
@@ -269,8 +329,7 @@ export default function App() {
                           <div
                             key={n.id}
                             onClick={() => {
-                              setSelectedNews(n);
-                              setActivePage('berita');
+                              handleNavigate('berita', null, n);
                               setIsSearchOpen(false);
                               setSearchQuery('');
                             }}
@@ -299,7 +358,15 @@ export default function App() {
                           <div
                             key={r.id}
                             onClick={() => {
-                              setActivePage('regulasi');
+                              const sub =
+                                r.jenis === 'Permendagri'
+                                  ? 'reg-permendagri'
+                                  : r.jenis === 'Kepmendagri'
+                                  ? 'reg-kepmendagri'
+                                  : r.jenis === 'SE'
+                                  ? 'reg-se'
+                                  : null;
+                              handleNavigate('regulasi', sub);
                               setIsSearchOpen(false);
                               setSearchQuery('');
                             }}
@@ -328,15 +395,15 @@ export default function App() {
                           <div
                             key={p.id}
                             onClick={() => {
-                              setActivePage('inspektorat-daerah');
+                              handleNavigate('inspektorat-daerah');
                               setIsSearchOpen(false);
                               setSearchQuery('');
                             }}
                             className="p-3 bg-slate-50 hover:bg-slate-100 rounded-lg cursor-pointer flex items-center justify-between group"
                           >
                             <div>
-                              <div className="font-heading font-bold text-xs text-[#063a69]">{p.nama} (Ibukota: {p.ibukota})</div>
-                              <div className="text-[10px] text-slate-500">Inspektur: {p.inspektur}</div>
+                              <div className="font-heading font-bold text-xs text-[#063a69]">{p.nama}</div>
+                              <div className="text-[10px] text-slate-500">Wilayah {p.wilayah}</div>
                             </div>
                             <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#063a69]" />
                           </div>

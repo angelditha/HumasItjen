@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Image as ImageIcon, 
   Video as VideoIcon, 
@@ -14,14 +14,27 @@ import {
 export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
   const mediaData = dbData?.media || { photos: [], videos: [], infographics: [] };
 
-  const initialTab = activeSubPage === 'media-video'
-    ? 'video'
-    : activeSubPage === 'media-infografis'
-    ? 'infografis'
-    : 'foto';
+  const getTabFromSubPage = (sub) => (
+    sub === 'media-video'
+      ? 'video'
+      : sub === 'media-infografis'
+      ? 'infografis'
+      : 'foto'
+  );
 
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState(getTabFromSubPage(activeSubPage));
   const [selectedItem, setSelectedItem] = useState(null);
+
+  useEffect(() => {
+    setActiveTab(getTabFromSubPage(activeSubPage));
+  }, [activeSubPage]);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (setActiveSubPage) {
+      setActiveSubPage(`media-${tab}`);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8 animate-fadeIn">
@@ -41,7 +54,7 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
         {/* Tab Sub Navigasi */}
         <div className="flex flex-wrap items-center gap-2 mt-6">
           <button
-            onClick={() => setActiveTab('foto')}
+            onClick={() => handleTabChange('foto')}
             className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
               activeTab === 'foto'
                 ? 'bg-[#063a69] text-white shadow-md'
@@ -53,7 +66,7 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
           </button>
 
           <button
-            onClick={() => setActiveTab('video')}
+            onClick={() => handleTabChange('video')}
             className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
               activeTab === 'video'
                 ? 'bg-[#063a69] text-white shadow-md'
@@ -65,7 +78,7 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
           </button>
 
           <button
-            onClick={() => setActiveTab('infografis')}
+            onClick={() => handleTabChange('infografis')}
             className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
               activeTab === 'infografis'
                 ? 'bg-[#063a69] text-white shadow-md'

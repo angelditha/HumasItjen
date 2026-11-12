@@ -10,7 +10,7 @@ import {
 import DocumentPreviewModal from '../components/DocumentPreviewModal';
 import { downloadDocument, isDocumentAvailable } from '../utils/documentHelper';
 
-export default function Regulations({ dbData, activeSubPage }) {
+export default function Regulations({ dbData, activeSubPage, setActiveSubPage }) {
   const regulations = dbData?.regulations || [];
 
   const getJenisFromSubPage = (subPage) => (
@@ -86,7 +86,18 @@ export default function Regulations({ dbData, activeSubPage }) {
           {['Semua', 'Permendagri', 'Kepmendagri', 'SE'].map((jenis) => (
             <button
               key={jenis}
-              onClick={() => setJenisFilter(jenis)}
+              onClick={() => {
+                setJenisFilter(jenis);
+                if (setActiveSubPage) {
+                  const subMap = {
+                    Semua: null,
+                    Permendagri: 'reg-permendagri',
+                    Kepmendagri: 'reg-kepmendagri',
+                    SE: 'reg-se'
+                  };
+                  setActiveSubPage(subMap[jenis] ?? null);
+                }
+              }}
               className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
                 jenisFilter === jenis
                   ? 'bg-[#063a69] text-white shadow-md'

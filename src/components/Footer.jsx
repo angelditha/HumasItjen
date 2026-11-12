@@ -12,8 +12,14 @@ import {
   CheckCircle2,
   ChevronRight
 } from 'lucide-react';
+import { getPathForState } from '../utils/routes';
 
 export default function Footer({ onNavigate, onOpenLogin, adminUser, onOpenDashboard }) {
+  const handleLinkClick = (e, page, subPage = null) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+    e.preventDefault();
+    onNavigate(page, subPage);
+  };
   return (
     <footer className="bg-[#042646] text-white border-t-4 border-[#fbae17] pt-12 pb-6 mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -94,76 +100,84 @@ export default function Footer({ onNavigate, onOpenLogin, adminUser, onOpenDashb
             </h4>
             <ul className="space-y-1.5 text-xs text-slate-300">
               <li>
-                <button 
-                  onClick={() => onNavigate('profil', 'visi-misi')}
+                <a 
+                  href={getPathForState('profil', 'visi-misi')}
+                  onClick={(e) => handleLinkClick(e, 'profil', 'visi-misi')}
                   className="hover:text-[#fbae17] transition-colors flex items-center space-x-1.5"
                 >
                   <ChevronRight className="w-3 h-3 text-[#fbae17]" />
                   <span>Visi, Misi & Sasaran Strategis</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => onNavigate('profil', 'logo-lambang')}
+                <a 
+                  href={getPathForState('profil', 'logo-lambang')}
+                  onClick={(e) => handleLinkClick(e, 'profil', 'logo-lambang')}
                   className="hover:text-[#fbae17] transition-colors flex items-center space-x-1.5"
                 >
                   <ChevronRight className="w-3 h-3 text-[#fbae17]" />
                   <span>Filosofi Lambang Anggaraksa Dharma</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => onNavigate('profil', 'profil-pejabat')}
+                <a 
+                  href={getPathForState('profil', 'profil-pejabat')}
+                  onClick={(e) => handleLinkClick(e, 'profil', 'profil-pejabat')}
                   className="hover:text-[#fbae17] transition-colors flex items-center space-x-1.5"
                 >
                   <ChevronRight className="w-3 h-3 text-[#fbae17]" />
                   <span>Profil Pimpinan & Pejabat Itjen</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => onNavigate('berita', 'berita-pengawasan')}
+                <a 
+                  href={getPathForState('berita', 'berita-pengawasan')}
+                  onClick={(e) => handleLinkClick(e, 'berita', 'berita-pengawasan')}
                   className="hover:text-[#fbae17] transition-colors flex items-center space-x-1.5"
                 >
                   <ChevronRight className="w-3 h-3 text-[#fbae17]" />
                   <span>Rilis Berita Pengawasan Itjen</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => onNavigate('inspektorat-daerah')}
+                <a 
+                  href={getPathForState('inspektorat-daerah')}
+                  onClick={(e) => handleLinkClick(e, 'inspektorat-daerah')}
                   className="hover:text-[#fbae17] transition-colors flex items-center space-x-1.5"
                 >
                   <ChevronRight className="w-3 h-3 text-[#fbae17]" />
                   <span>38 Inspektorat Daerah Provinsi</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => onNavigate('regulasi')}
+                <a 
+                  href={getPathForState('regulasi')}
+                  onClick={(e) => handleLinkClick(e, 'regulasi')}
                   className="hover:text-[#fbae17] transition-colors flex items-center space-x-1.5"
                 >
                   <ChevronRight className="w-3 h-3 text-[#fbae17]" />
                   <span>Regulasi Permendagri & SE</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => onNavigate('layanan', 'layanan-skm')}
+                <a 
+                  href={getPathForState('layanan', 'layanan-skm')}
+                  onClick={(e) => handleLinkClick(e, 'layanan', 'layanan-skm')}
                   className="hover:text-[#fbae17] transition-colors flex items-center space-x-1.5"
                 >
                   <ChevronRight className="w-3 h-3 text-[#fbae17]" />
                   <span>Survei Kepuasan Masyarakat</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => onNavigate('beranda', 'rating')}
+                <a 
+                  href={getPathForState('beranda', 'rating')}
+                  onClick={(e) => handleLinkClick(e, 'beranda', 'rating')}
                   className="hover:text-[#fbae17] transition-colors flex items-center space-x-1.5"
                 >
                   <ChevronRight className="w-3 h-3 text-[#fbae17]" />
                   <span>Penilaian Kualitas Website</span>
-                </button>
+                </a>
               </li>
             </ul>
           </div>

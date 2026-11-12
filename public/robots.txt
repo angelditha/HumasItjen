@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://humasitjen.vercel.app/sitemap.xml

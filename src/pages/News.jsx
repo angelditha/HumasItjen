@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Calendar, 
   Eye, 
@@ -16,22 +16,41 @@ import {
 export default function News({ 
   dbData, 
   activeSubPage, 
+  setActiveSubPage,
   selectedNews, 
   setSelectedNews 
 }) {
   const allNews = dbData?.news || [];
-  
-  // Tab filter: 'semua', 'pengawasan', 'kemendagri', 'nasional'
-  const initialCategory = activeSubPage === 'berita-nasional'
-    ? 'nasional'
-    : activeSubPage === 'berita-kemendagri'
-    ? 'kemendagri'
-    : activeSubPage === 'berita-pengawasan'
-    ? 'pengawasan'
-    : 'semua';
 
-  const [categoryFilter, setCategoryFilter] = useState(initialCategory);
+  const getCategoryFromSubPage = (sub) => (
+    sub === 'berita-nasional'
+      ? 'nasional'
+      : sub === 'berita-kemendagri'
+      ? 'kemendagri'
+      : sub === 'berita-pengawasan'
+      ? 'pengawasan'
+      : 'semua'
+  );
+
+  const [categoryFilter, setCategoryFilter] = useState(getCategoryFromSubPage(activeSubPage));
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    setCategoryFilter(getCategoryFromSubPage(activeSubPage));
+  }, [activeSubPage]);
+
+  const handleCategoryChange = (cat) => {
+    setCategoryFilter(cat);
+    if (setActiveSubPage) {
+      const subMap = {
+        semua: null,
+        pengawasan: 'berita-pengawasan',
+        kemendagri: 'berita-kemendagri',
+        nasional: 'berita-nasional'
+      };
+      setActiveSubPage(subMap[cat] ?? null);
+    }
+  };
 
   const filteredNews = allNews.filter((item) => {
     const matchesCategory = categoryFilter === 'semua' || item.kategori === categoryFilter;
@@ -186,7 +205,7 @@ export default function News({
         {/* Tab Kategori */}
         <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => setCategoryFilter('semua')}
+            onClick={() => handleCategoryChange('semua')}
             className={`px-4 py-2 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
               categoryFilter === 'semua'
                 ? 'bg-[#063a69] text-white shadow-sm'
@@ -196,7 +215,7 @@ export default function News({
             Semua ({allNews.length})
           </button>
           <button
-            onClick={() => setCategoryFilter('pengawasan')}
+            onClick={() => handleCategoryChange('pengawasan')}
             className={`px-4 py-2 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
               categoryFilter === 'pengawasan'
                 ? 'bg-[#063a69] text-white shadow-sm'
@@ -206,7 +225,7 @@ export default function News({
             Pengawasan Itjen ({allNews.filter(n => n.kategori === 'pengawasan').length})
           </button>
           <button
-            onClick={() => setCategoryFilter('kemendagri')}
+            onClick={() => handleCategoryChange('kemendagri')}
             className={`px-4 py-2 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
               categoryFilter === 'kemendagri'
                 ? 'bg-[#063a69] text-white shadow-sm'
@@ -216,7 +235,7 @@ export default function News({
             Kemendagri ({allNews.filter(n => n.kategori === 'kemendagri').length})
           </button>
           <button
-            onClick={() => setCategoryFilter('nasional')}
+            onClick={() => handleCategoryChange('nasional')}
             className={`px-4 py-2 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
               categoryFilter === 'nasional'
                 ? 'bg-[#063a69] text-white shadow-sm'
