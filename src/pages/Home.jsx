@@ -110,6 +110,18 @@ export default function Home({
     }
   };
 
+  // Helper lookup external URL layanan dari dbData agar selaras dengan Admin POV
+  const findServiceUrl = (matchKey, fallbackUrl) => {
+    const list = dbData?.services?.layananPublik || [];
+    const found = list.find(
+      (s) =>
+        (s.id && s.id.toLowerCase() === matchKey) ||
+        (s.kode && s.kode.toLowerCase() === matchKey) ||
+        (s.nama && s.nama.toLowerCase().includes(matchKey))
+    );
+    return found?.url || fallbackUrl;
+  };
+
   return (
     <div className="space-y-16 animate-fadeIn">
       {/* 1. HEADER: FOTO LANDSCAPE BERITA (HERO CAROUSEL) */}
@@ -136,9 +148,16 @@ export default function Home({
                       alt={item.judul}
                       className="w-full h-full object-cover object-center"
                     />
-                    {/* Gradient Overlay Transparan Lembut - Foto Jernih & Teks Terbaca Jelas */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950/40 via-transparent to-transparent"></div>
+                    {/* Efek Asap Halus Transparan - Foto Tetap Terlihat & Teks Nyaman Dibaca */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/55 to-slate-950/15"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-900/40 to-transparent"></div>
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-3/4 bg-slate-950/35 backdrop-blur-[2px] pointer-events-none"
+                      style={{
+                        maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 55%, rgba(0,0,0,0) 100%)',
+                        WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 55%, rgba(0,0,0,0) 100%)'
+                      }}
+                    ></div>
                   </div>
 
                   {/* Konten Berita Landscape */}
@@ -224,47 +243,15 @@ export default function Home({
         )}
       </section>
 
-      {/* QUICK HIGHLIGHT STRIP: PILAR APIP ITJEN KEMENDAGRI */}
+      {/* QUICK HIGHLIGHT STRIP: NILAI BERAKHLAK */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 -mt-6 relative z-30">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white p-5 rounded-xl shadow-md border-t-4 border-[#063a69] flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-lg bg-[#063a69]/10 text-[#063a69] flex items-center justify-center font-bold">
-              <Building2 className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="font-heading font-extrabold text-xl text-[#063a69]">38 Provinsi</div>
-              <div className="text-xs text-slate-500 font-medium">Koordinasi APIP Daerah</div>
-            </div>
+        <div className="bg-white p-5 rounded-xl shadow-md border-t-4 border-[#fbae17] flex items-center space-x-4 max-w-md mx-auto">
+          <div className="w-12 h-12 rounded-lg bg-[#fbae17]/15 text-[#d48f05] flex items-center justify-center font-bold flex-shrink-0">
+            <CheckCircle2 className="w-6 h-6" />
           </div>
-
-          <div className="bg-white p-5 rounded-xl shadow-md border-t-4 border-[#fbae17] flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-lg bg-[#fbae17]/15 text-[#d48f05] flex items-center justify-center font-bold">
-              <Shield className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="font-heading font-extrabold text-xl text-[#063a69]">100% Terintegrasi</div>
-              <div className="text-xs text-slate-500 font-medium">Kanal WBS & Pengawasan APBD</div>
-            </div>
-          </div>
-
-          <div className="bg-white p-5 rounded-xl shadow-md border-t-4 border-[#063a69] flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-lg bg-[#063a69]/10 text-[#063a69] flex items-center justify-center font-bold">
-              <FileText className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="font-heading font-extrabold text-xl text-[#063a69]">8 Layanan</div>
-              <div className="text-xs text-slate-500 font-medium">Digitalisasi Pengawasan APIP</div>
-            </div>
-          </div>
-
-          <div className="bg-white p-5 rounded-xl shadow-md border-t-4 border-[#fbae17] flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-lg bg-[#fbae17]/15 text-[#d48f05] flex items-center justify-center font-bold">
-              <CheckCircle2 className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="font-heading font-extrabold text-xl text-[#063a69]">BerAKHLAK</div>
-              <div className="text-xs text-slate-500 font-medium">Pengawasan Berdampak Nyata</div>
-            </div>
+          <div>
+            <div className="font-heading font-extrabold text-xl text-[#063a69]">BerAKHLAK</div>
+            <div className="text-xs text-slate-500 font-medium">Pengawasan Berdampak Nyata</div>
           </div>
         </div>
       </section>
@@ -580,7 +567,7 @@ export default function Home({
 
           {/* 2. SIPD RI */}
           <a
-            href="https://sipd.kemendagri.go.id"
+            href={findServiceUrl('sipd', 'https://sipd.kemendagri.go.id')}
             target="_blank"
             rel="noreferrer"
             className="p-5 bg-white rounded-xl shadow-sm hover:shadow-xl border border-slate-200 hover:border-[#fbae17] transition-all group flex flex-col justify-between"
@@ -609,7 +596,7 @@ export default function Home({
 
           {/* 3. SIOLA */}
           <a
-            href="https://siola.kemendagri.go.id"
+            href={findServiceUrl('siola', 'https://siola.kemendagri.go.id')}
             target="_blank"
             rel="noreferrer"
             className="p-5 bg-white rounded-xl shadow-sm hover:shadow-xl border border-slate-200 hover:border-[#fbae17] transition-all group flex flex-col justify-between"
@@ -638,7 +625,7 @@ export default function Home({
 
           {/* 4. SP4N LAPOR */}
           <a
-            href="https://www.lapor.go.id"
+            href={findServiceUrl('sp4n', 'https://www.lapor.go.id')}
             target="_blank"
             rel="noreferrer"
             className="p-5 bg-white rounded-xl shadow-sm hover:shadow-xl border border-slate-200 hover:border-[#fbae17] transition-all group flex flex-col justify-between"
@@ -666,8 +653,10 @@ export default function Home({
           </a>
 
           {/* 5. SIWASIAT */}
-          <button
-            onClick={() => onNavigate('layanan', 'layanan-publik')}
+          <a
+            href={findServiceUrl('siwasiat', 'https://siwasiat.kemendagri.go.id')}
+            target="_blank"
+            rel="noreferrer"
             className="p-5 bg-white rounded-xl shadow-sm hover:shadow-xl border border-slate-200 hover:border-[#fbae17] transition-all group flex flex-col justify-between text-left"
           >
             <div>
@@ -687,14 +676,16 @@ export default function Home({
               </p>
             </div>
             <div className="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#063a69] group-hover:text-[#d48f05]">
-              <span>Detail Aplikasi</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>Kunjungi Portal</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </div>
-          </button>
+          </a>
 
           {/* 6. APLIKASI PPUPD */}
-          <button
-            onClick={() => onNavigate('layanan', 'layanan-publik')}
+          <a
+            href={findServiceUrl('ppupd', 'https://ppupd.kemendagri.go.id')}
+            target="_blank"
+            rel="noreferrer"
             className="p-5 bg-white rounded-xl shadow-sm hover:shadow-xl border border-slate-200 hover:border-[#fbae17] transition-all group flex flex-col justify-between text-left"
           >
             <div>
@@ -714,14 +705,16 @@ export default function Home({
               </p>
             </div>
             <div className="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#063a69] group-hover:text-[#d48f05]">
-              <span>Detail Aplikasi</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>Kunjungi Portal</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </div>
-          </button>
+          </a>
 
           {/* 7. E-REVIU */}
-          <button
-            onClick={() => onNavigate('layanan', 'layanan-publik')}
+          <a
+            href={findServiceUrl('ereviu', 'https://ereviu.kemendagri.go.id')}
+            target="_blank"
+            rel="noreferrer"
             className="p-5 bg-white rounded-xl shadow-sm hover:shadow-xl border border-slate-200 hover:border-[#fbae17] transition-all group flex flex-col justify-between text-left"
           >
             <div>
@@ -741,14 +734,16 @@ export default function Home({
               </p>
             </div>
             <div className="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#063a69] group-hover:text-[#d48f05]">
-              <span>Detail Aplikasi</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>Kunjungi Portal</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </div>
-          </button>
+          </a>
 
           {/* 8. SI CUKUP */}
-          <button
-            onClick={() => onNavigate('layanan', 'layanan-publik')}
+          <a
+            href={findServiceUrl('sicukup', 'https://sicukup.kemendagri.go.id')}
+            target="_blank"
+            rel="noreferrer"
             className="p-5 bg-white rounded-xl shadow-sm hover:shadow-xl border border-slate-200 hover:border-[#fbae17] transition-all group flex flex-col justify-between text-left"
           >
             <div>
@@ -768,10 +763,10 @@ export default function Home({
               </p>
             </div>
             <div className="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#063a69] group-hover:text-[#d48f05]">
-              <span>Detail Aplikasi</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>Kunjungi Portal</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </div>
-          </button>
+          </a>
         </div>
       </section>
 

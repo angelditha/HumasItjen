@@ -708,7 +708,7 @@ export default function AdminDashboard({
                     <Building2 className="w-4 h-4 text-[#d48f05]" />
                   </div>
                   <div className="font-heading font-black text-3xl text-[#063a69]">{dbData?.inspectorates?.length || 0}</div>
-                  <div className="text-[10px] text-slate-500">38 Provinsi Terhubung</div>
+                  <div className="text-[10px] text-slate-500">Direktori Inspektorat Daerah</div>
                 </div>
               </div>
 
@@ -1968,7 +1968,7 @@ export default function AdminDashboard({
                   </h2>
                   <p className="text-xs text-slate-500">
                     {layananSubTab === 'layananPublik'
-                      ? 'Kelola daftar aplikasi dan kanal layanan publik Itjen Kemendagri.'
+                      ? 'Kelola daftar aplikasi layanan publik beserta tautan eksternal langsung pada Beranda dan Layanan Publik.'
                       : 'Kelola dokumen resmi Informasi Publik beserta berkas PDF untuk pratinjau dan unduhan publik.'}
                   </p>
                 </div>
@@ -2120,7 +2120,15 @@ export default function AdminDashboard({
                         </div>
                         <div className="text-[11px] text-slate-600 line-clamp-2">{lay.deskripsi}</div>
                         {lay.url && (
-                          <div className="text-[10px] text-slate-400 truncate">{lay.url}</div>
+                          <a
+                            href={lay.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center space-x-1 text-[10px] text-[#063a69] hover:underline truncate max-w-full"
+                          >
+                            <span className="truncate">{lay.url}</span>
+                            <ExternalLink className="w-2.5 h-2.5 flex-shrink-0" />
+                          </a>
                         )}
                       </div>
                       <div className="flex items-center space-x-1 flex-shrink-0">
