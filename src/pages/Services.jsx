@@ -120,6 +120,13 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
 
   const skmList = dbData?.skmResponses || [];
 
+  const serviceTitleMap = {
+    'informasi-publik': 'Informasi Publik',
+    'layanan-publik': 'Layanan Publik',
+    'layanan-skm': 'Survei Kepuasan Masyarakat',
+    'layanan-wbs': 'Whistleblowing System (WBS)'
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8 animate-fadeIn">
       {/* Header Halaman */}
@@ -129,62 +136,11 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
           <span>Portal Pelayanan & Pengawasan</span>
         </div>
         <h2 className="font-heading font-extrabold text-3xl text-[#063a69] mt-1">
-          Layanan Publik & Informasi Pengawasan
+          {serviceTitleMap[activeTab] || 'Layanan Publik & Informasi Pengawasan'}
         </h2>
         <p className="text-sm text-slate-600 mt-1 max-w-3xl">
           Dokumen keterbukaan informasi berkala, sistem aplikasi pengawasan terpadu, survei kepuasan masyarakat, dan kanal pelaporan Whistleblowing System (WBS).
         </p>
-
-        {/* Tab Navigasi Sub Menu */}
-        <div className="flex flex-wrap items-center gap-2 mt-6">
-          <button
-            onClick={() => setActiveSubPage ? setActiveSubPage('informasi-publik') : setActiveTab('informasi-publik')}
-            className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all flex items-center space-x-2 ${
-              activeTab === 'informasi-publik'
-                ? 'bg-[#063a69] text-white shadow-md'
-                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-            }`}
-          >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Informasi Publik</span>
-          </button>
-
-          <button
-            onClick={() => setActiveSubPage ? setActiveSubPage('layanan-publik') : setActiveTab('layanan-publik')}
-            className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all flex items-center space-x-2 ${
-              activeTab === 'layanan-publik'
-                ? 'bg-[#063a69] text-white shadow-md'
-                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-            }`}
-          >
-            <Globe2 className="w-3.5 h-3.5" />
-            <span>Layanan Publik</span>
-          </button>
-
-          <button
-            onClick={() => setActiveSubPage ? setActiveSubPage('layanan-skm') : setActiveTab('layanan-skm')}
-            className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all flex items-center space-x-2 ${
-              activeTab === 'layanan-skm'
-                ? 'bg-[#063a69] text-white shadow-md'
-                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-            }`}
-          >
-            <ThumbsUp className="w-3.5 h-3.5" />
-            <span>Survei Kepuasan Masyarakat</span>
-          </button>
-
-          <button
-            onClick={() => setActiveSubPage ? setActiveSubPage('layanan-wbs') : setActiveTab('layanan-wbs')}
-            className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all flex items-center space-x-2 ${
-              activeTab === 'layanan-wbs'
-                ? 'bg-red-800 text-white shadow-md'
-                : 'bg-white text-red-700 hover:bg-red-50 border border-red-200'
-            }`}
-          >
-            <Shield className="w-3.5 h-3.5" />
-            <span>Whistleblowing System (WBS)</span>
-          </button>
-        </div>
       </div>
 
       {/* 1. INFORMASI PUBLIK (ACCORDION BERKELOMPOK SEPERTI REFERENSI) */}

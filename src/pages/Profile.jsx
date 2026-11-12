@@ -36,36 +36,14 @@ export default function Profile({ dbData, activeSubPage, setActiveSubPage }) {
       <div className="border-b border-slate-300 pb-6">
         <div className="text-xs font-bold uppercase tracking-wider text-[#d48f05] flex items-center space-x-2">
           <span className="w-2.5 h-2.5 bg-[#fbae17] inline-block rounded-xs"></span>
-          <span>Tentang Institusi</span>
+          <span>Profil Institusi &bull; {tabs.find((t) => t.id === currentTab)?.label || 'Visi & Misi'}</span>
         </div>
         <h2 className="font-heading font-extrabold text-3xl text-[#063a69] mt-1">
-          Profil Inspektorat Jenderal Kemendagri
+          {tabs.find((t) => t.id === currentTab)?.label || 'Profil Inspektorat Jenderal Kemendagri'}
         </h2>
         <p className="text-sm text-slate-600 mt-1 max-w-3xl">
           Mengenal lebih dekat visi, misi, landasan filosofis, struktur organisasi, dan profil para pemimpin pengawasan di lingkungan Kementerian Dalam Negeri.
         </p>
-
-        {/* Tab Navigasi Sub Menu */}
-        <div className="flex flex-wrap items-center gap-2 mt-6">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = currentTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveSubPage(tab.id)}
-                className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
-                  isActive
-                    ? 'bg-[#063a69] text-white shadow-md'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#fbae17]' : 'text-slate-400'}`} />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       {/* 1. VISI & MISI */}

@@ -32,6 +32,7 @@ import {
   Sparkles,
   Layers,
   ChevronRight,
+  ChevronDown,
   Target,
   Award,
   FileCheck,
@@ -63,8 +64,12 @@ export default function AdminDashboard({
   const [searchTerm, setSearchTerm] = useState('');
   const [notification, setNotification] = useState('');
 
-  // Media Tab filter in Admin
+  // Media, Berita, Regulasi, Layanan sub-tabs in Admin Sidebar
   const [mediaSubTab, setMediaSubTab] = useState('all'); // 'all', 'photos', 'videos', 'infographics'
+  const [newsSubTab, setNewsSubTab] = useState('all'); // 'all', 'nasional', 'kemendagri', 'pengawasan'
+  const [regSubTab, setRegSubTab] = useState('all'); // 'all', 'Permendagri', 'Kepmendagri', 'SE'
+  const [layananSubTab, setLayananSubTab] = useState('informasiPublik'); // 'informasiPublik', 'layananPublik'
+  const [expandedMenu, setExpandedMenu] = useState(null);
 
   // Modals state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -172,7 +177,7 @@ export default function AdminDashboard({
       if (activeTab === 'berita') {
         setFormData({
           judul: '',
-          kategori: 'pengawasan',
+          kategori: newsSubTab !== 'all' ? newsSubTab : 'pengawasan',
           tanggal: new Date().toISOString().split('T')[0],
           penulis: 'Tim Humas Itjen Kemendagri',
           gambar: '/assets/photo-hall.jpg',
@@ -203,7 +208,7 @@ export default function AdminDashboard({
         });
       } else if (activeTab === 'regulasi') {
         setFormData({
-          jenis: 'Permendagri',
+          jenis: regSubTab !== 'all' ? regSubTab : 'Permendagri',
           nomor: '',
           tahun: '2026',
           tentang: '',
@@ -213,7 +218,7 @@ export default function AdminDashboard({
           ukuranFile: ''
         });
       } else if (activeTab === 'layanan') {
-        const targetSection = entity?.section || 'layananPublik';
+        const targetSection = entity?.section || (layananSubTab === 'layananPublik' ? 'layananPublik' : 'informasiPublik');
         if (targetSection === 'informasiPublik') {
           setFormData({
             section: 'informasiPublik',
@@ -373,14 +378,66 @@ export default function AdminDashboard({
 
   const navMenuItems = [
     { id: 'ringkasan', label: 'Dashboard Utama', icon: LayoutDashboard },
-    { id: 'profil', label: 'Kelola Profil Institusi', icon: Landmark },
-    { id: 'berita', label: 'Kelola Berita', icon: Newspaper, count: dbData?.news?.length },
-    { id: 'pejabat', label: 'Kelola Profil Pejabat', icon: Users, count: dbData?.officers?.length },
-    { id: 'media', label: 'Kelola Media (CRUDS)', icon: ImageIcon, count: totalMediaCount },
+    {
+      id: 'profil',
+      label: 'Kelola Profil Institusi',
+      icon: Landmark,
+      children: [
+        { id: 'visi-misi', label: 'Visi & Misi', targetTab: 'profil' },
+        { id: 'logo-lambang', label: 'Logo & Filosofi', targetTab: 'profil' },
+        { id: 'core-values', label: 'Core Value BerAKHLAK', targetTab: 'profil' },
+        { id: 'struktur-organisasi', label: 'Struktur Organisasi', targetTab: 'profil' },
+        { id: 'tugas-fungsi', label: 'Tugas & Fungsi', targetTab: 'profil' },
+        { id: 'pejabat', label: 'Profil Pejabat', targetTab: 'pejabat', count: dbData?.officers?.length },
+      ],
+    },
+    {
+      id: 'berita',
+      label: 'Kelola Berita',
+      icon: Newspaper,
+      count: dbData?.news?.length,
+      children: [
+        { id: 'all', label: 'Semua Berita', targetTab: 'berita' },
+        { id: 'nasional', label: 'Berita Nasional', targetTab: 'berita' },
+        { id: 'kemendagri', label: 'Berita Kemendagri', targetTab: 'berita' },
+        { id: 'pengawasan', label: 'Berita Pengawasan', targetTab: 'berita' },
+      ],
+    },
+    {
+      id: 'media',
+      label: 'Kelola Media (CRUDS)',
+      icon: ImageIcon,
+      count: totalMediaCount,
+      children: [
+        { id: 'all', label: 'Semua Media', targetTab: 'media', count: totalMediaCount },
+        { id: 'photos', label: 'Foto', targetTab: 'media', count: allPhotos.length },
+        { id: 'videos', label: 'Video', targetTab: 'media', count: allVideos.length },
+        { id: 'infographics', label: 'Infografis', targetTab: 'media', count: allInfographics.length },
+      ],
+    },
     { id: 'daerah', label: 'Kelola Inspektorat 38 Provinsi', icon: Building2, count: dbData?.inspectorates?.length },
-    { id: 'regulasi', label: 'Kelola Regulasi', icon: FileText, count: dbData?.regulations?.length },
-    { id: 'layanan', label: 'Kelola Layanan & Info Publik', icon: Globe2 },
-    { id: 'penilaian', label: 'Moderasi Penilaian & SKM', icon: Star, count: (dbData?.ratings?.length || 0) + (dbData?.skmResponses?.length || 0) },
+    {
+      id: 'regulasi',
+      label: 'Kelola Regulasi',
+      icon: FileText,
+      count: dbData?.regulations?.length,
+      children: [
+        { id: 'all', label: 'Semua Regulasi', targetTab: 'regulasi' },
+        { id: 'Permendagri', label: 'Permendagri', targetTab: 'regulasi' },
+        { id: 'Kepmendagri', label: 'Kepmendagri', targetTab: 'regulasi' },
+        { id: 'SE', label: 'Surat Edaran (SE)', targetTab: 'regulasi' },
+      ],
+    },
+    {
+      id: 'layanan',
+      label: 'Kelola Layanan & Info Publik',
+      icon: Globe2,
+      children: [
+        { id: 'informasiPublik', label: 'Informasi Publik', targetTab: 'layanan', count: dbData?.services?.informasiPublik?.length },
+        { id: 'layananPublik', label: 'Layanan Publik', targetTab: 'layanan', count: dbData?.services?.layananPublik?.length },
+        { id: 'penilaian', label: 'SKM & Penilaian Publik', targetTab: 'penilaian', count: (dbData?.ratings?.length || 0) + (dbData?.skmResponses?.length || 0) },
+      ],
+    },
   ];
 
   return (
@@ -459,32 +516,97 @@ export default function AdminDashboard({
           <div className="space-y-1">
             {navMenuItems.map((item) => {
               const Icon = item.icon;
-              const isActive = activeTab === item.id;
+              const hasChildren = Boolean(item.children && item.children.length > 0);
+              const isParentActive =
+                activeTab === item.id ||
+                (item.id === 'profil' && activeTab === 'pejabat') ||
+                (item.id === 'layanan' && activeTab === 'penilaian');
+              const isExpanded = expandedMenu === item.id;
+
               return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    setSearchTerm('');
-                  }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-heading font-semibold transition-all ${
-                    isActive
-                      ? 'bg-[#063a69] text-white shadow-md'
-                      : 'text-slate-700 hover:bg-slate-100/80 hover:text-[#063a69]'
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#fbae17]' : 'text-slate-400'}`} />
-                    <span>{item.label}</span>
-                  </div>
-                  {item.count !== undefined && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
-                      isActive ? 'bg-[#fbae17] text-[#063a69]' : 'bg-slate-100 text-slate-600'
-                    }`}>
-                      {item.count}
-                    </span>
+                <div key={item.id} className="space-y-1">
+                  <button
+                    onClick={() => {
+                      if (hasChildren) {
+                        setExpandedMenu((prev) => (prev === item.id ? null : item.id));
+                      } else {
+                        setActiveTab(item.id);
+                        setExpandedMenu(null);
+                        setSearchTerm('');
+                      }
+                    }}
+                    className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-heading font-semibold transition-all ${
+                      isParentActive
+                        ? 'bg-[#063a69] text-white shadow-md'
+                        : 'text-slate-700 hover:bg-slate-100/80 hover:text-[#063a69]'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3 text-left">
+                      <Icon className={`w-4 h-4 flex-shrink-0 ${isParentActive ? 'text-[#fbae17]' : 'text-slate-400'}`} />
+                      <span>{item.label}</span>
+                    </div>
+                    <div className="flex items-center space-x-1.5 flex-shrink-0">
+                      {item.count !== undefined && (
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
+                          isParentActive ? 'bg-[#fbae17] text-[#063a69]' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {item.count}
+                        </span>
+                      )}
+                      {hasChildren && (
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                            isExpanded ? 'rotate-180' : ''
+                          } ${isParentActive ? 'text-[#fbae17]' : 'text-slate-400'}`}
+                        />
+                      )}
+                    </div>
+                  </button>
+
+                  {hasChildren && isExpanded && (
+                    <div className="ml-4 pl-3 border-l-2 border-slate-200 space-y-0.5 py-1">
+                      {item.children.map((sub) => {
+                        const isSubActive =
+                          (sub.targetTab === 'pejabat' && activeTab === 'pejabat') ||
+                          (sub.targetTab === 'penilaian' && activeTab === 'penilaian') ||
+                          (item.id === 'profil' && sub.targetTab === 'profil' && activeTab === 'profil' && profileSubTab === sub.id) ||
+                          (item.id === 'berita' && activeTab === 'berita' && newsSubTab === sub.id) ||
+                          (item.id === 'media' && activeTab === 'media' && mediaSubTab === sub.id) ||
+                          (item.id === 'regulasi' && activeTab === 'regulasi' && regSubTab === sub.id) ||
+                          (item.id === 'layanan' && sub.targetTab === 'layanan' && activeTab === 'layanan' && layananSubTab === sub.id);
+
+                        return (
+                          <button
+                            key={sub.id}
+                            onClick={() => {
+                              setActiveTab(sub.targetTab || item.id);
+                              if (item.id === 'profil' && sub.targetTab === 'profil') setProfileSubTab(sub.id);
+                              if (item.id === 'berita') setNewsSubTab(sub.id);
+                              if (item.id === 'media') setMediaSubTab(sub.id);
+                              if (item.id === 'regulasi') setRegSubTab(sub.id);
+                              if (item.id === 'layanan' && sub.targetTab === 'layanan') setLayananSubTab(sub.id);
+                              setSearchTerm('');
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-heading font-semibold transition-all text-left ${
+                              isSubActive
+                                ? 'bg-[#063a69]/10 text-[#063a69] border-l-2 border-[#fbae17]'
+                                : 'text-slate-600 hover:bg-slate-100 hover:text-[#063a69]'
+                            }`}
+                          >
+                            <span>{sub.label}</span>
+                            {sub.count !== undefined && (
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold ${
+                                isSubActive ? 'bg-[#063a69] text-white' : 'bg-slate-100 text-slate-500'
+                              }`}>
+                                {sub.count}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
-                </button>
+                </div>
               );
             })}
           </div>
@@ -603,10 +725,16 @@ export default function AdminDashboard({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
                   <h2 className="font-heading font-extrabold text-2xl text-[#063a69]">
-                    Manajemen Profil Institusi & Sub-Bagian
+                    {{
+                      'visi-misi': 'Profil Institusi - Visi & Misi',
+                      'struktur-organisasi': 'Profil Institusi - Struktur Organisasi',
+                      'tugas-fungsi': 'Profil Institusi - Tugas & Fungsi',
+                      'core-values': 'Profil Institusi - Core Value BerAKHLAK',
+                      'logo-lambang': 'Profil Institusi - Logo & Filosofi',
+                    }[profileSubTab] || 'Manajemen Profil Institusi'}
                   </h2>
                   <p className="text-xs text-slate-500">
-                    Kelola Visi & Misi, Bagan Struktur Organisasi, Tugas & Fungsi, Core Value BerAKHLAK, dan Filosofi Lambang.
+                    Pilih sub-bagian profil di menu samping kiri untuk mengubah Visi & Misi, Bagan Struktur Organisasi, Tugas & Fungsi, Core Value BerAKHLAK, atau Filosofi Lambang.
                   </p>
                 </div>
 
@@ -618,34 +746,6 @@ export default function AdminDashboard({
                   <Save className="w-4 h-4 text-[#fbae17]" />
                   <span>{savingProfile ? 'Menyimpan...' : 'Simpan Semua Profil'}</span>
                 </button>
-              </div>
-
-              {/* Sub-Tab Navigation */}
-              <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 rounded-xl border border-slate-200">
-                {[
-                  { id: 'visi-misi', label: 'Visi & Misi', icon: Target },
-                  { id: 'struktur-organisasi', label: 'Struktur Organisasi', icon: Layers },
-                  { id: 'tugas-fungsi', label: 'Tugas & Fungsi', icon: FileCheck },
-                  { id: 'core-values', label: 'Core Value BerAKHLAK', icon: Award },
-                  { id: 'logo-lambang', label: 'Logo & Filosofi', icon: Shield },
-                ].map((st) => {
-                  const Icon = st.icon;
-                  const isActive = profileSubTab === st.id;
-                  return (
-                    <button
-                      key={st.id}
-                      onClick={() => setProfileSubTab(st.id)}
-                      className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-heading font-semibold transition-all ${
-                        isActive
-                          ? 'bg-[#063a69] text-white shadow-xs'
-                          : 'text-slate-600 hover:bg-white'
-                      }`}
-                    >
-                      <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#fbae17]' : 'text-slate-400'}`} />
-                      <span>{st.label}</span>
-                    </button>
-                  );
-                })}
               </div>
 
               {/* 1. SUB-TAB VISI & MISI */}
@@ -1347,7 +1447,12 @@ export default function AdminDashboard({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
                   <h2 className="font-heading font-extrabold text-2xl text-[#063a69]">
-                    Manajemen Berita & Informasi
+                    {{
+                      all: 'Manajemen Berita & Informasi - Semua Berita',
+                      nasional: 'Manajemen Berita - Berita Nasional',
+                      kemendagri: 'Manajemen Berita - Berita Kemendagri',
+                      pengawasan: 'Manajemen Berita - Berita Pengawasan',
+                    }[newsSubTab] || 'Manajemen Berita & Informasi'}
                   </h2>
                   <p className="text-xs text-slate-500">Kelola rilis berita organik pengawasan dan re-upload Kemendagri / Nasional.</p>
                 </div>
@@ -1388,7 +1493,7 @@ export default function AdminDashboard({
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {(dbData?.news || [])
-                      .filter(n => !searchTerm || n.judul.toLowerCase().includes(searchTerm.toLowerCase()))
+                      .filter(n => (newsSubTab === 'all' || n.kategori === newsSubTab) && (!searchTerm || n.judul.toLowerCase().includes(searchTerm.toLowerCase())))
                       .map((item) => (
                         <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
                           <td className="p-3.5 w-16">
@@ -1513,7 +1618,12 @@ export default function AdminDashboard({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
                   <h2 className="font-heading font-extrabold text-2xl text-[#063a69]">
-                    Manajemen Media (CRUDS)
+                    {{
+                      all: 'Manajemen Media (CRUDS) - Semua Media',
+                      photos: 'Manajemen Media - Galeri Foto',
+                      videos: 'Manajemen Media - Video Liputan',
+                      infographics: 'Manajemen Media - Infografis',
+                    }[mediaSubTab] || 'Manajemen Media (CRUDS)'}
                   </h2>
                   <p className="text-xs text-slate-500">Kelola foto dokumentasi, video liputan, dan infografis pengawasan secara lengkap.</p>
                 </div>
@@ -1527,61 +1637,16 @@ export default function AdminDashboard({
                 </button>
               </div>
 
-              {/* Subtabs Filter & Search Bar */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                <div className="flex flex-wrap gap-1.5">
-                  <button
-                    onClick={() => setMediaSubTab('all')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-heading font-semibold transition-all ${
-                      mediaSubTab === 'all'
-                        ? 'bg-[#063a69] text-white shadow-xs'
-                        : 'text-slate-600 hover:bg-white'
-                    }`}
-                  >
-                    Semua Media ({totalMediaCount})
-                  </button>
-                  <button
-                    onClick={() => setMediaSubTab('photos')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-heading font-semibold transition-all ${
-                      mediaSubTab === 'photos'
-                        ? 'bg-[#063a69] text-white shadow-xs'
-                        : 'text-slate-600 hover:bg-white'
-                    }`}
-                  >
-                    Foto ({allPhotos.length})
-                  </button>
-                  <button
-                    onClick={() => setMediaSubTab('videos')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-heading font-semibold transition-all ${
-                      mediaSubTab === 'videos'
-                        ? 'bg-[#063a69] text-white shadow-xs'
-                        : 'text-slate-600 hover:bg-white'
-                    }`}
-                  >
-                    Video ({allVideos.length})
-                  </button>
-                  <button
-                    onClick={() => setMediaSubTab('infographics')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-heading font-semibold transition-all ${
-                      mediaSubTab === 'infographics'
-                        ? 'bg-[#063a69] text-white shadow-xs'
-                        : 'text-slate-600 hover:bg-white'
-                    }`}
-                  >
-                    Infografis ({allInfographics.length})
-                  </button>
-                </div>
-
-                <div className="relative min-w-[240px]">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Cari media..."
-                    className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#063a69]"
-                  />
-                </div>
+              {/* Search Bar Media */}
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Cari media foto, video, atau infografis..."
+                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063a69]"
+                />
               </div>
 
               {/* Grid Kartu Media dengan CRUDS Aksi */}
@@ -1738,7 +1803,12 @@ export default function AdminDashboard({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
                   <h2 className="font-heading font-extrabold text-2xl text-[#063a69]">
-                    Manajemen Regulasi & Produk Hukum
+                    {{
+                      all: 'Manajemen Regulasi & Produk Hukum - Semua Regulasi',
+                      Permendagri: 'Manajemen Regulasi - Permendagri',
+                      Kepmendagri: 'Manajemen Regulasi - Kepmendagri',
+                      SE: 'Manajemen Regulasi - Surat Edaran (SE)',
+                    }[regSubTab] || 'Manajemen Regulasi & Produk Hukum'}
                   </h2>
                   <p className="text-xs text-slate-500">Kelola Permendagri, Kepmendagri, Surat Edaran (SE), dan unggah dokumen salinan resmi.</p>
                 </div>
@@ -1779,7 +1849,7 @@ export default function AdminDashboard({
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {(dbData?.regulations || [])
-                      .filter(r => !searchTerm || r.nomor?.toLowerCase().includes(searchTerm.toLowerCase()) || r.tentang?.toLowerCase().includes(searchTerm.toLowerCase()) || r.jenis?.toLowerCase().includes(searchTerm.toLowerCase()) || String(r.tahun).includes(searchTerm))
+                      .filter(r => (regSubTab === 'all' || r.jenis === regSubTab) && (!searchTerm || r.nomor?.toLowerCase().includes(searchTerm.toLowerCase()) || r.tentang?.toLowerCase().includes(searchTerm.toLowerCase()) || r.jenis?.toLowerCase().includes(searchTerm.toLowerCase()) || String(r.tahun).includes(searchTerm)))
                       .map((r) => {
                         const hasFile = isDocumentAvailable(r.fileUrl || r.url);
                         return (
@@ -1860,20 +1930,18 @@ export default function AdminDashboard({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
                   <h2 className="font-heading font-extrabold text-2xl text-[#063a69]">
-                    Manajemen Layanan & Informasi Publik
+                    {layananSubTab === 'layananPublik'
+                      ? 'Manajemen Layanan Publik'
+                      : 'Manajemen Dokumen Informasi Publik'}
                   </h2>
-                  <p className="text-xs text-slate-500">Kelola dokumen resmi Informasi Publik (IHP, Renstra, Renja, RKP) serta portal Aplikasi Layanan Publik.</p>
+                  <p className="text-xs text-slate-500">
+                    {layananSubTab === 'layananPublik'
+                      ? 'Kelola daftar aplikasi dan kanal layanan publik Itjen Kemendagri.'
+                      : 'Kelola dokumen resmi Informasi Publik beserta berkas PDF untuk pratinjau dan unduhan publik.'}
+                  </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    onClick={() => openModal('create', { section: 'informasiPublik' })}
-                    className="px-4 py-2.5 bg-[#fbae17] hover:bg-[#fec34d] text-[#063a69] text-xs font-heading font-bold uppercase rounded-xl flex items-center space-x-2 shadow-sm"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Tambah Dokumen Info Publik</span>
-                  </button>
-
+                {layananSubTab === 'layananPublik' ? (
                   <button
                     onClick={() => openModal('create', { section: 'layananPublik' })}
                     className="px-4 py-2.5 bg-[#063a69] hover:bg-[#042646] text-white text-xs font-heading font-bold uppercase rounded-xl flex items-center space-x-2 shadow-sm"
@@ -1881,10 +1949,19 @@ export default function AdminDashboard({
                     <Plus className="w-4 h-4 text-[#fbae17]" />
                     <span>Tambah Aplikasi Layanan</span>
                   </button>
-                </div>
+                ) : (
+                  <button
+                    onClick={() => openModal('create', { section: 'informasiPublik' })}
+                    className="px-4 py-2.5 bg-[#fbae17] hover:bg-[#fec34d] text-[#063a69] text-xs font-heading font-bold uppercase rounded-xl flex items-center space-x-2 shadow-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Tambah Dokumen Info Publik</span>
+                  </button>
+                )}
               </div>
 
               {/* Dokumen Info Publik (Tampilan Berkelompok seperti Referensi Publik) */}
+              {layananSubTab === 'informasiPublik' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="font-heading font-bold text-xs uppercase text-slate-500">
@@ -1991,8 +2068,10 @@ export default function AdminDashboard({
                   ))}
                 </div>
               </div>
+              )}
 
               {/* Layanan Publik List */}
+              {layananSubTab === 'layananPublik' && (
               <div className="space-y-3 pt-4 border-t border-slate-100">
                 <div className="font-heading font-bold text-xs uppercase text-slate-400">Daftar Aplikasi & Layanan Publik:</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -2022,6 +2101,7 @@ export default function AdminDashboard({
                   ))}
                 </div>
               </div>
+              )}
             </div>
           )}
 

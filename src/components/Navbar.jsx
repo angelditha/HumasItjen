@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ChevronDown,
   ChevronRight,
@@ -31,6 +31,17 @@ export default function Navbar({
   const [currentTime, setCurrentTime] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [compactDate, setCompactDate] = useState('');
+  const navRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Update clock
   useEffect(() => {
@@ -98,6 +109,7 @@ export default function Navbar({
       id: 'berita',
       label: 'Berita',
       children: [
+        { id: null, label: 'Semua Berita' },
         { id: 'berita-nasional', label: 'Berita Nasional' },
         { id: 'berita-kemendagri', label: 'Berita Kemendagri' },
         { id: 'berita-pengawasan', label: 'Berita Pengawasan' },
@@ -117,6 +129,7 @@ export default function Navbar({
       id: 'regulasi',
       label: 'Regulasi',
       children: [
+        { id: null, label: 'Semua Regulasi' },
         { id: 'reg-permendagri', label: 'Permendagri' },
         { id: 'reg-kepmendagri', label: 'Kepmendagri' },
         { id: 'reg-se', label: 'Surat Edaran (SE)' },
@@ -135,48 +148,118 @@ export default function Navbar({
   ];
 
   return (
-    <header className="w-full bg-white shadow-sm sticky top-0 z-40">
-      {/* 1. BRAND HEADER WITH TWO LOGOS */}
-      <div className="bg-[#f4f2ee] border-b border-slate-200 py-3 sm:py-4 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <header ref={navRef} className="w-full bg-white shadow-sm sticky top-0 z-40">
+      {/* 1. BRAND HEADER (BARIS PUTIH / KREM) */}
+      <div className="bg-[#f4f2ee] border-b border-slate-200 py-3 sm:py-3.5 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <a 
             href="/"
             onClick={(e) => handleNavClick('beranda', null, e)}
-            className="flex items-center space-x-3 sm:space-x-5 cursor-pointer group select-none"
+            className="flex items-center space-x-3 sm:space-x-4 cursor-pointer group select-none flex-shrink-0"
           >
             {/* Logo Kemendagri & Logo Inspektorat */}
             <div className="flex items-center space-x-2 sm:space-x-3">
               <img 
                 src="/assets/logo-kemendagri.png" 
                 alt="Lambang Kementerian Dalam Negeri RI" 
-                className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm transition-transform group-hover:scale-105"
+                className="h-12 sm:h-14 w-auto object-contain drop-shadow-sm transition-transform group-hover:scale-105"
               />
-              <div className="h-10 sm:h-12 w-px bg-slate-300"></div>
+              <div className="h-9 sm:h-11 w-px bg-slate-300"></div>
               <img 
                 src="/assets/logo-anggaraksa.png" 
                 alt="Lambang Inspektorat Jenderal Kemendagri - Anggaraksa Dharma" 
-                className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm transition-transform group-hover:scale-105"
+                className="h-12 sm:h-14 w-auto object-contain drop-shadow-sm transition-transform group-hover:scale-105"
               />
             </div>
 
             {/* Typography Identitas Kementerian */}
             <div>
-              <div className="text-[11px] sm:text-xs font-semibold tracking-wider text-slate-600 uppercase">
+              <div className="text-[10px] sm:text-xs font-semibold tracking-wider text-slate-600 uppercase">
                 Kementerian Dalam Negeri Republik Indonesia
               </div>
-              <h1 className="font-heading font-extrabold text-lg sm:text-2xl text-[#063a69] tracking-tight leading-tight group-hover:text-[#042646] transition-colors">
+              <h1 className="font-heading font-extrabold text-base sm:text-2xl text-[#063a69] tracking-tight leading-tight group-hover:text-[#042646] transition-colors">
                 INSPEKTORAT JENDERAL
               </h1>
             </div>
           </a>
+
+          {/* Utility Cluster Terpadu di Kanan Baris Putih (Kalender, Portal WBS, PPID, Kemendagri RI, Portal Humas) */}
+          <div className="hidden lg:flex items-center space-x-3 text-xs text-slate-600">
+            <div
+              className="flex items-center space-x-1.5 text-slate-700 font-medium whitespace-nowrap"
+              title={`${currentDate} (${currentTime})`}
+            >
+              <Calendar className="w-3.5 h-3.5 text-[#d48f05]" />
+              <span className="hidden xl:inline">{currentDate}</span>
+              <span className="xl:hidden">{compactDate}</span>
+            </div>
+
+            <span className="text-slate-300">|</span>
+
+            <a
+              href="https://otda.kemendagri.go.id/layananwbs"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[#063a69] font-medium transition-colors inline-flex items-center space-x-1 whitespace-nowrap"
+              title="Portal Whistleblowing System"
+            >
+              <Shield className="w-3.5 h-3.5 text-[#d48f05]" />
+              <span>Portal WBS</span>
+            </a>
+
+            <span className="text-slate-300">|</span>
+
+            <a
+              href="https://ppid.kemendagri.go.id"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[#063a69] font-medium transition-colors whitespace-nowrap"
+            >
+              <span>PPID</span>
+            </a>
+
+            <span className="text-slate-300">|</span>
+
+            <a
+              href="https://kemendagri.go.id"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[#063a69] font-medium transition-colors inline-flex items-center space-x-1 whitespace-nowrap"
+            >
+              <span>Kemendagri RI</span>
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </a>
+
+            <span className="text-slate-300">|</span>
+
+            {adminUser ? (
+              <button
+                onClick={onOpenDashboard}
+                className="inline-flex items-center space-x-1.5 bg-[#063a69] text-white hover:bg-[#042646] font-bold px-3 py-1.5 rounded-lg text-[11px] shadow-xs transition-all whitespace-nowrap"
+                title="Buka Dashboard Administrasi"
+              >
+                <UserCheck className="w-3.5 h-3.5 text-[#fbae17]" />
+                <span>Dashboard Humas</span>
+              </button>
+            ) : (
+              <button
+                onClick={onOpenLogin}
+                className="inline-flex items-center space-x-1.5 border border-[#063a69]/25 bg-white hover:bg-[#063a69] text-[#063a69] hover:text-white font-semibold px-3 py-1.5 rounded-lg text-[11px] transition-all whitespace-nowrap shadow-2xs"
+                title="Akses Terbatas Pengelola"
+              >
+                <Lock className="w-3 h-3" />
+                <span>Portal Humas</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* 2. MAIN NAVIGATION & UTILITY BAR (SATU BARIS TERPADU) */}
+      {/* 2. MAIN NAVIGATION BAR (BARIS BIRU) */}
       <nav className="bg-[#063a69] text-white shadow-md relative">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between gap-3">
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center space-x-0.5">
+          <div className="hidden lg:flex items-center space-x-1">
             {navItems.map((item) => {
               const isCurrent = activePage === item.id;
               const hasChildren = item.children && item.children.length > 0;
@@ -188,49 +271,60 @@ export default function Navbar({
                   onMouseEnter={() => hasChildren && setActiveDropdown(item.id)}
                   onMouseLeave={() => hasChildren && setActiveDropdown(null)}
                 >
-                  <a
-                    href={getPathForState(item.id, hasChildren ? item.children[0].id : null)}
-                    onClick={(e) => {
-                      if (!hasChildren) {
-                        handleNavClick(item.id, null, e);
-                      } else {
-                        handleNavClick(item.id, item.children[0].id, e);
-                      }
-                    }}
-                    className={`px-2 xl:px-2.5 py-3.5 text-[11px] xl:text-xs font-heading font-semibold uppercase tracking-tight xl:tracking-wide flex items-center space-x-1 transition-colors border-b-2 whitespace-nowrap ${
-                      isCurrent 
-                        ? 'border-[#fbae17] text-[#fbae17] bg-white/5' 
-                        : 'border-transparent text-slate-100 hover:text-[#fbae17] hover:bg-white/5'
-                    }`}
-                  >
-                    <span>{item.label}</span>
-                    {hasChildren && (
-                      <ChevronDown className="w-3.5 h-3.5 opacity-80 group-hover:rotate-180 transition-transform duration-200" />
-                    )}
-                  </a>
+                  {hasChildren ? (
+                    <button
+                      type="button"
+                      onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
+                      className={`px-3.5 py-3.5 text-xs font-heading font-semibold uppercase tracking-wider flex items-center space-x-1 transition-colors border-b-2 whitespace-nowrap ${
+                        isCurrent || activeDropdown === item.id
+                          ? 'border-[#fbae17] text-[#fbae17] bg-white/5' 
+                          : 'border-transparent text-slate-100 hover:text-[#fbae17] hover:bg-white/5'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      <ChevronDown className={`w-3.5 h-3.5 opacity-80 transition-transform duration-200 ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
+                    </button>
+                  ) : (
+                    <a
+                      href={getPathForState(item.id, null)}
+                      onClick={(e) => handleNavClick(item.id, null, e)}
+                      className={`px-3.5 py-3.5 text-xs font-heading font-semibold uppercase tracking-wider flex items-center space-x-1 transition-colors border-b-2 whitespace-nowrap ${
+                        isCurrent 
+                          ? 'border-[#fbae17] text-[#fbae17] bg-white/5' 
+                          : 'border-transparent text-slate-100 hover:text-[#fbae17] hover:bg-white/5'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                    </a>
+                  )}
 
                   {/* Dropdown Menu */}
                   {hasChildren && activeDropdown === item.id && (
                     <div className="absolute left-0 top-full w-64 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#fbae17] py-2 z-50 animate-fadeIn">
-                      {item.children.map((child) => (
-                        <a
-                          key={child.id}
-                          href={getPathForState(item.id, child.id)}
-                          onClick={(e) => handleNavClick(item.id, child.id, e)}
-                          className={`w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-[#f4f2ee] hover:text-[#063a69] flex items-center justify-between transition-colors group/subitem ${
-                            activePage === item.id && activeSubPage === child.id 
-                              ? 'text-[#063a69] font-bold bg-[#f4f2ee]' 
-                              : 'text-slate-700'
-                          }`}
-                        >
-                          <span>{child.label}</span>
-                          <ChevronRight className={`w-3.5 h-3.5 transition-all flex-shrink-0 ${
-                            activePage === item.id && activeSubPage === child.id 
-                              ? 'text-[#063a69] translate-x-0.5' 
-                              : 'text-[#d48f05] group-hover/subitem:text-[#063a69] group-hover/subitem:translate-x-0.5'
-                          }`} />
-                        </a>
-                      ))}
+                      {item.children.map((child) => {
+                        const isChildActive =
+                          activePage === item.id &&
+                          ((child.id === null && !activeSubPage) || activeSubPage === child.id);
+                        return (
+                          <a
+                            key={child.id || 'semua'}
+                            href={getPathForState(item.id, child.id)}
+                            onClick={(e) => handleNavClick(item.id, child.id, e)}
+                            className={`w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-[#f4f2ee] hover:text-[#063a69] flex items-center justify-between transition-colors group/subitem ${
+                              isChildActive
+                                ? 'text-[#063a69] font-bold bg-[#f4f2ee]' 
+                                : 'text-slate-700'
+                            }`}
+                          >
+                            <span>{child.label}</span>
+                            <ChevronRight className={`w-3.5 h-3.5 transition-all flex-shrink-0 ${
+                              isChildActive
+                                ? 'text-[#063a69] translate-x-0.5' 
+                                : 'text-[#d48f05] group-hover/subitem:text-[#063a69] group-hover/subitem:translate-x-0.5'
+                            }`} />
+                          </a>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -238,82 +332,15 @@ export default function Navbar({
             })}
           </div>
 
-          {/* Utility Cluster (Kalender, Portal WBS, PPID, Kemendagri RI, Portal Humas, Cari) & Mobile Toggle */}
-          <div className="flex items-center space-x-1.5 xl:space-x-2 py-1.5 ml-auto">
-            {/* Kalender / Tanggal */}
-            <div
-              className="hidden xl:flex items-center space-x-1 text-[11px] text-slate-200 pr-2 border-r border-white/15 whitespace-nowrap"
-              title={`${currentDate} (${currentTime})`}
-            >
-              <Calendar className="w-3.5 h-3.5 text-[#fbae17] flex-shrink-0" />
-              <span className="hidden 2xl:inline">{currentDate}</span>
-              <span className="2xl:hidden">{compactDate}</span>
-            </div>
-
-            {/* Quick Links Terpadu */}
-            <div className="hidden md:flex items-center space-x-1.5 xl:space-x-2 text-[11px] text-slate-200 pr-2 border-r border-white/15 whitespace-nowrap">
-              <a
-                href="https://otda.kemendagri.go.id/layananwbs"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-[#fbae17] transition-colors inline-flex items-center space-x-1"
-                title="Portal Whistleblowing System"
-              >
-                <Shield className="w-3 h-3 text-[#fbae17]" />
-                <span>Portal WBS</span>
-              </a>
-              <span className="text-white/20">|</span>
-              <a
-                href="https://ppid.kemendagri.go.id"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-[#fbae17] transition-colors inline-flex items-center"
-              >
-                <span>PPID</span>
-              </a>
-              <span className="text-white/20 hidden xl:inline">|</span>
-              <a
-                href="https://kemendagri.go.id"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-[#fbae17] transition-colors hidden xl:inline-flex items-center space-x-1"
-              >
-                <span>Kemendagri RI</span>
-                <ExternalLink className="w-2.5 h-2.5" />
-              </a>
-            </div>
-
-            {/* Portal Humas / Admin Dashboard */}
-            <div className="hidden sm:flex items-center whitespace-nowrap">
-              {adminUser ? (
-                <button
-                  onClick={onOpenDashboard}
-                  className="inline-flex items-center space-x-1 bg-[#fbae17] text-[#063a69] hover:bg-[#fec34d] font-bold px-2.5 py-1 rounded text-[11px] shadow-xs transition-all"
-                  title="Buka Dashboard Administrasi"
-                >
-                  <UserCheck className="w-3.5 h-3.5" />
-                  <span>Dashboard Humas</span>
-                </button>
-              ) : (
-                <button
-                  onClick={onOpenLogin}
-                  className="inline-flex items-center space-x-1 text-slate-200 hover:text-[#fbae17] px-2 py-1 rounded hover:bg-white/10 text-[11px] transition-colors"
-                  title="Akses Terbatas Pengelola"
-                >
-                  <Lock className="w-3 h-3 text-[#fbae17]" />
-                  <span>Portal Humas</span>
-                </button>
-              )}
-            </div>
-
-            {/* Tombol Cari */}
+          {/* Search & Mobile Toggle */}
+          <div className="flex items-center space-x-2 py-1.5 ml-auto">
             <button
               onClick={onSearchOpen}
-              className="px-2 py-1.5 text-slate-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-1.5 text-xs whitespace-nowrap"
+              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors flex items-center space-x-2 text-xs whitespace-nowrap border border-white/10"
               title="Pencarian Cepat"
             >
-              <Search className="w-4 h-4 text-[#fbae17]" />
-              <span className="hidden sm:inline font-medium text-[11px]">Cari...</span>
+              <Search className="w-3.5 h-3.5 text-[#fbae17]" />
+              <span className="font-medium">Cari...</span>
             </button>
 
             {/* Mobile Hamburger Toggle */}

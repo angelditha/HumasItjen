@@ -66,6 +66,13 @@ export default function Regulations({ dbData, activeSubPage, setActiveSubPage })
     await downloadDocument(url, `${reg.jenis || 'Regulasi'}-${reg.nomor || reg.id}`);
   };
 
+  const regTitleMap = {
+    Semua: 'Regulasi & Produk Hukum Pengawasan',
+    Permendagri: 'Peraturan Menteri Dalam Negeri (Permendagri)',
+    Kepmendagri: 'Keputusan Menteri Dalam Negeri (Kepmendagri)',
+    SE: 'Surat Edaran (SE) Pengawasan'
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8 animate-fadeIn">
       {/* Header Halaman */}
@@ -75,39 +82,11 @@ export default function Regulations({ dbData, activeSubPage, setActiveSubPage })
           <span>Jaringan Dokumentasi & Informasi Hukum</span>
         </div>
         <h2 className="font-heading font-extrabold text-3xl text-[#063a69] mt-1">
-          Regulasi & Produk Hukum Pengawasan
+          {regTitleMap[jenisFilter] || regTitleMap.Semua}
         </h2>
         <p className="text-sm text-slate-600 mt-1 max-w-3xl">
           Basis regulasi hukum pengawasan penyelenggaraan pemerintahan daerah, pengelolaan keuangan desa, PKPT, evaluasi kinerja Pj kepala daerah, dan netralitas ASN.
         </p>
-
-        {/* Tab Sub Jenis Regulasi */}
-        <div className="flex flex-wrap items-center gap-2 mt-6">
-          {['Semua', 'Permendagri', 'Kepmendagri', 'SE'].map((jenis) => (
-            <button
-              key={jenis}
-              onClick={() => {
-                setJenisFilter(jenis);
-                if (setActiveSubPage) {
-                  const subMap = {
-                    Semua: null,
-                    Permendagri: 'reg-permendagri',
-                    Kepmendagri: 'reg-kepmendagri',
-                    SE: 'reg-se'
-                  };
-                  setActiveSubPage(subMap[jenis] ?? null);
-                }
-              }}
-              className={`px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
-                jenisFilter === jenis
-                  ? 'bg-[#063a69] text-white shadow-md'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-              }`}
-            >
-              <span>{jenis === 'SE' ? 'Surat Edaran (SE)' : jenis}</span>
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Bar Pencarian & Filter Tahun */}

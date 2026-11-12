@@ -183,70 +183,32 @@ export default function News({
     );
   }
 
+  const newsTitleMap = {
+    semua: 'Arsip Berita Kemendagri & Pengawasan Itjen',
+    pengawasan: 'Berita Pengawasan Itjen',
+    kemendagri: 'Berita Kemendagri',
+    nasional: 'Berita Nasional'
+  };
+
   // TAMPILAN DAFTAR ARSIP BERITA
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8 animate-fadeIn">
       {/* Header Halaman Berita */}
-      <div className="border-b border-slate-300 pb-6">
-        <div className="text-xs font-bold uppercase tracking-wider text-[#d48f05] flex items-center space-x-2">
-          <span className="w-2.5 h-2.5 bg-[#fbae17] inline-block rounded-xs"></span>
-          <span>Pusat Berita & Informasi</span>
-        </div>
-        <h2 className="font-heading font-extrabold text-3xl text-[#063a69] mt-1">
-          Arsip Berita Kemendagri & Pengawasan Itjen
-        </h2>
-        <p className="text-sm text-slate-600 mt-1 max-w-3xl">
-          Menyajikan publikasi rilis resmi pengawasan intern (organik Itjen) serta publikasi re-upload berita Kementerian Dalam Negeri dan Berita Nasional.
-        </p>
-      </div>
-
-      {/* Bar Filter Kategori & Kotak Pencarian */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-        {/* Tab Kategori */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => handleCategoryChange('semua')}
-            className={`px-4 py-2 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
-              categoryFilter === 'semua'
-                ? 'bg-[#063a69] text-white shadow-sm'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            Semua ({allNews.length})
-          </button>
-          <button
-            onClick={() => handleCategoryChange('pengawasan')}
-            className={`px-4 py-2 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
-              categoryFilter === 'pengawasan'
-                ? 'bg-[#063a69] text-white shadow-sm'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            Pengawasan Itjen ({allNews.filter(n => n.kategori === 'pengawasan').length})
-          </button>
-          <button
-            onClick={() => handleCategoryChange('kemendagri')}
-            className={`px-4 py-2 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
-              categoryFilter === 'kemendagri'
-                ? 'bg-[#063a69] text-white shadow-sm'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            Kemendagri ({allNews.filter(n => n.kategori === 'kemendagri').length})
-          </button>
-          <button
-            onClick={() => handleCategoryChange('nasional')}
-            className={`px-4 py-2 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
-              categoryFilter === 'nasional'
-                ? 'bg-[#063a69] text-white shadow-sm'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            Nasional ({allNews.filter(n => n.kategori === 'nasional').length})
-          </button>
+      <div className="border-b border-slate-300 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div className="text-xs font-bold uppercase tracking-wider text-[#d48f05] flex items-center space-x-2">
+            <span className="w-2.5 h-2.5 bg-[#fbae17] inline-block rounded-xs"></span>
+            <span>Pusat Berita & Informasi</span>
+          </div>
+          <h2 className="font-heading font-extrabold text-3xl text-[#063a69] mt-1">
+            {newsTitleMap[categoryFilter] || newsTitleMap.semua}
+          </h2>
+          <p className="text-sm text-slate-600 mt-1 max-w-3xl">
+            Menyajikan publikasi rilis resmi pengawasan intern (organik Itjen) serta publikasi re-upload berita Kementerian Dalam Negeri dan Berita Nasional.
+          </p>
         </div>
 
-        {/* Search Input */}
+        {/* Search Input Ringkas */}
         <div className="relative min-w-[260px]">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
             <Search className="w-4 h-4" />
@@ -256,7 +218,7 @@ export default function News({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari judul berita..."
-            className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#063a69]"
+            className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#063a69]"
           />
         </div>
       </div>

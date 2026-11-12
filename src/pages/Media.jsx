@@ -36,6 +36,12 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
     }
   };
 
+  const mediaTitleMap = {
+    foto: 'Foto Dokumentasi Pengawasan',
+    video: 'Video Liputan Pengawasan',
+    infografis: 'Infografis Edukasi Pengawasan'
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8 animate-fadeIn">
       {/* Header Halaman */}
@@ -45,50 +51,11 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
           <span>Galeri Publikasi Audio-Visual</span>
         </div>
         <h2 className="font-heading font-extrabold text-3xl text-[#063a69] mt-1">
-          Pusat Media & Dokumentasi Pengawasan
+          {mediaTitleMap[activeTab] || 'Pusat Media & Dokumentasi Pengawasan'}
         </h2>
         <p className="text-sm text-slate-600 mt-1 max-w-3xl">
           Koleksi dokumentasi foto resmi kegiatan pengawasan, video liputan edukasi antikorupsi, dan infografis pengawasan APBD.
         </p>
-
-        {/* Tab Sub Navigasi */}
-        <div className="flex flex-wrap items-center gap-2 mt-6">
-          <button
-            onClick={() => handleTabChange('foto')}
-            className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
-              activeTab === 'foto'
-                ? 'bg-[#063a69] text-white shadow-md'
-                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-            }`}
-          >
-            <ImageIcon className="w-3.5 h-3.5" />
-            <span>Foto Dokumentasi ({mediaData.photos?.length || 0})</span>
-          </button>
-
-          <button
-            onClick={() => handleTabChange('video')}
-            className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
-              activeTab === 'video'
-                ? 'bg-[#063a69] text-white shadow-md'
-                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-            }`}
-          >
-            <VideoIcon className="w-3.5 h-3.5" />
-            <span>Video Liputan ({mediaData.videos?.length || 0})</span>
-          </button>
-
-          <button
-            onClick={() => handleTabChange('infografis')}
-            className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-heading font-semibold uppercase tracking-wider transition-all ${
-              activeTab === 'infografis'
-                ? 'bg-[#063a69] text-white shadow-md'
-                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-            }`}
-          >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Infografis Edukasi ({mediaData.infographics?.length || 0})</span>
-          </button>
-        </div>
       </div>
 
       {/* 1. TAB FOTO (HANYA TANGGAL DAN JUDUL) */}
