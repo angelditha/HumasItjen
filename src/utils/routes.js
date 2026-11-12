@@ -220,12 +220,253 @@ export const STATIC_ROUTES = [
   }
 ];
 
+export const ADMIN_ROUTES = [
+  {
+    path: '/dashboard-admin',
+    aliases: ['/admin'],
+    tab: 'ringkasan',
+    subTab: null,
+    expandedMenu: null,
+    title: 'Dashboard Admin | Humas Itjen Kemendagri',
+    description: 'Panel kontrol utama pengelola konten portal Humas Inspektorat Jenderal Kemendagri.'
+  },
+  {
+    path: '/kelola-profil-institusi',
+    aliases: ['/kelola-profil-institusi/visi-misi', '/kelola-profil', '/kelola-profil-instusi'],
+    tab: 'profil',
+    subTab: 'visi-misi',
+    expandedMenu: 'profil',
+    title: 'Kelola Profil Institusi - Visi & Misi | Admin Itjen Kemendagri',
+    description: 'Kelola data Visi dan Misi Inspektorat Jenderal Kementerian Dalam Negeri.'
+  },
+  {
+    path: '/kelola-profil-institusi/logo-lambang',
+    aliases: ['/kelola-profil-institusi/logo-filosofi'],
+    tab: 'profil',
+    subTab: 'logo-lambang',
+    expandedMenu: 'profil',
+    title: 'Kelola Profil Institusi - Logo & Filosofi | Admin Itjen Kemendagri',
+    description: 'Kelola filosofi logo Kemendagri dan lambang Angga Raksa Dharma Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-profil-institusi/core-value',
+    aliases: ['/kelola-profil-institusi/core-values'],
+    tab: 'profil',
+    subTab: 'core-values',
+    expandedMenu: 'profil',
+    title: 'Kelola Profil Institusi - Core Value BerAKHLAK | Admin Itjen Kemendagri',
+    description: 'Kelola Core Value ASN BerAKHLAK dan Berdampak Inspektorat Jenderal Kemendagri.'
+  },
+  {
+    path: '/kelola-profil-institusi/struktur-organisasi',
+    tab: 'profil',
+    subTab: 'struktur-organisasi',
+    expandedMenu: 'profil',
+    title: 'Kelola Profil Institusi - Struktur Organisasi | Admin Itjen Kemendagri',
+    description: 'Kelola bagan dan data unit eselon pada Struktur Organisasi Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-profil-institusi/tugas-fungsi',
+    tab: 'profil',
+    subTab: 'tugas-fungsi',
+    expandedMenu: 'profil',
+    title: 'Kelola Profil Institusi - Tugas & Fungsi | Admin Itjen Kemendagri',
+    description: 'Kelola uraian Tugas Pokok dan Fungsi Inspektorat Jenderal Kemendagri.'
+  },
+  {
+    path: '/kelola-profil-institusi/profil-pejabat',
+    aliases: ['/kelola-profil-pejabat'],
+    tab: 'pejabat',
+    subTab: null,
+    expandedMenu: 'profil',
+    title: 'Kelola Profil Pejabat | Admin Itjen Kemendagri',
+    description: 'Kelola daftar profil pimpinan dan pejabat struktural Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-berita',
+    tab: 'berita',
+    subTab: 'all',
+    expandedMenu: 'berita',
+    title: 'Kelola Berita - Semua Berita | Admin Itjen Kemendagri',
+    description: 'Kelola seluruh rilis berita nasional, Kemendagri, dan berita pengawasan.'
+  },
+  {
+    path: '/kelola-berita/nasional',
+    tab: 'berita',
+    subTab: 'nasional',
+    expandedMenu: 'berita',
+    title: 'Kelola Berita Nasional | Admin Itjen Kemendagri',
+    description: 'Kelola publikasi Berita Nasional pada portal Humas Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-berita/kemendagri',
+    tab: 'berita',
+    subTab: 'kemendagri',
+    expandedMenu: 'berita',
+    title: 'Kelola Berita Kemendagri | Admin Itjen Kemendagri',
+    description: 'Kelola publikasi Berita Kemendagri pada portal Humas Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-berita/pengawasan',
+    tab: 'berita',
+    subTab: 'pengawasan',
+    expandedMenu: 'berita',
+    title: 'Kelola Berita Pengawasan | Admin Itjen Kemendagri',
+    description: 'Kelola rilis Berita Pengawasan Inspektorat Jenderal Kemendagri.'
+  },
+  {
+    path: '/kelola-media',
+    tab: 'media',
+    subTab: 'all',
+    expandedMenu: 'media',
+    title: 'Kelola Media (CRUDS) - Semua Media | Admin Itjen Kemendagri',
+    description: 'Kelola seluruh galeri foto, video liputan, dan infografis Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-media/foto',
+    tab: 'media',
+    subTab: 'photos',
+    expandedMenu: 'media',
+    title: 'Kelola Media - Galeri Foto | Admin Itjen Kemendagri',
+    description: 'Kelola foto dokumentasi resmi kegiatan pengawasan Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-media/video',
+    tab: 'media',
+    subTab: 'videos',
+    expandedMenu: 'media',
+    title: 'Kelola Media - Video Liputan | Admin Itjen Kemendagri',
+    description: 'Kelola koleksi video liputan dan publikasi pengawasan Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-media/infografis',
+    tab: 'media',
+    subTab: 'infographics',
+    expandedMenu: 'media',
+    title: 'Kelola Media - Infografis | Admin Itjen Kemendagri',
+    description: 'Kelola infografis edukasi pengawasan Inspektorat Jenderal Kemendagri.'
+  },
+  {
+    path: '/kelola-inspektorat-daerah',
+    aliases: ['/kelola-inspektorat-38-provinsi'],
+    tab: 'daerah',
+    subTab: null,
+    expandedMenu: null,
+    title: 'Kelola Inspektorat 38 Provinsi | Admin Itjen Kemendagri',
+    description: 'Kelola direktori nama dan tautan portal Inspektorat Daerah 38 Provinsi.'
+  },
+  {
+    path: '/kelola-regulasi',
+    tab: 'regulasi',
+    subTab: 'all',
+    expandedMenu: 'regulasi',
+    title: 'Kelola Regulasi - Semua Regulasi | Admin Itjen Kemendagri',
+    description: 'Kelola daftar dokumen Permendagri, Kepmendagri, dan Surat Edaran.'
+  },
+  {
+    path: '/kelola-regulasi/permendagri',
+    tab: 'regulasi',
+    subTab: 'Permendagri',
+    expandedMenu: 'regulasi',
+    title: 'Kelola Regulasi - Permendagri | Admin Itjen Kemendagri',
+    description: 'Kelola dokumen Peraturan Menteri Dalam Negeri (Permendagri).'
+  },
+  {
+    path: '/kelola-regulasi/kepmendagri',
+    tab: 'regulasi',
+    subTab: 'Kepmendagri',
+    expandedMenu: 'regulasi',
+    title: 'Kelola Regulasi - Kepmendagri | Admin Itjen Kemendagri',
+    description: 'Kelola dokumen Keputusan Menteri Dalam Negeri (Kepmendagri).'
+  },
+  {
+    path: '/kelola-regulasi/surat-edaran',
+    tab: 'regulasi',
+    subTab: 'SE',
+    expandedMenu: 'regulasi',
+    title: 'Kelola Regulasi - Surat Edaran (SE) | Admin Itjen Kemendagri',
+    description: 'Kelola dokumen Surat Edaran (SE) pengawasan Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-informasi-publik',
+    aliases: ['/kelola-layanan/informasi-publik', '/kelola-layanan'],
+    tab: 'layanan',
+    subTab: 'informasiPublik',
+    expandedMenu: 'layanan',
+    title: 'Kelola Layanan - Informasi Publik | Admin Itjen Kemendagri',
+    description: 'Kelola dokumen keterbukaan Informasi Publik Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-layanan-publik',
+    aliases: ['/kelola-layanan/layanan-publik'],
+    tab: 'layanan',
+    subTab: 'layananPublik',
+    expandedMenu: 'layanan',
+    title: 'Kelola Layanan - Layanan Publik | Admin Itjen Kemendagri',
+    description: 'Kelola daftar portal aplikasi dan Layanan Publik Itjen Kemendagri.'
+  },
+  {
+    path: '/kelola-penilaian-skm',
+    aliases: ['/kelola-layanan/skm-penilaian'],
+    tab: 'penilaian',
+    subTab: null,
+    expandedMenu: 'layanan',
+    title: 'Kelola SKM & Penilaian Publik | Admin Itjen Kemendagri',
+    description: 'Kelola hasil Survei Kepuasan Masyarakat dan ulasan penilaian website.'
+  }
+];
+
 function normalizePathname(pathname = '/') {
-  const clean = (pathname || '/').split('?')[0].split('#')[0];
+  let decoded = pathname || '/';
+  try {
+    decoded = decodeURIComponent(decoded);
+  } catch {
+    // Keep raw pathname if percent-encoding is malformed
+  }
+  const clean = decoded.split('?')[0].split('#')[0].trim().replace(/\s+/g, '-');
   if (clean.length > 1 && clean.endsWith('/')) {
     return clean.slice(0, -1).toLowerCase();
   }
   return clean.toLowerCase() || '/';
+}
+
+export function parseAdminPathToState(pathname = '/') {
+  const clean = normalizePathname(pathname);
+  const matched = ADMIN_ROUTES.find(
+    (route) =>
+      route.path === clean ||
+      (Array.isArray(route.aliases) && route.aliases.includes(clean))
+  );
+  if (!matched) return null;
+  return {
+    tab: matched.tab,
+    subTab: matched.subTab || null,
+    expandedMenu: matched.expandedMenu || null
+  };
+}
+
+export function getPathForAdminState(tab = 'ringkasan', subTab = null) {
+  const exact = ADMIN_ROUTES.find(
+    (r) => r.tab === tab && (r.subTab || null) === (subTab || null)
+  );
+  if (exact) return exact.path;
+  const fallback = ADMIN_ROUTES.find((r) => r.tab === tab);
+  return fallback ? fallback.path : '/dashboard-admin';
+}
+
+export function getAdminSeoMetaForState(tab = 'ringkasan', subTab = null) {
+  const matched =
+    ADMIN_ROUTES.find(
+      (r) => r.tab === tab && (r.subTab || null) === (subTab || null)
+    ) ||
+    ADMIN_ROUTES.find((r) => r.tab === tab) ||
+    ADMIN_ROUTES[0];
+
+  return {
+    title: matched.title,
+    description: matched.description,
+    canonicalPath: matched.path
+  };
 }
 
 export function parsePathToState(pathname = '/') {
@@ -331,13 +572,8 @@ function upsertMetaTag(selector, attrName, attrValue, content) {
   el.setAttribute('content', content);
 }
 
-export function applySeoMeta(page, subPage = null, selectedNews = null) {
+function applyMetaDocument({ title, description, canonicalPath, ogType = 'website' }) {
   if (typeof document === 'undefined') return;
-  const { title, description, canonicalPath } = getSeoMetaForState(
-    page,
-    subPage,
-    selectedNews
-  );
   const canonicalUrl = `${SITE_ORIGIN}${canonicalPath === '/' ? '/' : canonicalPath}`;
 
   document.title = title;
@@ -345,7 +581,7 @@ export function applySeoMeta(page, subPage = null, selectedNews = null) {
   upsertMetaTag('meta[property="og:title"]', 'property', 'og:title', title);
   upsertMetaTag('meta[property="og:description"]', 'property', 'og:description', description);
   upsertMetaTag('meta[property="og:url"]', 'property', 'og:url', canonicalUrl);
-  upsertMetaTag('meta[property="og:type"]', 'property', 'og:type', selectedNews ? 'article' : 'website');
+  upsertMetaTag('meta[property="og:type"]', 'property', 'og:type', ogType);
 
   let canonical = document.head.querySelector('link[rel="canonical"]');
   if (!canonical) {
@@ -354,4 +590,20 @@ export function applySeoMeta(page, subPage = null, selectedNews = null) {
     document.head.appendChild(canonical);
   }
   canonical.setAttribute('href', canonicalUrl);
+}
+
+export function applySeoMeta(page, subPage = null, selectedNews = null) {
+  const meta = getSeoMetaForState(page, subPage, selectedNews);
+  applyMetaDocument({
+    ...meta,
+    ogType: selectedNews ? 'article' : 'website'
+  });
+}
+
+export function applyAdminSeoMeta(tab = 'ringkasan', subTab = null) {
+  const meta = getAdminSeoMetaForState(tab, subTab);
+  applyMetaDocument({
+    ...meta,
+    ogType: 'website'
+  });
 }

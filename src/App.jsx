@@ -16,18 +16,33 @@ import {
   getPathForState,
   findNewsBySlug,
   applySeoMeta,
-  normalizeSubPage
+  normalizeSubPage,
+  parseAdminPathToState,
+  getPathForAdminState,
+  applyAdminSeoMeta
 } from './utils/routes';
 import { Search, X, ArrowRight, ExternalLink, FileText, Newspaper, Building2 } from 'lucide-react';
+
+function readStoredAdminUser() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const saved = localStorage.getItem('humas_admin_user');
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+}
 
 export default function App() {
   const [dbData, setDbData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const initialRoute =
-    typeof window !== 'undefined'
-      ? parsePathToState(window.location.pathname)
-      : { page: 'beranda', subPage: null, newsSlug: null };
+  const initialPathname =
+    typeof window !== 'undefined' ? window.location.pathname : '/';
+  const initialAdminRoute = parseAdminPathToState(initialPathname);
+  const initialRoute = initialAdminRoute
+    ? { page: 'beranda', subPage: null, newsSlug: null }
+    : parsePathToState(initialPathname);
 
   // Navigation states synced with URL slug
   const [activePage, setActivePage] = useState(initialRoute.page);
@@ -35,13 +50,20 @@ export default function App() {
   const [pendingNewsSlug, setPendingNewsSlug] = useState(initialRoute.newsSlug);
   const [selectedNews, setSelectedNews] = useState(null);
 
-  // Admin states
-  const [adminUser, setAdminUser] = useState(() => {
-    const saved = localStorage.getItem('humas_admin_user');
-    return saved ? JSON.parse(saved) : null;
-  });
-  const [isAdminView, setIsAdminView] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  // Admin states + URL slug state
+  const [adminUser, setAdminUser] = useState(() => readStoredAdminUser());
+  const [adminRoute, setAdminRoute] = useState(
+    initialAdminRoute || { tab: 'ringkasan', subTab: null, expandedMenu: null }
+  );
+  const [pendingAdminRoute, setPendingAdminRoute] = useState(() =>
+    initialAdminRoute && !readStoredAdminUser() ? initialAdminRoute : null
+  );
+  const [isAdminView, setIsAdminView] = useState(() =>
+    Boolean(initialAdminRoute && readStoredAdminUser())
+  );
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(() =>
+    Boolean(initialAdminRoute && !readStoredAdminUser())
+  );
 
   // Search Modal state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -68,16 +90,46 @@ export default function App() {
     loadData();
   }, []);
 
+  const handleAdminNavigate = (
+    tab = 'ringkasan',
+    subTab = null,
+    expandedMenu = null,
+    options = { pushHistory: true }
+  ) => {
+    const nextRoute = { tab, subTab, expandedMenu };
+    setAdminRoute(nextRoute);
+
+    if (typeof window !== 'undefined' && options?.pushHistory !== false) {
+      const targetPath = getPathForAdminState(tab, subTab);
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({ admin: true, ...nextRoute }, '', targetPath);
+      }
+    }
+
+    applyAdminSeoMeta(tab, subTab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenDashboard = () => {
+    setIsAdminView(true);
+    handleAdminNavigate('ringkasan', null, null);
+  };
+
   const handleLoginSuccess = (user) => {
     setAdminUser(user);
     localStorage.setItem('humas_admin_user', JSON.stringify(user));
+    const targetAdmin = pendingAdminRoute || { tab: 'ringkasan', subTab: null, expandedMenu: null };
+    setPendingAdminRoute(null);
     setIsAdminView(true);
+    handleAdminNavigate(targetAdmin.tab, targetAdmin.subTab, targetAdmin.expandedMenu);
   };
 
   const handleLogout = () => {
     setAdminUser(null);
     localStorage.removeItem('humas_admin_user');
     setIsAdminView(false);
+    setPendingAdminRoute(null);
+    handleNavigate('beranda', null);
   };
 
   const handleNavigate = (page, subPage = null, newsItem = null, options = { pushHistory: true }) => {
@@ -109,10 +161,29 @@ export default function App() {
     }
   }, [pendingNewsSlug, dbData]);
 
-  // Sync browser back/forward navigation with state
+  // Sync browser back/forward navigation with state (Public & Admin slugs)
   useEffect(() => {
     const onPopState = () => {
-      const route = parsePathToState(window.location.pathname);
+      const pathname = window.location.pathname;
+      const nextAdminRoute = parseAdminPathToState(pathname);
+      if (nextAdminRoute) {
+        const currentUser = readStoredAdminUser();
+        if (currentUser) {
+          setAdminUser(currentUser);
+          setAdminRoute(nextAdminRoute);
+          setIsAdminView(true);
+          applyAdminSeoMeta(nextAdminRoute.tab, nextAdminRoute.subTab);
+        } else {
+          setIsAdminView(false);
+          setPendingAdminRoute(nextAdminRoute);
+          setIsLoginModalOpen(true);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      setIsAdminView(false);
+      const route = parsePathToState(pathname);
       setActivePage(route.page);
       setActiveSubPage(route.subPage);
       if (route.newsSlug && dbData?.news?.length) {
@@ -131,8 +202,16 @@ export default function App() {
 
   // Update dynamic SEO meta tags on state change
   useEffect(() => {
+    if (isAdminView && adminUser) {
+      applyAdminSeoMeta(adminRoute.tab, adminRoute.subTab);
+      return;
+    }
+    if (pendingAdminRoute) {
+      applyAdminSeoMeta(pendingAdminRoute.tab, pendingAdminRoute.subTab);
+      return;
+    }
     applySeoMeta(activePage, activeSubPage, selectedNews);
-  }, [activePage, activeSubPage, selectedNews]);
+  }, [isAdminView, adminUser, adminRoute, pendingAdminRoute, activePage, activeSubPage, selectedNews]);
 
   // Search results
   const searchResultsNews = (dbData?.news || []).filter(n =>
@@ -177,8 +256,13 @@ export default function App() {
       <AdminDashboard
         dbData={dbData}
         adminUser={adminUser}
+        adminRoute={adminRoute}
+        onAdminNavigate={handleAdminNavigate}
         onLogout={handleLogout}
-        onSwitchToPublic={() => setIsAdminView(false)}
+        onSwitchToPublic={() => {
+          setIsAdminView(false);
+          handleNavigate('beranda', null);
+        }}
         onRefreshData={loadData}
       />
     );
@@ -196,7 +280,7 @@ export default function App() {
         onNavigate={handleNavigate}
         adminUser={adminUser}
         onOpenLogin={() => setIsLoginModalOpen(true)}
-        onOpenDashboard={() => setIsAdminView(true)}
+        onOpenDashboard={handleOpenDashboard}
         onSearchOpen={() => setIsSearchOpen(true)}
       />
 
@@ -271,13 +355,19 @@ export default function App() {
         onNavigate={handleNavigate}
         onOpenLogin={() => setIsLoginModalOpen(true)}
         adminUser={adminUser}
-        onOpenDashboard={() => setIsAdminView(true)}
+        onOpenDashboard={handleOpenDashboard}
       />
 
       {/* MODAL LOGIN ADMIN RAHASIA (TIDAK MENAMPILKAN KREDENSIAL) */}
       <AdminLoginModal
         isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
+        onClose={() => {
+          setIsLoginModalOpen(false);
+          if (pendingAdminRoute) {
+            setPendingAdminRoute(null);
+            handleNavigate('beranda', null);
+          }
+        }}
         onLoginSuccess={handleLoginSuccess}
       />
 

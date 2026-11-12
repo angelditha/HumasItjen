@@ -55,21 +55,31 @@ import { downloadDocument, formatFileSize, isDocumentAvailable } from '../utils/
 
 export default function AdminDashboard({ 
   dbData, 
-  adminUser, 
+  adminUser,
+  adminRoute,
+  onAdminNavigate,
   onLogout, 
   onSwitchToPublic,
   onRefreshData 
 }) {
-  const [activeTab, setActiveTab] = useState('ringkasan');
+  const [activeTab, setActiveTab] = useState(adminRoute?.tab || 'ringkasan');
   const [searchTerm, setSearchTerm] = useState('');
   const [notification, setNotification] = useState('');
 
   // Media, Berita, Regulasi, Layanan sub-tabs in Admin Sidebar
-  const [mediaSubTab, setMediaSubTab] = useState('all'); // 'all', 'photos', 'videos', 'infographics'
-  const [newsSubTab, setNewsSubTab] = useState('all'); // 'all', 'nasional', 'kemendagri', 'pengawasan'
-  const [regSubTab, setRegSubTab] = useState('all'); // 'all', 'Permendagri', 'Kepmendagri', 'SE'
-  const [layananSubTab, setLayananSubTab] = useState('informasiPublik'); // 'informasiPublik', 'layananPublik'
-  const [expandedMenu, setExpandedMenu] = useState(null);
+  const [mediaSubTab, setMediaSubTab] = useState(
+    adminRoute?.tab === 'media' && adminRoute?.subTab ? adminRoute.subTab : 'all'
+  );
+  const [newsSubTab, setNewsSubTab] = useState(
+    adminRoute?.tab === 'berita' && adminRoute?.subTab ? adminRoute.subTab : 'all'
+  );
+  const [regSubTab, setRegSubTab] = useState(
+    adminRoute?.tab === 'regulasi' && adminRoute?.subTab ? adminRoute.subTab : 'all'
+  );
+  const [layananSubTab, setLayananSubTab] = useState(
+    adminRoute?.tab === 'layanan' && adminRoute?.subTab ? adminRoute.subTab : 'informasiPublik'
+  );
+  const [expandedMenu, setExpandedMenu] = useState(adminRoute?.expandedMenu || null);
 
   // Modals state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,7 +90,35 @@ export default function AdminDashboard({
   const [previewDoc, setPreviewDoc] = useState(null);
 
   // Profile management states
-  const [profileSubTab, setProfileSubTab] = useState('visi-misi');
+  const [profileSubTab, setProfileSubTab] = useState(
+    adminRoute?.tab === 'profil' && adminRoute?.subTab ? adminRoute.subTab : 'visi-misi'
+  );
+
+  // Sync admin state when browser Back/Forward or external adminRoute changes
+  useEffect(() => {
+    if (!adminRoute) return;
+    setActiveTab(adminRoute.tab || 'ringkasan');
+    setExpandedMenu(adminRoute.expandedMenu || null);
+    if (adminRoute.tab === 'profil' && adminRoute.subTab) setProfileSubTab(adminRoute.subTab);
+    if (adminRoute.tab === 'berita') setNewsSubTab(adminRoute.subTab || 'all');
+    if (adminRoute.tab === 'media') setMediaSubTab(adminRoute.subTab || 'all');
+    if (adminRoute.tab === 'regulasi') setRegSubTab(adminRoute.subTab || 'all');
+    if (adminRoute.tab === 'layanan') setLayananSubTab(adminRoute.subTab || 'informasiPublik');
+  }, [adminRoute]);
+
+  const navigateAdmin = (tab, subTab = null, nextExpanded = null) => {
+    setActiveTab(tab);
+    setExpandedMenu(nextExpanded);
+    if (tab === 'profil' && subTab) setProfileSubTab(subTab);
+    if (tab === 'berita') setNewsSubTab(subTab || 'all');
+    if (tab === 'media') setMediaSubTab(subTab || 'all');
+    if (tab === 'regulasi') setRegSubTab(subTab || 'all');
+    if (tab === 'layanan') setLayananSubTab(subTab || 'informasiPublik');
+    setSearchTerm('');
+    if (onAdminNavigate) {
+      onAdminNavigate(tab, subTab, nextExpanded);
+    }
+  };
   const [profileForm, setProfileForm] = useState(null);
   const [newMisiText, setNewMisiText] = useState('');
   const [newFungsiText, setNewFungsiText] = useState('');
@@ -167,14 +205,15 @@ export default function AdminDashboard({
   };
 
   // Open modal
-  const openModal = (mode, entity = null) => {
+  const openModal = (mode, entity = null, overrideTab = null) => {
+    const targetTab = overrideTab || activeTab;
     setModalMode(mode);
     setCurrentEntity(entity);
     if (mode === 'edit' && entity) {
       setFormData({ ...entity });
     } else {
-      // Default blank values based on active tab
-      if (activeTab === 'berita') {
+      // Default blank values based on target tab
+      if (targetTab === 'berita') {
         setFormData({
           judul: '',
           kategori: newsSubTab !== 'all' ? newsSubTab : 'pengawasan',
@@ -184,7 +223,7 @@ export default function AdminDashboard({
           konten: '',
           isBanner: false
         });
-      } else if (activeTab === 'pejabat') {
+      } else if (targetTab === 'pejabat') {
         // Cukup foto, nama, jabatan!
         setFormData({
           nama: '',
@@ -192,7 +231,7 @@ export default function AdminDashboard({
           foto: '/assets/officer-arief.png',
           urutan: (dbData?.officers?.length || 0) + 1
         });
-      } else if (activeTab === 'media') {
+      } else if (targetTab === 'media') {
         // Full CRUDS media form
         setFormData({
           mediaType: mediaSubTab !== 'all' ? mediaSubTab : 'photos',
@@ -201,12 +240,12 @@ export default function AdminDashboard({
           url: '/assets/photo-rakornas.jpg',
           youtubeId: 'dQw4w9WgXcQ'
         });
-      } else if (activeTab === 'daerah') {
+      } else if (targetTab === 'daerah') {
         setFormData({
           nama: '',
           website: 'https://inspektorat.'
         });
-      } else if (activeTab === 'regulasi') {
+      } else if (targetTab === 'regulasi') {
         setFormData({
           jenis: regSubTab !== 'all' ? regSubTab : 'Permendagri',
           nomor: '',
@@ -217,7 +256,7 @@ export default function AdminDashboard({
           fileUrl: '',
           ukuranFile: ''
         });
-      } else if (activeTab === 'layanan') {
+      } else if (targetTab === 'layanan') {
         const targetSection = entity?.section || (layananSubTab === 'layananPublik' ? 'layananPublik' : 'informasiPublik');
         if (targetSection === 'informasiPublik') {
           setFormData({
@@ -234,7 +273,6 @@ export default function AdminDashboard({
         } else {
           setFormData({
             section: 'layananPublik',
-            kode: '',
             nama: '',
             deskripsi: '',
             url: 'https://',
@@ -318,7 +356,6 @@ export default function AdminDashboard({
           };
         } else {
           payload = {
-            kode: formData.kode || '',
             nama: formData.nama || formData.judul || '',
             deskripsi: formData.deskripsi || '',
             url: formData.url || formData.fileUrl || '',
@@ -530,9 +567,7 @@ export default function AdminDashboard({
                       if (hasChildren) {
                         setExpandedMenu((prev) => (prev === item.id ? null : item.id));
                       } else {
-                        setActiveTab(item.id);
-                        setExpandedMenu(null);
-                        setSearchTerm('');
+                        navigateAdmin(item.id, null, null);
                       }
                     }}
                     className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-heading font-semibold transition-all ${
@@ -579,13 +614,10 @@ export default function AdminDashboard({
                           <button
                             key={sub.id}
                             onClick={() => {
-                              setActiveTab(sub.targetTab || item.id);
-                              if (item.id === 'profil' && sub.targetTab === 'profil') setProfileSubTab(sub.id);
-                              if (item.id === 'berita') setNewsSubTab(sub.id);
-                              if (item.id === 'media') setMediaSubTab(sub.id);
-                              if (item.id === 'regulasi') setRegSubTab(sub.id);
-                              if (item.id === 'layanan' && sub.targetTab === 'layanan') setLayananSubTab(sub.id);
-                              setSearchTerm('');
+                              const targetTab = sub.targetTab || item.id;
+                              const nextSubTab =
+                                targetTab === 'pejabat' || targetTab === 'penilaian' ? null : sub.id;
+                              navigateAdmin(targetTab, nextSubTab, item.id);
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-heading font-semibold transition-all text-left ${
                               isSubActive
@@ -687,28 +719,28 @@ export default function AdminDashboard({
                 </h3>
                 <div className="flex flex-wrap gap-2.5">
                   <button
-                    onClick={() => { setActiveTab('berita'); openModal('create'); }}
+                    onClick={() => { navigateAdmin('berita', 'all', 'berita'); openModal('create', null, 'berita'); }}
                     className="px-4 py-2 bg-[#063a69] hover:bg-[#042646] text-white text-xs font-heading font-semibold rounded-lg flex items-center space-x-1.5 shadow-xs"
                   >
                     <Plus className="w-3.5 h-3.5 text-[#fbae17]" />
                     <span>Tambah Berita Baru</span>
                   </button>
                   <button
-                    onClick={() => { setActiveTab('pejabat'); openModal('create'); }}
+                    onClick={() => { navigateAdmin('pejabat', null, 'profil'); openModal('create', null, 'pejabat'); }}
                     className="px-4 py-2 bg-white hover:bg-slate-100 text-[#063a69] border border-slate-300 text-xs font-heading font-semibold rounded-lg flex items-center space-x-1.5"
                   >
                     <Plus className="w-3.5 h-3.5 text-[#d48f05]" />
                     <span>Tambah Pejabat Baru</span>
                   </button>
                   <button
-                    onClick={() => { setActiveTab('media'); openModal('create'); }}
+                    onClick={() => { navigateAdmin('media', 'all', 'media'); openModal('create', null, 'media'); }}
                     className="px-4 py-2 bg-white hover:bg-slate-100 text-[#063a69] border border-slate-300 text-xs font-heading font-semibold rounded-lg flex items-center space-x-1.5"
                   >
                     <Upload className="w-3.5 h-3.5 text-[#d48f05]" />
                     <span>Unggah Media Baru</span>
                   </button>
                   <button
-                    onClick={() => { setActiveTab('regulasi'); openModal('create'); }}
+                    onClick={() => { navigateAdmin('regulasi', 'all', 'regulasi'); openModal('create', null, 'regulasi'); }}
                     className="px-4 py-2 bg-white hover:bg-slate-100 text-[#063a69] border border-slate-300 text-xs font-heading font-semibold rounded-lg flex items-center space-x-1.5"
                   >
                     <Plus className="w-3.5 h-3.5 text-[#d48f05]" />
@@ -2076,12 +2108,22 @@ export default function AdminDashboard({
                 <div className="font-heading font-bold text-xs uppercase text-slate-400">Daftar Aplikasi & Layanan Publik:</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {(dbData?.services?.layananPublik || []).map((lay) => (
-                    <div key={lay.id} className="p-4 bg-slate-50 border rounded-2xl flex items-center justify-between gap-3 shadow-2xs">
-                      <div>
-                        <div className="font-heading font-bold text-xs text-[#063a69]">{lay.nama}</div>
-                        <div className="text-[11px] text-slate-500 truncate max-w-xs">{lay.deskripsi}</div>
+                    <div key={lay.id} className="p-4 bg-white border border-slate-200 rounded-2xl flex items-start justify-between gap-3 shadow-2xs">
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-heading font-bold text-xs text-[#063a69]">{lay.nama}</span>
+                          {(lay.badge || lay.kategori) && (
+                            <span className="text-[10px] font-semibold text-[#063a69] bg-slate-100 px-2 py-0.5 rounded">
+                              {lay.badge || lay.kategori}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-slate-600 line-clamp-2">{lay.deskripsi}</div>
+                        {lay.url && (
+                          <div className="text-[10px] text-slate-400 truncate">{lay.url}</div>
+                        )}
                       </div>
-                      <div className="flex items-center space-x-1">
+                      <div className="flex items-center space-x-1 flex-shrink-0">
                         <button
                           onClick={() => openModal('edit', { ...lay, section: 'layananPublik' })}
                           className="p-1.5 text-slate-500 hover:text-[#063a69] rounded-lg"
@@ -2627,35 +2669,33 @@ export default function AdminDashboard({
               {/* FORM UNTUK LAYANAN */}
               {activeTab === 'layanan' && (
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block font-bold text-slate-700 uppercase mb-1">Bagian Layanan *</label>
-                      <select
-                        value={formData.section || 'layananPublik'}
-                        onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                        disabled={modalMode === 'edit'}
-                        className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs font-semibold disabled:opacity-75"
-                      >
-                        <option value="informasiPublik">Informasi Publik (Dokumen Resmi)</option>
-                        <option value="layananPublik">Layanan Publik (Aplikasi Digital)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block font-bold text-slate-700 uppercase mb-1">Kode Singkat *</label>
-                      <input
-                        type="text"
-                        value={formData.kode || ''}
-                        onChange={(e) => setFormData({ ...formData, kode: e.target.value })}
-                        placeholder={formData.section === 'informasiPublik' ? 'Contoh: IHP / Renstra / LKjIP' : 'Contoh: SIOLA / SP4N'}
-                        className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
-                        required
-                      />
-                    </div>
+                  <div>
+                    <label className="block font-bold text-slate-700 uppercase mb-1">Bagian Layanan *</label>
+                    <select
+                      value={formData.section || 'layananPublik'}
+                      onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                      disabled={modalMode === 'edit'}
+                      className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs font-semibold disabled:opacity-75"
+                    >
+                      <option value="informasiPublik">Informasi Publik (Dokumen Resmi)</option>
+                      <option value="layananPublik">Layanan Publik (Aplikasi Digital)</option>
+                    </select>
                   </div>
 
                   {formData.section === 'informasiPublik' ? (
                     <>
+                      <div>
+                        <label className="block font-bold text-slate-700 uppercase mb-1">Kode Singkat *</label>
+                        <input
+                          type="text"
+                          value={formData.kode || ''}
+                          onChange={(e) => setFormData({ ...formData, kode: e.target.value })}
+                          placeholder="Contoh: IHP / Renstra / LKjIP"
+                          className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                          required
+                        />
+                      </div>
+
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div className="sm:col-span-2">
                           <label className="block font-bold text-slate-700 uppercase mb-1">Kelompok / Kategori Informasi *</label>

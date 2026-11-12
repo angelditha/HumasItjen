@@ -273,18 +273,16 @@ export default function Services({ dbData, activeSubPage, setActiveSubPage, onRe
                 className="bg-white rounded-xl p-5 border border-slate-200 hover:border-[#fbae17] shadow-xs hover:shadow-xl transition-all flex flex-col justify-between group"
               >
                 <div>
-                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <span className="inline-flex items-center justify-center px-3 py-1.5 min-w-[50px] w-auto h-auto rounded-lg bg-gradient-to-br from-[#063a69] to-[#042646] text-[#fbae17] font-bold text-xs font-heading shadow-xs">
-                      {lay.kode || lay.nama}
-                    </span>
-                    <span className="text-[10px] font-semibold text-[#063a69] bg-slate-100 px-2 py-0.5 rounded">
-                      {lay.badge || lay.kategori}
-                    </span>
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h4 className="font-heading font-bold text-base text-[#063a69] group-hover:text-[#042646]">
+                      {lay.nama}
+                    </h4>
+                    {(lay.badge || lay.kategori) && (
+                      <span className="text-[10px] font-semibold text-[#063a69] bg-slate-100 px-2 py-0.5 rounded flex-shrink-0">
+                        {lay.badge || lay.kategori}
+                      </span>
+                    )}
                   </div>
-
-                  <h4 className="font-heading font-bold text-base text-[#063a69] group-hover:text-[#042646]">
-                    {lay.nama}
-                  </h4>
 
                   <p className="text-xs text-slate-600 mt-2 leading-relaxed">
                     {lay.deskripsi}
