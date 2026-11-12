@@ -243,19 +243,6 @@ export default function Home({
         )}
       </section>
 
-      {/* QUICK HIGHLIGHT STRIP: NILAI BERAKHLAK */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 -mt-6 relative z-30">
-        <div className="bg-white p-5 rounded-xl shadow-md border-t-4 border-[#fbae17] flex items-center space-x-4 max-w-md mx-auto">
-          <div className="w-12 h-12 rounded-lg bg-[#fbae17]/15 text-[#d48f05] flex items-center justify-center font-bold flex-shrink-0">
-            <CheckCircle2 className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="font-heading font-extrabold text-xl text-[#063a69]">BerAKHLAK</div>
-            <div className="text-xs text-slate-500 font-medium">Pengawasan Berdampak Nyata</div>
-          </div>
-        </div>
-      </section>
-
       {/* 2. SECTION B: BERITA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-300 pb-4">
