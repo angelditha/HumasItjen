@@ -51,11 +51,6 @@ export default function Footer({ onNavigate, onOpenLogin, adminUser, onOpenDashb
             <p className="text-xs text-slate-300 leading-relaxed text-justify">
               Aparat Pengawasan Intern Pemerintah (APIP) yang bertugas menyelenggarakan pengawasan intern di lingkungan Kemendagri dan pembinaan serta pengawasan umum pelaksanaan urusan pemerintahan daerah di seluruh Indonesia.
             </p>
-            <div className="pt-1">
-              <span className="inline-block bg-[#fbae17]/20 text-[#fbae17] border border-[#fbae17]/40 text-[11px] font-semibold px-2.5 py-1 rounded">
-                Semboyan: Angga Raksa Dharma
-              </span>
-            </div>
           </div>
 
           {/* Kolom 2: Kontak & Kantor */}

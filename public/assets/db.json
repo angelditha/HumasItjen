@@ -703,6 +703,8 @@
     "informasiPublik": [
       {
         "id": "infopub-1",
+        "kategori": "1. INFORMASI TENTANG HASIL PENGAWASAN",
+        "nomor": "1.1.",
         "kode": "IHP",
         "judul": "Ikhtisar Hasil Pengawasan (IHP) Semesteran",
         "periode": "Tahun 2026",
@@ -712,6 +714,8 @@
       },
       {
         "id": "infopub-2",
+        "kategori": "2. RINGKASAN INFORMASI PROGRAM DAN KEGIATAN ITJEN KEMENDAGRI",
+        "nomor": "2.1.",
         "kode": "Renstra",
         "judul": "Rencana Strategis (Renstra) Itjen Kemendagri 2025 - 2029",
         "periode": "2025 - 2029",
@@ -721,6 +725,8 @@
       },
       {
         "id": "infopub-3",
+        "kategori": "2. RINGKASAN INFORMASI PROGRAM DAN KEGIATAN ITJEN KEMENDAGRI",
+        "nomor": "2.2.",
         "kode": "Renja",
         "judul": "Rencana Kerja (Renja) Itjen Kemendagri Tahun 2026",
         "periode": "Tahun 2026",
@@ -730,6 +736,8 @@
       },
       {
         "id": "infopub-4",
+        "kategori": "2. RINGKASAN INFORMASI PROGRAM DAN KEGIATAN ITJEN KEMENDAGRI",
+        "nomor": "2.3.",
         "kode": "RKP",
         "judul": "Rencana Kerja Pengawasan (RKP) Nasional",
         "periode": "Tahun 2026",

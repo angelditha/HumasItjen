@@ -199,10 +199,6 @@ export default function AdminDashboard({
       } else if (activeTab === 'daerah') {
         setFormData({
           nama: '',
-          ibukota: '',
-          wilayah: 'Sumatera',
-          inspektur: '',
-          telp: '',
           website: 'https://inspektorat.'
         });
       } else if (activeTab === 'regulasi') {
@@ -221,6 +217,8 @@ export default function AdminDashboard({
         if (targetSection === 'informasiPublik') {
           setFormData({
             section: 'informasiPublik',
+            kategori: '2. RINGKASAN INFORMASI PROGRAM DAN KEGIATAN ITJEN KEMENDAGRI',
+            nomor: '',
             kode: '',
             judul: '',
             periode: 'Tahun 2026',
@@ -304,6 +302,8 @@ export default function AdminDashboard({
         let payload;
         if (section === 'informasiPublik') {
           payload = {
+            kategori: formData.kategori || '1. INFORMASI TENTANG HASIL PENGAWASAN',
+            nomor: formData.nomor || '',
             kode: formData.kode || '',
             judul: formData.judul || formData.nama || '',
             periode: formData.periode || 'Tahun 2026',
@@ -1615,7 +1615,7 @@ export default function AdminDashboard({
                       {/* Info: Hanya Tanggal dan Judul */}
                       <div className="p-4 space-y-1">
                         <div className="text-xs text-slate-500 font-medium">{m.tanggal}</div>
-                        <h4 className="font-heading font-bold text-sm text-[#063a69] line-clamp-2">
+                        <h4 className="font-heading font-bold text-sm text-[#063a69] break-words leading-snug">
                           {m.judul}
                         </h4>
                       </div>
@@ -1661,7 +1661,7 @@ export default function AdminDashboard({
                   <h2 className="font-heading font-extrabold text-2xl text-[#063a69]">
                     Manajemen Direktori 38 Provinsi
                   </h2>
-                  <p className="text-xs text-slate-500">Kelola tautan website resmi, nama inspektur, dan kontak daerah.</p>
+                  <p className="text-xs text-slate-500">Kelola daftar nama daerah dan tautan website eksternal resmi Inspektorat Daerah.</p>
                 </div>
 
                 <button
@@ -1680,7 +1680,7 @@ export default function AdminDashboard({
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Cari provinsi atau inspektur..."
+                  placeholder="Cari nama daerah atau tautan website..."
                   className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063a69]"
                 />
               </div>
@@ -1689,28 +1689,23 @@ export default function AdminDashboard({
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-50 text-slate-700 font-heading font-bold border-b border-slate-200">
                     <tr>
-                      <th className="p-3.5">Provinsi & Ibukota</th>
-                      <th className="p-3.5">Wilayah</th>
-                      <th className="p-3.5">Nama Inspektur</th>
-                      <th className="p-3.5">Tautan Website</th>
+                      <th className="p-3.5">Nama Daerah / Provinsi</th>
+                      <th className="p-3.5">Tautan Website Eksternal</th>
                       <th className="p-3.5 text-right">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {(dbData?.inspectorates || [])
-                      .filter(i => !searchTerm || i.nama.toLowerCase().includes(searchTerm.toLowerCase()) || i.inspektur.toLowerCase().includes(searchTerm.toLowerCase()))
+                      .filter(i => !searchTerm || i.nama?.toLowerCase().includes(searchTerm.toLowerCase()) || i.website?.toLowerCase().includes(searchTerm.toLowerCase()))
                       .map((item) => (
                         <tr key={item.id} className="hover:bg-slate-50/80">
-                          <td className="p-3.5 font-bold text-slate-800">
-                            <div>{item.nama}</div>
-                            <div className="text-[10px] text-slate-400 font-normal">Ibukota: {item.ibukota}</div>
+                          <td className="p-3.5 font-bold text-[#063a69]">
+                            {item.nama}
                           </td>
-                          <td className="p-3.5 text-slate-500">{item.wilayah}</td>
-                          <td className="p-3.5 text-slate-700">{item.inspektur}</td>
-                          <td className="p-3.5 text-[#063a69] truncate max-w-[200px]">
-                            <a href={item.website} target="_blank" rel="noreferrer" className="hover:underline flex items-center space-x-1">
+                          <td className="p-3.5 text-[#063a69] max-w-[320px]">
+                            <a href={item.website} target="_blank" rel="noreferrer" className="hover:underline flex items-center space-x-1.5">
+                              <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 text-[#063a69]" />
                               <span className="truncate">{item.website}</span>
-                              <ExternalLink className="w-3 h-3 flex-shrink-0" />
                             </a>
                           </td>
                           <td className="p-3.5 text-right whitespace-nowrap space-x-2">
@@ -1889,7 +1884,7 @@ export default function AdminDashboard({
                 </div>
               </div>
 
-              {/* Dokumen Info Publik */}
+              {/* Dokumen Info Publik (Tampilan Berkelompok seperti Referensi Publik) */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="font-heading font-bold text-xs uppercase text-slate-500">
@@ -1899,84 +1894,101 @@ export default function AdminDashboard({
                     Total: {(dbData?.services?.informasiPublik || []).length} dokumen
                   </span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                  {(dbData?.services?.informasiPublik || []).map((inf) => {
-                    const hasFile = isDocumentAvailable(inf.fileUrl || inf.url);
-                    return (
-                      <div key={inf.id} className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start justify-between gap-3 shadow-2xs hover:border-[#fbae17] transition-colors">
-                        <div className="space-y-1.5 min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="px-2 py-0.5 rounded bg-[#063a69] text-[#fbae17] text-[10px] font-bold uppercase">
-                              {inf.kode || 'DOK'}
-                            </span>
-                            <span className="text-[11px] text-slate-500 font-medium">
-                              {inf.periode} &bull; {inf.fileSize || 'PDF'}
-                            </span>
-                            {hasFile ? (
-                              <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-semibold">
-                                File Resmi Tersedia
-                              </span>
-                            ) : (
-                              <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded font-semibold">
-                                Belum ada file
-                              </span>
-                            )}
-                          </div>
-                          <div className="font-heading font-bold text-xs text-[#063a69]">{inf.judul || inf.nama}</div>
-                          {inf.deskripsi && (
-                            <p className="text-[11px] text-slate-500 line-clamp-2">{inf.deskripsi}</p>
-                          )}
-                        </div>
-
-                        <div className="flex items-center space-x-1 flex-shrink-0">
-                          {hasFile && (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => setPreviewDoc({
-                                  ...inf,
-                                  title: inf.judul || inf.nama,
-                                  subtitle: inf.kode || 'Informasi Publik',
-                                  fileUrl: inf.fileUrl || inf.url,
-                                  fileSize: inf.fileSize,
-                                  periode: inf.periode,
-                                  downloadName: `${inf.kode || 'Dokumen'}-${inf.judul || inf.nama || inf.id}`
-                                })}
-                                className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
-                                title="Buka Dokumen"
-                              >
-                                <Eye className="w-4 h-4 text-[#d48f05]" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => downloadDocument(inf.fileUrl || inf.url, `${inf.kode || 'Dokumen'}-${inf.judul || inf.nama || inf.id}`)}
-                                className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
-                                title="Unduh Dokumen"
-                              >
-                                <Download className="w-4 h-4" />
-                              </button>
-                            </>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => openModal('edit', { ...inf, section: 'informasiPublik' })}
-                            className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
-                            title="Edit Dokumen Informasi Publik"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDelete('layanan', inf.id, 'informasiPublik')}
-                            className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
-                            title="Hapus"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
+                <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-200 overflow-hidden">
+                  {Array.from(
+                    (dbData?.services?.informasiPublik || []).reduce((acc, item) => {
+                      const group = (item.kategori || 'DOKUMEN INFORMASI PUBLIK').trim();
+                      if (!acc.has(group)) acc.set(group, []);
+                      acc.get(group).push(item);
+                      return acc;
+                    }, new Map()).entries()
+                  ).map(([groupTitle, items], groupIdx) => (
+                    <div key={groupTitle} className="p-4 sm:p-5 space-y-2">
+                      <div className="font-heading font-bold text-xs sm:text-sm text-[#063a69] uppercase tracking-wide">
+                        {groupTitle}
                       </div>
-                    );
-                  })}
+                      <div className="ml-2 sm:ml-4 border-l border-slate-300 space-y-1.5">
+                        {items.map((inf, itemIdx) => {
+                          const hasFile = isDocumentAvailable(inf.fileUrl || inf.url);
+                          const nomorItem = inf.nomor || `${groupIdx + 1}.${itemIdx + 1}.`;
+                          return (
+                            <div
+                              key={inf.id}
+                              className="relative pl-5 sm:pl-6 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-slate-50 rounded-r-lg transition-colors"
+                            >
+                              <span className="absolute left-0 top-1/2 w-3.5 h-px bg-slate-300"></span>
+                              <div className="flex flex-wrap items-center gap-2 min-w-0 flex-1">
+                                <span className="text-xs font-bold text-slate-800 min-w-[32px]">{nomorItem}</span>
+                                <span className="font-semibold text-xs text-[#063a69] break-words">
+                                  {inf.judul || inf.nama}
+                                </span>
+                                <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold">
+                                  {inf.kode || 'DOK'}
+                                </span>
+                                {hasFile ? (
+                                  <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-semibold">
+                                    File Tersedia
+                                  </span>
+                                ) : (
+                                  <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded font-semibold">
+                                    Belum ada file
+                                  </span>
+                                )}
+                              </div>
+
+                              <div className="flex items-center space-x-1 flex-shrink-0 pl-7 sm:pl-0">
+                                {hasFile && (
+                                  <>
+                                    <button
+                                      type="button"
+                                      onClick={() => setPreviewDoc({
+                                        ...inf,
+                                        title: inf.judul || inf.nama,
+                                        subtitle: inf.kode || 'Informasi Publik',
+                                        fileUrl: inf.fileUrl || inf.url,
+                                        fileSize: inf.fileSize,
+                                        periode: inf.periode,
+                                        downloadName: `${inf.kode || 'Dokumen'}-${inf.judul || inf.nama || inf.id}`
+                                      })}
+                                      className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
+                                      title="Buka Dokumen"
+                                    >
+                                      <Eye className="w-4 h-4 text-[#d48f05]" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => downloadDocument(inf.fileUrl || inf.url, `${inf.kode || 'Dokumen'}-${inf.judul || inf.nama || inf.id}`)}
+                                      className="px-2.5 py-1 bg-[#ebc163] hover:bg-[#e0b24b] text-white rounded-md text-[11px] font-semibold flex items-center space-x-1"
+                                      title="Download Dokumen"
+                                    >
+                                      <Download className="w-3 h-3" />
+                                      <span>Download</span>
+                                    </button>
+                                  </>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => openModal('edit', { ...inf, section: 'informasiPublik' })}
+                                  className="p-1.5 text-slate-600 hover:text-[#063a69] hover:bg-slate-200 rounded-lg"
+                                  title="Edit Dokumen Informasi Publik"
+                                >
+                                  <Edit3 className="w-4 h-4" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDelete('layanan', inf.id, 'informasiPublik')}
+                                  className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                                  title="Hapus"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -2359,68 +2371,20 @@ export default function AdminDashboard({
               {/* FORM UNTUK INSPEKTORAT DAERAH */}
               {activeTab === 'daerah' && (
                 <>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block font-bold text-slate-700 uppercase mb-1">Nama Provinsi *</label>
-                      <input
-                        type="text"
-                        value={formData.nama || ''}
-                        onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-                        className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-bold text-slate-700 uppercase mb-1">Ibukota</label>
-                      <input
-                        type="text"
-                        value={formData.ibukota || ''}
-                        onChange={(e) => setFormData({ ...formData, ibukota: e.target.value })}
-                        className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block font-bold text-slate-700 uppercase mb-1">Zona Wilayah</label>
-                      <select
-                        value={formData.wilayah || 'Sumatera'}
-                        onChange={(e) => setFormData({ ...formData, wilayah: e.target.value })}
-                        className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
-                      >
-                        <option value="Sumatera">Sumatera</option>
-                        <option value="Jawa">Jawa</option>
-                        <option value="Bali & Nusa Tenggara">Bali & Nusa Tenggara</option>
-                        <option value="Kalimantan">Kalimantan</option>
-                        <option value="Sulawesi">Sulawesi</option>
-                        <option value="Maluku & Papua">Maluku & Papua</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block font-bold text-slate-700 uppercase mb-1">Nomor Telepon</label>
-                      <input
-                        type="text"
-                        value={formData.telp || ''}
-                        onChange={(e) => setFormData({ ...formData, telp: e.target.value })}
-                        className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
-                      />
-                    </div>
-                  </div>
-
                   <div>
-                    <label className="block font-bold text-slate-700 uppercase mb-1">Nama Inspektur Daerah</label>
+                    <label className="block font-bold text-slate-700 uppercase mb-1">Nama Daerah / Provinsi *</label>
                     <input
                       type="text"
-                      value={formData.inspektur || ''}
-                      onChange={(e) => setFormData({ ...formData, inspektur: e.target.value })}
+                      value={formData.nama || ''}
+                      onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
+                      placeholder="Contoh: Jawa Barat"
                       className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                      required
                     />
                   </div>
 
                   <div>
-                    <label className="block font-bold text-slate-700 uppercase mb-1">URL Website Resmi Inspektorat *</label>
+                    <label className="block font-bold text-slate-700 uppercase mb-1">URL Website Eksternal Resmi *</label>
                     <input
                       type="url"
                       value={formData.website || ''}
@@ -2612,6 +2576,41 @@ export default function AdminDashboard({
 
                   {formData.section === 'informasiPublik' ? (
                     <>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="sm:col-span-2">
+                          <label className="block font-bold text-slate-700 uppercase mb-1">Kelompok / Kategori Informasi *</label>
+                          <input
+                            type="text"
+                            list="kategori-infopub-list"
+                            value={formData.kategori || ''}
+                            onChange={(e) => setFormData({ ...formData, kategori: e.target.value })}
+                            placeholder="Contoh: 2. RINGKASAN INFORMASI PROGRAM DAN KEGIATAN ITJEN KEMENDAGRI"
+                            className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs font-semibold"
+                            required
+                          />
+                          <datalist id="kategori-infopub-list">
+                            {Array.from(new Set([
+                              '1. INFORMASI TENTANG HASIL PENGAWASAN',
+                              '2. RINGKASAN INFORMASI PROGRAM DAN KEGIATAN ITJEN KEMENDAGRI',
+                              ...(dbData?.services?.informasiPublik || []).map(i => i.kategori).filter(Boolean)
+                            ])).map((kat) => (
+                              <option key={kat} value={kat} />
+                            ))}
+                          </datalist>
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-slate-700 uppercase mb-1">Nomor Urut</label>
+                          <input
+                            type="text"
+                            value={formData.nomor || ''}
+                            onChange={(e) => setFormData({ ...formData, nomor: e.target.value })}
+                            placeholder="Contoh: 2.1."
+                            className="w-full p-2.5 border rounded-xl bg-slate-50 text-xs"
+                          />
+                        </div>
+                      </div>
+
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div className="sm:col-span-2">
                           <label className="block font-bold text-slate-700 uppercase mb-1">Judul Dokumen Informasi Publik *</label>

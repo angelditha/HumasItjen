@@ -30,6 +30,7 @@ export default function Navbar({
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [currentTime, setCurrentTime] = useState('');
   const [currentDate, setCurrentDate] = useState('');
+  const [compactDate, setCompactDate] = useState('');
 
   // Update clock
   useEffect(() => {
@@ -41,11 +42,13 @@ export default function Navbar({
         'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
       ];
+      const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
       const dayName = days[now.getDay()];
       const day = now.getDate();
       const monthName = months[now.getMonth()];
       const year = now.getFullYear();
       setCurrentDate(`${dayName}, ${day} ${monthName} ${year}`);
+      setCompactDate(`${day} ${shortMonths[now.getMonth()]} ${year}`);
 
       // Time HH:mm:ss WIB
       const hours = String(now.getHours()).padStart(2, '0');
@@ -133,78 +136,7 @@ export default function Navbar({
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-40">
-      {/* 1. TOP BAR */}
-      <div className="bg-[#042646] text-white text-xs py-1.5 px-4 sm:px-8 border-b border-[#063a69]">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          {/* Tanggal & Waktu */}
-          <div className="flex items-center space-x-4 text-slate-300">
-            <div className="flex items-center space-x-1.5">
-              <Calendar className="w-3.5 h-3.5 text-[#fbae17]" />
-              <span className="font-medium">{currentDate}</span>
-            </div>
-            <div className="hidden sm:flex items-center space-x-1.5">
-              <Clock className="w-3.5 h-3.5 text-[#fbae17]" />
-              <span className="font-mono">{currentTime}</span>
-            </div>
-          </div>
-
-          {/* Quick Links & Admin Portal */}
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            <a 
-              href="https://otda.kemendagri.go.id/layananwbs" 
-              target="_blank" 
-              rel="noreferrer"
-              className="hover:text-[#fbae17] transition-colors flex items-center space-x-1"
-            >
-              <Shield className="w-3 h-3 text-[#fbae17]" />
-              <span>Portal WBS</span>
-            </a>
-            <span className="text-slate-600">|</span>
-            <a 
-              href="https://ppid.kemendagri.go.id" 
-              target="_blank" 
-              rel="noreferrer"
-              className="hover:text-[#fbae17] transition-colors hidden md:inline-flex items-center space-x-1"
-            >
-              <span>PPID</span>
-            </a>
-            <span className="text-slate-600 hidden md:inline">|</span>
-            <a 
-              href="https://kemendagri.go.id" 
-              target="_blank" 
-              rel="noreferrer"
-              className="hover:text-[#fbae17] transition-colors hidden lg:inline-flex items-center space-x-1"
-            >
-              <span>Kemendagri RI</span>
-              <ExternalLink className="w-2.5 h-2.5" />
-            </a>
-
-            {/* Tombol Akses Portal Admin */}
-            <span className="text-slate-600">|</span>
-            {adminUser ? (
-              <button
-                onClick={onOpenDashboard}
-                className="inline-flex items-center space-x-1.5 bg-[#fbae17] text-[#063a69] hover:bg-[#fec34d] font-bold px-2.5 py-0.5 rounded text-[11px] shadow-sm transition-all"
-                title="Buka Dashboard Administrasi"
-              >
-                <UserCheck className="w-3.5 h-3.5" />
-                <span>Dashboard Humas</span>
-              </button>
-            ) : (
-              <button
-                onClick={onOpenLogin}
-                className="inline-flex items-center space-x-1 text-slate-300 hover:text-white hover:underline text-[11px] transition-colors"
-                title="Akses Terbatas Pengelola"
-              >
-                <Lock className="w-3 h-3 text-slate-400" />
-                <span>Portal Humas</span>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* 2. BRAND HEADER WITH TWO LOGOS */}
+      {/* 1. BRAND HEADER WITH TWO LOGOS */}
       <div className="bg-[#f4f2ee] border-b border-slate-200 py-3 sm:py-4 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <a 
@@ -237,27 +169,14 @@ export default function Navbar({
               </h1>
             </div>
           </a>
-
-          {/* Slogan Banner di Layar Lebar */}
-          <div className="hidden xl:flex flex-col items-end text-right">
-            <div className="inline-flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-              <span className="text-xs font-semibold text-[#063a69]">
-                APIP Profesional & Berdampak
-              </span>
-            </div>
-            <span className="text-[11px] text-slate-500 mt-1">
-              Pelayanan Pengawasan 38 Provinsi
-            </span>
-          </div>
         </div>
       </div>
 
-      {/* 3. MAIN NAVIGATION BAR */}
+      {/* 2. MAIN NAVIGATION & UTILITY BAR (SATU BARIS TERPADU) */}
       <nav className="bg-[#063a69] text-white shadow-md relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2">
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-0.5">
             {navItems.map((item) => {
               const isCurrent = activePage === item.id;
               const hasChildren = item.children && item.children.length > 0;
@@ -278,7 +197,7 @@ export default function Navbar({
                         handleNavClick(item.id, item.children[0].id, e);
                       }
                     }}
-                    className={`px-3.5 py-3.5 text-xs font-heading font-semibold uppercase tracking-wider flex items-center space-x-1 transition-colors border-b-2 ${
+                    className={`px-2 xl:px-2.5 py-3.5 text-[11px] xl:text-xs font-heading font-semibold uppercase tracking-tight xl:tracking-wide flex items-center space-x-1 transition-colors border-b-2 whitespace-nowrap ${
                       isCurrent 
                         ? 'border-[#fbae17] text-[#fbae17] bg-white/5' 
                         : 'border-transparent text-slate-100 hover:text-[#fbae17] hover:bg-white/5'
@@ -319,15 +238,82 @@ export default function Navbar({
             })}
           </div>
 
-          {/* Quick Search Button & Mobile Toggle */}
-          <div className="flex items-center space-x-2 py-2">
+          {/* Utility Cluster (Kalender, Portal WBS, PPID, Kemendagri RI, Portal Humas, Cari) & Mobile Toggle */}
+          <div className="flex items-center space-x-1.5 xl:space-x-2 py-1.5 ml-auto">
+            {/* Kalender / Tanggal */}
+            <div
+              className="hidden xl:flex items-center space-x-1 text-[11px] text-slate-200 pr-2 border-r border-white/15 whitespace-nowrap"
+              title={`${currentDate} (${currentTime})`}
+            >
+              <Calendar className="w-3.5 h-3.5 text-[#fbae17] flex-shrink-0" />
+              <span className="hidden 2xl:inline">{currentDate}</span>
+              <span className="2xl:hidden">{compactDate}</span>
+            </div>
+
+            {/* Quick Links Terpadu */}
+            <div className="hidden md:flex items-center space-x-1.5 xl:space-x-2 text-[11px] text-slate-200 pr-2 border-r border-white/15 whitespace-nowrap">
+              <a
+                href="https://otda.kemendagri.go.id/layananwbs"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#fbae17] transition-colors inline-flex items-center space-x-1"
+                title="Portal Whistleblowing System"
+              >
+                <Shield className="w-3 h-3 text-[#fbae17]" />
+                <span>Portal WBS</span>
+              </a>
+              <span className="text-white/20">|</span>
+              <a
+                href="https://ppid.kemendagri.go.id"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#fbae17] transition-colors inline-flex items-center"
+              >
+                <span>PPID</span>
+              </a>
+              <span className="text-white/20 hidden xl:inline">|</span>
+              <a
+                href="https://kemendagri.go.id"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#fbae17] transition-colors hidden xl:inline-flex items-center space-x-1"
+              >
+                <span>Kemendagri RI</span>
+                <ExternalLink className="w-2.5 h-2.5" />
+              </a>
+            </div>
+
+            {/* Portal Humas / Admin Dashboard */}
+            <div className="hidden sm:flex items-center whitespace-nowrap">
+              {adminUser ? (
+                <button
+                  onClick={onOpenDashboard}
+                  className="inline-flex items-center space-x-1 bg-[#fbae17] text-[#063a69] hover:bg-[#fec34d] font-bold px-2.5 py-1 rounded text-[11px] shadow-xs transition-all"
+                  title="Buka Dashboard Administrasi"
+                >
+                  <UserCheck className="w-3.5 h-3.5" />
+                  <span>Dashboard Humas</span>
+                </button>
+              ) : (
+                <button
+                  onClick={onOpenLogin}
+                  className="inline-flex items-center space-x-1 text-slate-200 hover:text-[#fbae17] px-2 py-1 rounded hover:bg-white/10 text-[11px] transition-colors"
+                  title="Akses Terbatas Pengelola"
+                >
+                  <Lock className="w-3 h-3 text-[#fbae17]" />
+                  <span>Portal Humas</span>
+                </button>
+              )}
+            </div>
+
+            {/* Tombol Cari */}
             <button
               onClick={onSearchOpen}
-              className="p-2 text-slate-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-2 text-xs"
+              className="px-2 py-1.5 text-slate-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-1.5 text-xs whitespace-nowrap"
               title="Pencarian Cepat"
             >
               <Search className="w-4 h-4 text-[#fbae17]" />
-              <span className="hidden sm:inline font-medium">Cari...</span>
+              <span className="hidden sm:inline font-medium text-[11px]">Cari...</span>
             </button>
 
             {/* Mobile Hamburger Toggle */}
@@ -405,15 +391,29 @@ export default function Navbar({
             })}
 
             <div className="pt-3 border-t border-white/10 flex flex-col space-y-2">
+              <div className="flex items-center space-x-2 text-[11px] text-slate-300 pb-1">
+                <Calendar className="w-3.5 h-3.5 text-[#fbae17]" />
+                <span>{currentDate} ({currentTime})</span>
+              </div>
               <a 
                 href="https://otda.kemendagri.go.id/layananwbs" 
                 target="_blank" 
                 rel="noreferrer"
-                className="text-xs text-[#fbae17] font-semibold py-1 flex items-center space-x-1"
+                className="text-xs text-[#fbae17] font-semibold py-1 flex items-center space-x-1.5"
               >
                 <Shield className="w-3.5 h-3.5" />
                 <span>Portal Whistleblowing System (WBS)</span>
               </a>
+              <div className="flex items-center space-x-4 text-xs text-slate-300 py-1">
+                <a href="https://ppid.kemendagri.go.id" target="_blank" rel="noreferrer" className="hover:text-[#fbae17]">
+                  PPID Kemendagri
+                </a>
+                <span className="text-white/20">|</span>
+                <a href="https://kemendagri.go.id" target="_blank" rel="noreferrer" className="hover:text-[#fbae17] inline-flex items-center space-x-1">
+                  <span>Kemendagri RI</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
               {adminUser ? (
                 <button
                   onClick={() => { setMobileMenuOpen(false); onOpenDashboard(); }}

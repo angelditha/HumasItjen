@@ -392,21 +392,23 @@ export default function App() {
                       </div>
                       <div className="space-y-1.5">
                         {searchResultsProv.map((p) => (
-                          <div
+                          <a
                             key={p.id}
+                            href={p.website || '#'}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             onClick={() => {
-                              handleNavigate('inspektorat-daerah');
                               setIsSearchOpen(false);
                               setSearchQuery('');
                             }}
                             className="p-3 bg-slate-50 hover:bg-slate-100 rounded-lg cursor-pointer flex items-center justify-between group"
                           >
-                            <div>
+                            <div className="min-w-0 pr-3">
                               <div className="font-heading font-bold text-xs text-[#063a69]">{p.nama}</div>
-                              <div className="text-[10px] text-slate-500">Wilayah {p.wilayah}</div>
+                              <div className="text-[10px] text-slate-500 truncate">{p.website}</div>
                             </div>
-                            <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#063a69]" />
-                          </div>
+                            <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#063a69] flex-shrink-0" />
+                          </a>
                         ))}
                       </div>
                     </div>
@@ -426,23 +428,22 @@ export default function App() {
 
       {/* MEDIA PREVIEW MODAL FOR HOME */}
       {mediaModalItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-300">
-            <div className="bg-[#063a69] text-white p-4 px-6 flex items-center justify-between">
-              <div>
-                <h3 className="font-heading font-bold text-base text-white truncate max-w-xl">
-                  {mediaModalItem.judul}
-                </h3>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-300 flex flex-col">
+            <div className="bg-[#063a69] text-white p-4 px-5 sm:px-6 flex items-start justify-between gap-3 flex-shrink-0">
+              <h3 className="font-heading font-bold text-sm sm:text-base text-white break-words whitespace-normal flex-1 min-w-0 leading-snug">
+                {mediaModalItem.judul}
+              </h3>
               <button
                 onClick={() => setMediaModalItem(null)}
-                className="p-1 rounded-full text-slate-300 hover:text-white"
+                className="p-1.5 rounded-full text-slate-200 hover:text-white hover:bg-white/15 transition-colors flex-shrink-0"
+                title="Tutup"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            <div className="p-4 bg-slate-950 flex items-center justify-center max-h-[65vh] overflow-hidden">
+            <div className="p-4 bg-slate-950 flex items-center justify-center flex-1 min-h-0 overflow-auto">
               {mediaModalItem.type === 'video' ? (
                 <div className="w-full aspect-video">
                   <iframe
@@ -457,16 +458,16 @@ export default function App() {
                 <img
                   src={mediaModalItem.url}
                   alt={mediaModalItem.judul}
-                  className="max-h-[60vh] w-auto object-contain mx-auto"
+                  className="max-h-[58vh] w-auto object-contain mx-auto"
                 />
               )}
             </div>
 
-            <div className="p-4 px-6 bg-white border-t border-slate-200">
+            <div className="p-4 px-5 sm:px-6 bg-white border-t border-slate-200 flex-shrink-0">
               <div className="text-xs text-slate-500 font-medium">
                 {mediaModalItem.tanggal}
               </div>
-              <div className="font-heading font-bold text-sm text-[#063a69]">
+              <div className="font-heading font-bold text-sm text-[#063a69] break-words leading-snug">
                 {mediaModalItem.judul}
               </div>
             </div>

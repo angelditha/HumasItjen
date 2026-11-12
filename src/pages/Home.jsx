@@ -451,7 +451,7 @@ export default function Home({
                       <div className="text-xs text-slate-500 font-medium">
                         {photo.tanggal}
                       </div>
-                      <h5 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] line-clamp-2">
+                      <h5 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] break-words leading-snug">
                         {photo.judul}
                       </h5>
                     </div>
@@ -490,7 +490,7 @@ export default function Home({
                       <div className="text-xs text-slate-500 font-medium">
                         {videos[0].tanggal}
                       </div>
-                      <h5 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] line-clamp-2">
+                      <h5 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] break-words leading-snug">
                         {videos[0].judul}
                       </h5>
                     </div>
@@ -521,7 +521,7 @@ export default function Home({
                       <div className="text-xs text-slate-500 font-medium">
                         {infographics[0].tanggal}
                       </div>
-                      <h5 className="font-heading font-bold text-xs text-[#063a69] group-hover:text-[#0a4f8f] line-clamp-2">
+                      <h5 className="font-heading font-bold text-xs text-[#063a69] group-hover:text-[#0a4f8f] break-words leading-snug">
                         {infographics[0].judul}
                       </h5>
                     </div>

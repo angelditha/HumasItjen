@@ -118,7 +118,7 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
                 <div className="text-xs text-slate-500 font-medium">
                   {photo.tanggal}
                 </div>
-                <h3 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] line-clamp-2">
+                <h3 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] break-words leading-snug">
                   {photo.judul}
                 </h3>
               </div>
@@ -154,7 +154,7 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
                 <div className="text-xs text-slate-500 font-medium">
                   {vid.tanggal}
                 </div>
-                <h3 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] line-clamp-2">
+                <h3 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] break-words leading-snug">
                   {vid.judul}
                 </h3>
               </div>
@@ -190,7 +190,7 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
                 <div className="text-xs text-slate-500 font-medium">
                   {info.tanggal}
                 </div>
-                <h3 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] line-clamp-2">
+                <h3 className="font-heading font-bold text-sm text-[#063a69] group-hover:text-[#0a4f8f] break-words leading-snug">
                   {info.judul}
                 </h3>
               </div>
@@ -201,18 +201,16 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
 
       {/* MODAL PREVIEW MEDIA (HANYA TANGGAL DAN JUDUL) */}
       {selectedItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-300 flex flex-col">
             {/* Header Modal */}
-            <div className="bg-[#063a69] text-white p-4 px-6 flex items-center justify-between">
-              <div className="pr-4">
-                <h3 className="font-heading font-bold text-base text-white truncate">
-                  {selectedItem.judul}
-                </h3>
-              </div>
+            <div className="bg-[#063a69] text-white p-4 px-5 sm:px-6 flex items-start justify-between gap-3 flex-shrink-0">
+              <h3 className="font-heading font-bold text-sm sm:text-base text-white break-words whitespace-normal flex-1 min-w-0 leading-snug">
+                {selectedItem.judul}
+              </h3>
               <button
                 onClick={() => setSelectedItem(null)}
-                className="p-1 rounded-full text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+                className="p-1.5 rounded-full text-slate-200 hover:text-white hover:bg-white/15 transition-colors flex-shrink-0"
                 title="Tutup"
               >
                 <X className="w-6 h-6" />
@@ -220,7 +218,7 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
             </div>
 
             {/* Media Content */}
-            <div className="p-4 bg-slate-950 flex items-center justify-center max-h-[65vh] overflow-hidden">
+            <div className="p-4 bg-slate-950 flex items-center justify-center flex-1 min-h-0 overflow-auto">
               {selectedItem.type === 'video' ? (
                 <div className="w-full aspect-video">
                   <iframe
@@ -235,18 +233,18 @@ export default function Media({ dbData, activeSubPage, setActiveSubPage }) {
                 <img
                   src={selectedItem.url}
                   alt={selectedItem.judul}
-                  className="max-h-[60vh] w-auto object-contain mx-auto"
+                  className="max-h-[58vh] w-auto object-contain mx-auto"
                 />
               )}
             </div>
 
             {/* Footer Modal: Hanya Tanggal dan Judul */}
-            <div className="p-4 px-6 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-slate-200">
-              <div>
+            <div className="p-4 px-5 sm:px-6 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-slate-200 flex-shrink-0">
+              <div className="min-w-0 flex-1">
                 <div className="text-xs text-slate-500 font-medium">
                   {selectedItem.tanggal}
                 </div>
-                <div className="font-heading font-bold text-sm text-[#063a69]">
+                <div className="font-heading font-bold text-sm text-[#063a69] break-words leading-snug">
                   {selectedItem.judul}
                 </div>
               </div>
